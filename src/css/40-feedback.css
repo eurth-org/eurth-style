@@ -1,0 +1,108 @@
+/* What answers back: toasts, the offline note, tooltips. */
+
+/* A toast: a short line at the bottom of the screen, the page's colours turned inside out
+   (src/fun.js makes it and takes it away). */
+.eu-toast {
+  position: fixed;
+  left: 50%;
+  bottom: var(--space-6);
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  max-width: calc(100vw - 2 * var(--space-4));
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  background: var(--ink);
+  color: var(--surface);
+  font: var(--type-label);
+  transform: translateX(-50%);
+  animation: eu-toast-in 0.3s cubic-bezier(0.3, 1.4, 0.6, 1);
+}
+
+.eu-toast.eu-leaving {
+  opacity: 0;
+  transform: translate(-50%, 12px);
+  transition:
+    opacity 0.4s,
+    transform 0.4s;
+}
+
+@keyframes eu-toast-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 16px);
+  }
+}
+
+/* "No signal": stays in the corner for as long as it's true. */
+.eu-offline {
+  position: fixed;
+  left: var(--space-4);
+  bottom: var(--space-4);
+  z-index: 55;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  max-width: calc(100vw - 2 * var(--space-4));
+  margin: 0;
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-md);
+  background: var(--surface-raised);
+  color: var(--ink);
+  font: var(--type-body-sm);
+}
+
+/* Tooltips for buttons: data-tip holds the text (aria-label carries it for screen readers).
+   They appear under the button at once, lined up with its right edge so they stay on screen,
+   stay while pointed at, and go with Escape (WCAG 1.4.13; src/fun.js). */
+[data-tip] {
+  position: relative;
+}
+
+[data-tip]:hover::after,
+[data-tip]:focus-visible::after {
+  content: attr(data-tip);
+  position: absolute;
+  top: calc(100% + var(--space-2));
+  right: 0;
+  z-index: 50;
+  width: max-content;
+  max-width: min(320px, 80vw);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-md);
+  background: var(--ink);
+  color: var(--surface);
+  font: var(--type-note);
+  font-weight: 700;
+  text-align: left;
+  white-space: normal;
+  pointer-events: none;
+  animation: eu-tip-in 0.15s ease-out;
+}
+
+/* A tooltip at the left edge of the screen lines up with its button's left edge instead. */
+[data-tip-align='start']:hover::after,
+[data-tip-align='start']:focus-visible::after {
+  right: auto;
+  left: 0;
+}
+
+/* Above the button, for buttons at the bottom of the screen. */
+[data-tip-side='top']:hover::after,
+[data-tip-side='top']:focus-visible::after {
+  top: auto;
+  bottom: calc(100% + var(--space-2));
+}
+
+.eu-tips-hidden [data-tip]::after {
+  display: none;
+}
+
+@keyframes eu-tip-in {
+  from {
+    opacity: 0;
+    transform: translateY(-3px);
+  }
+}

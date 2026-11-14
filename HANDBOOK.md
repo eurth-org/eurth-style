@@ -1,0 +1,189 @@
+# The Eurth tools handbook
+
+The rules every Eurth worldbuilding tool follows, written for whoever builds one. Eurth (eurth.org) is a worldbuilding and roleplay community since 2004; its tools are free, and made for fiction and fun.
+
+**On anything the tools share, this handbook wins.** A tool's own brief decides what the tool does; this decides how it looks, behaves, is built, tested and launched. If a brief and the handbook disagree on a shared matter, follow the handbook and tell Stijn. If the handbook is silent or wrong, don't work around it in one tool: ask for it to be fixed in `@eurth/style`, so every tool gets the fix.
+
+This is the handbook of `@eurth/style` version 1. The same text is at style.eurth.org/handbook/ and in `node_modules/@eurth/style/HANDBOOK.md`.
+
+## Start here
+
+1. Copy the `starter/` folder of `eurth-org/eurth-style` into your new repository, `eurth-org/eurth-<tool>`. It is the smallest tool that passes every check here.
+2. Rename it: `eurth.config.mjs` (id, name, address, title, description, pages), `package.json`, `wrangler.jsonc` (the Worker's name and its custom domain), `LAUNCH_AT`, and the cron line in `.github/workflows/launch.yml`.
+3. `npm install`, and commit the `package-lock.json` it writes.
+4. Replace `src/tool/` and the four pages with your tool. Keep the habits the starter shows.
+5. `npm run images` after you have a logo and a sharing image; commit what it writes to `public/`.
+6. `npm run check && npm run build && npm test && npm run axe` until all four pass. `npm run preview` serves the built site with its real headers.
+
+Commands every tool has: `dev`, `build`, `preview`, `check`, `test`, `axe`, `images`, `deploy`.
+
+## Stack and hosting
+
+- **Astro**, static output, real HTML for every page. **Svelte 5** for the interactive tool. **TypeScript**. **Vitest**. Node 22 or later (CI runs on Node 26). The same setup as Flagwright.
+- Each tool is its own repository, `eurth-org/eurth-<tool>`, deployed as a **Cloudflare Worker serving static assets** on its custom domain (`wrangler.jsonc`, on the account that holds the eurth.org zone). A Worker script only where a tool truly needs one, and its brief says so.
+- `@eurth/style` and `@eurth/profile` are installed straight from GitHub and built into the tool:
+  ```json
+  "@eurth/style": "github:eurth-org/eurth-style#semver:^1",
+  "@eurth/profile": "github:eurth-org/eurth-profile#semver:^1"
+  ```
+  Nothing is loaded at run time from another address: not these packages, not fonts, not icons.
+- `astro.config.mjs` has two integrations, `svelte()` and `eurth(site)` from `@eurth/style/astro`. The second sets static output, addresses ending in a slash, the stylesheet inside each page and scripts as separate files, adds the sitemap, and after the build writes `_headers`, `sw.js`, `manifest.webmanifest`, `robots.txt` and `llms.txt`. Don't write those by hand.
+- **GitHub Actions**: check, build and test on every push and pull request; deploy `main`. All three workflows are thin callers of the reusable ones in `eurth-org/eurth-style` (`tool-ci.yml`, `tool-nightly.yml`, `tool-launch.yml`, at `@v1`); copy them from the starter and don't add steps of your own without asking.
+- Deploying uses `CLOUDFLARE_API_TOKEN`, an organisation secret set once for all eurth-org repositories. Without it, the deploy step is skipped with a warning. **That is the only secret anywhere.** No tokens pass between repositories.
+- Everything must run on the **Cloudflare Workers Free plan** and never cost money. Ask Stijn before adding anything that could bill.
+- Each repository has `README.md`, `CLAUDE.md`, `roadmap.md`, `docs/feedback-log.md` and `LICENSE` (Apache 2.0).
+  - `roadmap.md` has three parts: "Next", one dated section per release (newest first) and "Not planned" (what is ruled out, and why). A feature goes into it in the same commit that adds the feature.
+  - `docs/feedback-log.md` is a table of every point from a review and the release that did it.
+
+## Look
+
+- **Use only `@eurth/style` tokens: no local colours, fonts or spacing.** Every value is a custom property (`var(--ink)`, `var(--space-4)`, `font: var(--type-title)`); the list, with what each is for, is at style.eurth.org/tokens/ and in `tokens.json`. In your own CSS, write tokens; in markup, use the `eu-` classes.
+- A picture a tool exports (SVG, PNG) can't use custom properties. Take its colours from the same tokens as plain values: `resolveColors(tokens, 'dark')` with `tokens` from `@eurth/style/tokens.json`. A tool whose subject is colour (a palette the visitor picks from) may carry those colours as data.
+- **Two themes**: Night (dark, the forum's Solarized dark) and light.
+- **eurth-blue `#2698d4` is the brand colour and never changes**: the logo disc, the Join Eurth pill, brand fills. Labels on it are night `#002b36`, 19px bold or larger (`--type-pill`). For a chosen option or a small filled control use `--selected` with `--on-selected`, which reach 7:1 at any size.
+- **Text meets WCAG AAA.**
+  - Night: body parchment `#fcf6e1` on night `#002b36` (13.9:1), cards night-raised `#0d353f`, muted `#bac1b5` (8.1:1), links `#80c8e5` (8.1:1).
+  - Light: body charcoal `#222222` on white, muted `#545454` (7.6:1), links `#12577b` (7.9:1).
+  - Control borders `#798c88` at Night and `#646464` in light (`--line-strong`). `--line` is for hairlines only, never the only edge of a control.
+  - Errors, successes and cautions as text use `--danger-text`, `--success-text` and `--caution-text`, always with a word or an icon.
+  - Text on a hovered control is `--ink`.
+- **Type**: the device's own fonts, nothing downloaded. `system-ui, Arial, sans-serif` for everything; `ui-monospace, Menlo, monospace` for code, data and exports. No serif. Headlines are bold. Nothing smaller than 13px.
+- **Flat**: no gradients, no glows, no shadows. Radius 12px (`--radius-md`) for pills, buttons, inputs and cards; 2px (`--radius-sm`) for small swatches.
+- The **yurt mark is the only brand pictogram**. Never redraw, recolour or retype the logo. A tool's own mark, if it has one, is for its favicon and sharing image; the header shows the yurt.
+- **Icons**: Font Awesome Free (solid and brands), imported per icon as SVG (`Icon.svelte`, `Fa.astro`); line-md for animated icons (the Deluminator's sun and moon). No icon fonts, no emoji as icons.
+
+### The classes
+
+`eu-btn` (`--primary`, `--quiet`, `--icon`, `--selected`, or `aria-pressed="true"`), `eu-join`, `eu-pill` with `eu-check`, `eu-chip`, `eu-swatch`, `eu-field`, `eu-label`, `eu-input` (`--data`), `eu-select`, `eu-textarea`, `eu-help`, `eu-error`, `eu-range`, `eu-card` (`--outline`), `eu-dialog` with `eu-dialog-top`, `eu-toast`, `eu-offline`, `eu-kicker`, `eu-lead`, `eu-muted`, `eu-data`, `eu-prose`, `eu-stack`, `eu-row`, `eu-scroll`, `eu-icon`, `eu-visually-hidden`. Tooltips: `data-tip` (with `data-tip-align="start"`, `data-tip-side="top"`). Click answers: `data-click`. Each is shown in both themes at style.eurth.org.
+
+## Shell
+
+The shell comes from `@eurth/style` and is **never rebuilt per tool**. A page is `<Page site={site} …>` around your content (`@eurth/style/components/Page.astro`); the header, the footer, the head tags, the offline note and the page's shared behaviour come with it.
+
+- **Header**: the "Skip to the content" link; the yurt, the tool's name and "by Eurth", linking to the tool's start; the tool's own pages (for example Maker, Guide, Glossary, Templates), from `site.pages`; a Tools menu from `tools.json`; the Deluminator; the Join Eurth pill. A tool's actions (Random, Simple/Advanced) live in the tool's own toolbar, not in the header.
+- **Footer**: links to the tools from `tools.json`, plus Forums, Map, News and Status; "Made by Orioni for Eurth, a worldbuilding and roleplay community since 2004", plus the tool's own inspirations (the `inspirations` slot of `Page`); "Free forever: no ads, no analytics, trackers, cookies or accounts. Made for fiction and fun."; icon attribution (Font Awesome CC BY 4.0, line-md MIT); "© 2026 Eurth", Apache 2.0, and from 25 December 2026 the GitHub link. **Before then, no page links to GitHub.** No donation links. The footer's hearts beat a few times when it comes into view. The footer also carries this visit's switches: Install app, Sound (if `site.sound`) and motion.
+- The Tools menu, the footer and the hub show **only tools whose launch date has passed when the site is built**, so no site mentions a tool before it launches. Never list tools by hand.
+- **Deluminator**: Auto, Light, Dark, cycling as in Governmint. The theme is set by the head script before the first paint (no white flash); the circular reveal from the switch is drawn by CSS from the first frame (no flash while switching); line-md icons draw themselves; still icons and an instant switch for reduced motion; without script, CSS follows the device.
+
+### What a tool provides
+
+`eurth.config.mjs`, with `defineSite()` from `@eurth/style/build`: `id` (the subdomain), `name`, `url`, `title`, `description`, `tagline`, `pages`, `repo`, `ogAlt`, and optionally `category`, `sound` and `llms`.
+
+**`eurth.config.mjs` and `@eurth/style/build` are for build time only**: `astro.config.mjs`, the frontmatter of `.astro` files, tests and scripts. Never import them from a Svelte component or a `<script>`: they carry the list of every tool, launched or not, and anything browser code imports ends up in the files visitors download. Hand a component what it needs as props.
+
+## Privacy: nothing stored
+
+- **No cookies, localStorage, sessionStorage or IndexedDB; no analytics; no accounts; no third-party requests of any kind.**
+- The theme, sound and motion switches last **for the visit only**. Every visit starts on Auto, sound off, motion as the device asks. (They ride in `window.name`, which belongs to the tab and is never written to disk; `getPrefs`, `setPrefs` and `onPrefs` from `@eurth/style` are the only way to them.) A tool's own passing choices live in memory.
+- **A design lives in its link**: the whole state, encoded compactly and with a version, in the URL's **query string** (not the `#` part), so a Worker could read it one day. `encodeState`, `decodeState`, `stateLink`, `stateFromLocation` and `stateToLocation` do this (`?d=1.…`); a tool may use a shorter readable form of its own, still in the query string and still versioned. When the shape of the state changes, raise the version and keep reading the old ones: a link made today must open next year.
+- **A link is someone else's input.** Check and clamp every value before using it; never put text from a link or a file into the page as markup.
+- Big designs also save and load as the nation's **profile file** (below). **"Save" never means browser storage.**
+- The service worker's cache of the app's own files is the only thing kept on a device.
+- **Security headers** as Flagwright's: a strict Content-Security-Policy with script hashes, `frame-ancestors` allowing eurth.org. `eurth(site)` writes them and the tests check them. No inline event handlers, no `eval`, no scripts or styles from elsewhere.
+- Outbound links carry `?ref=<this tool's host>` (`ref()` from `@eurth/style/build`) and open in a new tab; the shell marks them for screen readers. Links between Eurth tools stay in the same tab (`data-same-tab`).
+
+## Accessibility: WCAG 2.2 AAA wherever it can be met
+
+- **Contrast** as above, tested in CI for both themes. If a tool pairs tokens in a new way, add the pair: `standardSuites({ site, pairs: [['ink', 'hover', 7]] })`.
+- **Keyboard for everything**, a visible 2px focus ring, targets at least **44 by 44px** (links inside a sentence are exempt).
+- **Never colour alone**: always a word or an icon as well. Several users are red-green colour blind; colours that must be told apart differ in lightness.
+- **A written description of every result** ("Copy description"), for screen readers and for sharing. A picture's `alt` is that description.
+- One `h1` per page; headings in order; real `<button>`, `<a href>`, `<label>` and `<input>`; `lang` on text in another language.
+- Reduced motion is honoured twice: the device's setting, and the footer's switch. Use `calm()` before anything that moves from script; the stylesheet stills CSS animations by itself.
+- **Automated accessibility checks (axe) on every page in CI**: `npx eurth-axe` runs the WCAG 2.2 A, AA and AAA rules and the 44px target check, in both themes. No findings are waived without asking.
+
+## SEO, to be the reference
+
+- **Pages per tool**: the maker; a guide (the subject explained well, with sources and a last-updated date); a glossary; and templates or examples. They link to each other, to the hub once it is live, and to eurth.org.
+- **Title pattern** for the start page: "<Name>: free online <thing> maker for worldbuilders". Other pages: "<Page> · <Name>". A unique description (50 to 200 characters) and a canonical link on every page; `Page` writes them from its props.
+- **JSON-LD**, from the builders in `@eurth/style/build`: `webApplication()` on the maker (free, runs in the browser), `breadcrumbs()` on guides (pass `crumbs` to `Page`), `definedTermSet()` on glossaries, `article()` for a guide's date, `faqPage()` for questions shown on the page. `Page` adds Organization (Eurth) and WebSite to every page.
+- `sitemap.xml`, `robots.txt`, `llms.txt`: written by the build. Add lines to `llms.txt` with `site.llms`.
+- **Lighthouse 100 in all four categories.** Core Web Vitals "good": LCP under 2.5 s, INP under 200 ms, CLS under 0.1. CI holds accessibility, best practices and SEO at 100 and performance at 95 or better with the three vitals in range (CI machines are noisy); on an ordinary run it should read 100.
+
+## Sharing
+
+- An **Open Graph image**, 1200 x 630 PNG with alt text, for every page, plus `twitter:card` `summary_large_image`. `/og.png` and `site.ogAlt` are the default; a page may pass its own `ogImage` and `ogAlt`. `sharingImage()` from `@eurth/style/images` gives the suite's layout.
+- **Image downloads** where a tool makes a picture (`PICTURE_SIZES`): link preview 1200 x 630, square 1080 x 1080, portrait 1080 x 1350, story 1080 x 1920, pin 1000 x 1500, wide 1600 x 900; SVG, PNG and WebP where it fits. `svgToPicture()` and `download()` do the work.
+- **The share row** (`ShareButtons.svelte`): Copy link (with the paper plane), Copy picture, Copy description, and Share, which opens the dialog (`ShareDialog.svelte`): Eurth forum (new topic, pre-filled), Reddit, Bluesky, X, Facebook, LinkedIn, Tumblr, WhatsApp, Telegram, Email, and the device's share sheet. **Plain links only**: no share scripts, no embeds.
+
+## Offline and install
+
+- **Service worker** as Flagwright's: content-hashed files cache-first, pages network-first with the cached copy as fallback, old versions cleared. The build writes it; the shell registers it. Large galleries can be left out of the first download with `eurth(site, { offlineSkip: [/^flags\//] })`.
+- **Web manifest**: name, 192 and 512px icons (one maskable), the theme and background colours, display standalone; each page carries the light and Night theme colours. `npm run images` makes the icons.
+- **Install button** where the browser offers it, and a short how-to for iPhone (Add to Home Screen): `InstallButton.svelte`, already in the footer.
+- **Offline note**: "No signal: <Tool> keeps working from the copy on this device." and "Back online." Already in `Page`.
+
+## Delight
+
+- **One signature touch per tool**, like Governmint's coin clink and paper plane; buttons answer clicks (`data-click`: bounce, spin, tumble, swing-left, swing-right, and pop by default); toasts in the tool's own voice (`toast()`).
+- **At least one easter egg per tool.** Suite-wide, already in `@eurth/style`: the Konami code sends an emu across the footer; "Nice." when a number settles on 69 (`niceWatcher()`: wire it to your sliders); the seasonal yurt on the design kit's dates.
+- A click's answer takes **under half a second**. Nothing ever blocks input. **Sound is off until switched on** (`playTones()` is silent otherwise; set `site.sound` so the footer offers the switch). **Nothing moves for reduced motion.** An easter egg may run a few seconds, since nobody is waiting on it.
+
+## The nation profile
+
+One file, `<nation>.eurth.json`, carries a nation from tool to tool. `@eurth/profile` reads, checks, merges, saves and loads it; its README has the format and the full list of sections.
+
+- **Each tool owns one section and leaves every other section untouched, including ones it doesn't know.** Write yours with `setSection(profile, '<section>', { …getSection(profile, '<section>'), link, summary, … })`.
+- A section is small: `link` (your share link, which brings the whole design back), `summary` (a paragraph), `updated`, and the few typed fields another tool would want. Not your whole state.
+- **`identity`** (names, capital, demonym, motto, languages) is written only by the tools its owners list names (`SECTION_OWNERS`). Every other tool reads it and never writes it. A tool that creates a new file sets only the nation's name: `createProfile(nation)`.
+- Show the two buttons every tool has, "Load profile" and "Save profile" (`ProfileButtons.svelte`); dropping a file on the window loads it too.
+- **SVG from a profile only ever goes in an `<img>`** (`svgDataUrl()`), never into the page as markup. Text is shown as text.
+- New fields are proposed to `@eurth/profile`, so the schema stays the one description of the file. Unknown keys are kept, so adding is always safe; changing or removing within version 1 is not.
+
+## Launch
+
+Tools launch through Eurth's advent calendar: 10 to 24 December 2026, one door a day at 00:00 Europe/Brussels.
+
+- Repositories are public from the start: the code isn't secret, **the sites are**. Until its door opens, a tool's site doesn't exist: no custom domain, no workers.dev deploy (`"workers_dev": false, "preview_urls": false`), and no other site mentions it. Develop and preview locally (`npm run preview`, which is `wrangler dev`).
+- Each README opens with a friendly note: this tool is part of Eurth's advent calendar, so please don't spoil the surprise before its door opens.
+- The door's time is in the **`LAUNCH_AT`** file: one line, an ISO time with its offset (`2026-12-10T00:00:00+01:00`). It must equal the tool's `launch` in `tools.json`; a test checks.
+- **The launch workflow** (`.github/workflows/launch.yml`) runs on a schedule on the evening before the door (22:30 UTC, 23:30 in Brussels): it builds the site as it will be at the door's time, checks and tests it, waits until `LAUNCH_AT` and deploys to production, which creates the custom domain. It also runs by hand (`workflow_dispatch`) as a fallback, because GitHub can start scheduled runs late: if it hasn't started by 22:45 UTC, start it yourself. Run more than three hours early, it refuses. After the launch, delete it.
+- Before the door, pushes to `main` are checked and tested but **not deployed**; after it, every green push deploys.
+- **The nightly run** (`nightly.yml`, 23:10 UTC) rebuilds the site just after midnight in Brussels and deploys if the build differs from what is live. That is how a tool's menus gain each newly opened door, and how a new `@eurth/style` release reaches every tool. The hub's nightly rebuild works the same way, with `ahead: true`: it builds for the coming midnight, waits, and deploys at 00:00.
+- **Nothing anywhere relies on the visitor's clock to hide anything.** What a site shows is decided when it is built (`launchedTools()`, `githubLinksAllowed()`); the `EURTH_BUILD_TIME` variable lets the launch workflow build for the door's time ahead of it.
+- A tool is added to `tools.json` in `@eurth/style` (name, address, one-line pitch, launch date) by a change to that repository.
+- GitHub pauses scheduled workflows in a repository with no activity for 60 days. The nightly run's own commits count as activity only when something changed, so look in on a quiet repository now and then.
+
+## Writing
+
+- **British English.** Sentence case for headings, Title Case for names. The staff voice: plain, warm, a dry joke allowed; never a joke in an error or in safety text.
+- **No emoji in the interface.**
+- Say what happened and what to do next. "That file isn't a nation profile. Pick one that ends in .eurth.json." beats "Invalid input".
+- Dates as "14 November 2026" in prose; ISO dates only as data.
+- The name is "Eurth"; the address is lower case, eurth.org.
+
+## Free limits
+
+- **GitHub**: every repository is public, so standard Actions minutes are free. Still keep CI lean (npm caching; Lighthouse and axe on `main` only), and keep the organisation's Actions spending limit at $0.
+- **Cloudflare Workers Free**: 100 Workers, 5 Cron Triggers, 100,000 Worker requests a day and 10 ms of CPU per request, for the whole account; static assets are free and unlimited. So **every tool is static assets only** unless its brief says otherwise. Scheduled work belongs in GitHub Actions, not in Cron Triggers.
+
+## The checks
+
+`tests/shell.test.js` in every tool is three lines: `standardSuites({ site })` from `@eurth/style/testing`. Most suites read the built site, so CI builds first and tests after.
+
+| Suite | What fails it |
+| --- | --- |
+| Contrast | A text pair under 7:1 (large text 4.5:1, borders and marks 3:1) in either theme. |
+| Security headers | An inline script that isn't in the Content-Security-Policy by its hash; `unsafe-inline` or `unsafe-eval` for scripts. |
+| Privacy | Any mention of cookies, localStorage, sessionStorage or IndexedDB in the built files; anything loaded from another address. |
+| No spoilers | The address of a tool that hasn't launched, anywhere in the built files; a link to GitHub before 25 December 2026. |
+| Pages | A page without exactly one `h1`, its own title and description, a canonical link, a 1200 x 630 sharing image with alt text, or structured data; a missing icon, manifest, sitemap, `robots.txt`, `llms.txt` or service worker. |
+| Launch | `LAUNCH_AT` missing, malformed, or different from `tools.json`. |
+
+Besides these: `npm run check` (types), your own tests of the tool's logic (links read back safely, the description, the picture), `npm run axe`, and Lighthouse in CI.
+
+## Versions
+
+- `@eurth/style` and `@eurth/profile` follow semantic versioning. **Version 1 releases stay compatible**: nothing a tool may rely on (an export, a prop, a class, a custom property, a tool's id) is removed or renamed, and a test in `@eurth/style` enforces it. Anything that would break a layout is version 2.
+- Tools take new 1.x releases by themselves, on the nightly run. So never copy code out of the packages into a tool, and never reach into files the packages don't export.
+- Found a bug or a gap in the shell? Fix it in `@eurth/style`, release, and every tool has it by morning.
+
+## Done, for every tool
+
+- Every handbook rule met.
+- CI green.
+- Deployed to its address (by the launch workflow, at its door).
+- Lighthouse and axe checks passing.
+- The README explains use, development and deployment.
+- `roadmap.md` lists what's next.
+- The tool is in `tools.json`.

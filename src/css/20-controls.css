@@ -1,0 +1,352 @@
+/* Controls: buttons, the Join Eurth pill, options, chips, inputs, sliders, cards. Everything
+   clickable is at least 44 by 44px. */
+.eu-btn,
+.eu-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-width: var(--size-target);
+  min-height: var(--size-target);
+  padding: 0 var(--space-4);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--ink);
+  font: var(--type-label);
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    background-color 0.15s,
+    border-color 0.15s,
+    transform 0.15s;
+}
+
+.eu-btn:hover,
+.eu-pill:hover {
+  border-color: var(--ink);
+  background: var(--hover);
+  color: var(--ink);
+  transform: translateY(-1px);
+}
+
+.eu-btn:active,
+.eu-pill:active {
+  transform: scale(0.96);
+}
+
+/* Off, and saying so without leaning on colour: a dashed edge. */
+.eu-btn:disabled,
+.eu-btn[aria-disabled='true'] {
+  border-style: dashed;
+  background: transparent;
+  color: var(--ink-muted);
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* The main action: the brand fill, with a label large enough for it (19px bold). */
+.eu-btn--primary,
+.eu-btn--primary:hover {
+  border-color: var(--accent-fill);
+  background: var(--accent-fill);
+  color: var(--on-accent-small);
+  font: var(--type-pill);
+}
+
+.eu-btn--primary:hover {
+  border-color: var(--ink);
+}
+
+/* On, for a button that switches something (aria-pressed), at the label's usual size. */
+.eu-btn[aria-pressed='true'],
+.eu-btn--selected,
+.eu-btn--selected:hover {
+  border-color: var(--selected);
+  background: var(--selected);
+  color: var(--on-selected);
+}
+
+/* No edge until pointed at: for the close button of a dialog and the like. */
+.eu-btn--quiet {
+  border-color: transparent;
+}
+
+/* An icon alone: square. Give it an aria-label, and a data-tip for those who see it. */
+.eu-btn--icon {
+  width: var(--size-target);
+  padding: 0;
+}
+
+.eu-btn--icon svg {
+  width: var(--space-5);
+  height: var(--space-5);
+}
+
+/* The Join Eurth pill: night on eurth-blue, 19px bold. One per page, in the header. */
+.eu-join {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--size-target);
+  padding: 0 var(--space-4);
+  border: 1px solid var(--accent-fill);
+  border-radius: var(--radius-md);
+  background: var(--accent-fill);
+  color: var(--on-accent-small);
+  font: var(--type-pill);
+  text-decoration: none;
+  white-space: nowrap;
+  transition:
+    border-color 0.15s,
+    transform 0.15s;
+}
+
+.eu-join:hover {
+  border-color: var(--ink);
+  color: var(--on-accent-small);
+  transform: translateY(-1px);
+}
+
+/* An option to choose: a label around a radio button or a checkbox, with a check mark
+   (.eu-check) that shows when chosen, so the choice never rests on colour alone.
+     <label class="eu-pill"><input type="radio" name="x" /><span class="eu-check">…</span> Text</label> */
+.eu-pill {
+  position: relative;
+}
+
+.eu-pill input {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.eu-pill .eu-check {
+  display: none;
+}
+
+.eu-pill:has(input:checked),
+.eu-pill:has(input:checked):hover {
+  border-color: var(--selected);
+  background: var(--selected);
+  color: var(--on-selected);
+}
+
+.eu-pill:has(input:checked) .eu-check {
+  display: inline-flex;
+}
+
+.eu-pill:has(input:focus-visible) {
+  outline: var(--size-ring) solid var(--focus-ring);
+  outline-offset: var(--size-ring);
+}
+
+.eu-pill:has(input:disabled) {
+  border-style: dashed;
+  color: var(--ink-muted);
+  cursor: not-allowed;
+}
+
+/* Chosen and off: still readable on its fill. */
+.eu-pill:has(input:checked:disabled) {
+  color: var(--on-selected);
+}
+
+/* A chip: a small square of colour beside a name, the way the forum marks categories. The
+   colour goes in --chip; text never sits on it. */
+.eu-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--ink);
+  font: var(--type-label);
+}
+
+.eu-chip::before {
+  content: '';
+  flex: none;
+  width: var(--space-3);
+  height: var(--space-3);
+  border-radius: var(--radius-sm);
+  background: var(--chip, var(--accent-fill));
+}
+
+/* A swatch on its own: set --swatch. */
+.eu-swatch {
+  display: inline-block;
+  flex: none;
+  width: var(--space-4);
+  height: var(--space-4);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm);
+  background: var(--swatch, var(--accent-fill));
+}
+
+/* Fields: a label, its control, and a line of help or an error under it. */
+.eu-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.eu-label {
+  font: var(--type-label);
+}
+
+.eu-help {
+  color: var(--ink-muted);
+  font: var(--type-note);
+}
+
+.eu-error {
+  color: var(--danger-text);
+  font: var(--type-body-sm);
+}
+
+.eu-input,
+.eu-select,
+.eu-textarea {
+  width: 100%;
+  min-height: var(--size-target);
+  padding: 0 var(--space-3);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  color: var(--ink);
+  font: var(--type-body);
+}
+
+.eu-textarea {
+  padding: var(--space-3);
+  resize: vertical;
+}
+
+.eu-input::placeholder,
+.eu-textarea::placeholder {
+  color: var(--ink-muted);
+  opacity: 1;
+}
+
+.eu-input[aria-invalid='true'],
+.eu-textarea[aria-invalid='true'] {
+  border-color: var(--danger-text);
+  border-width: 2px;
+}
+
+/* Links, codes and exports: monospace. */
+.eu-input--data {
+  font: var(--type-data);
+}
+
+/* Sliders, drawn the same in every browser: a track filled up to the value, in a control tall
+   enough to press. Set --fill to the value as a percentage. (The two-colour track is a hard
+   edge, not a fade.) */
+.eu-range {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: var(--size-target);
+  margin: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.eu-range::-webkit-slider-runnable-track {
+  height: var(--space-2);
+  border-radius: var(--radius-full);
+  background: linear-gradient(to right, var(--selected) 0 var(--fill, 50%), var(--line-strong) var(--fill, 50%) 100%);
+}
+
+.eu-range::-moz-range-track {
+  height: var(--space-2);
+  border-radius: var(--radius-full);
+  background: linear-gradient(to right, var(--selected) 0 var(--fill, 50%), var(--line-strong) var(--fill, 50%) 100%);
+}
+
+.eu-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: var(--space-6);
+  height: var(--space-6);
+  margin-top: calc((var(--space-2) - var(--space-6)) / 2);
+  border: 2px solid var(--selected);
+  border-radius: var(--radius-full);
+  background: var(--surface);
+  transition: transform 0.15s;
+}
+
+.eu-range::-moz-range-thumb {
+  width: var(--space-5);
+  height: var(--space-5);
+  border: 2px solid var(--selected);
+  border-radius: var(--radius-full);
+  background: var(--surface);
+  transition: transform 0.15s;
+}
+
+.eu-range:hover::-webkit-slider-thumb {
+  transform: scale(1.15);
+}
+
+.eu-range:hover::-moz-range-thumb {
+  transform: scale(1.15);
+}
+
+/* Cards: a raised panel. */
+.eu-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-width: 0;
+  padding: var(--space-6);
+  border-radius: var(--radius-md);
+  background: var(--surface-raised);
+}
+
+.eu-card--outline {
+  border: 1px solid var(--line);
+}
+
+/* A card that is a link, whole. */
+a.eu-card {
+  color: var(--ink);
+  text-decoration: none;
+  transition:
+    box-shadow 0.15s,
+    transform 0.15s;
+}
+
+a.eu-card:hover {
+  box-shadow: inset 0 0 0 2px var(--accent-text);
+  transform: translateY(-1px);
+}
+
+/* Dialogs: the <dialog> element, opened with showModal(). */
+.eu-dialog {
+  width: min(520px, calc(100vw - 2 * var(--space-4)));
+  max-height: calc(100dvh - 2 * var(--space-4));
+  padding: var(--space-4);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  color: var(--ink);
+  overflow-y: auto;
+}
+
+.eu-dialog::backdrop {
+  background: var(--scrim);
+}
+
+.eu-dialog-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.eu-dialog-top h2 {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font: var(--type-heading);
+}

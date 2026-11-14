@@ -1,0 +1,166 @@
+---
+// The tokens, straight from tokens.json, with every text pair's contrast worked out in both themes.
+import Page from '../../../src/components/Page.astro';
+import { checkPairs, resolveColors } from '../../../src/contrast.js';
+import tokens from '../../../tokens.json';
+import { site } from '../../eurth.config.mjs';
+
+const light = resolveColors(tokens, 'light');
+const dark = resolveColors(tokens, 'dark');
+const pairs = checkPairs(tokens);
+const rows = pairs.filter((pair) => pair.theme === 'light').map((pair) => ({ ...pair, dark: pairs.find((other) => other.theme === 'dark' && other.fg === pair.fg && other.bg === pair.bg)! }));
+const need = (min: number) => (min === 7 ? 'Text' : min === 4.5 ? 'Large text' : 'Not text');
+const styles = tokens.type.groups.flatMap((group) => group.styles.map((style) => ({ ...style, family: (style as { family?: string }).family ?? group.family })));
+const scales = [
+  { name: 'Spacing', list: tokens.spacing.tokens },
+  { name: 'Sizes', list: tokens.size.tokens },
+  { name: 'Corners', list: tokens.radius.tokens },
+];
+---
+
+<Page site={site} title="Tokens" description="Every colour, type style and measure the Eurth tools are built from, with the contrast of each text pair in the light theme and at Night." crumbs={[{ name: 'Tokens', path: '/tokens/' }]}>
+  <div class="eu-stack page">
+    <header class="eu-prose">
+      <p class="eu-kicker">tokens.json · the single source</p>
+      <h1>Tokens</h1>
+      <p class="eu-lead">Tools use these and nothing else: no colour, font or spacing of their own. Each is a custom property, such as <code>var(--ink)</code>. See them at work on the <a href="/">components</a> page; the rules are in the <a href="/handbook/">handbook</a>.</p>
+    </header>
+
+    <section class="eu-stack" aria-labelledby="contrast">
+      <h2 id="contrast">Contrast, tested in both themes</h2>
+      <p>Text reaches 7:1 (WCAG AAA); large text, 19px bold and up, 4.5:1; borders, rings and marks 3:1. A change to a token that breaks a pair fails the build.</p>
+      <div class="eu-scroll eu-prose wide">
+        <table>
+          <thead><tr><th scope="col">Foreground on background</th><th scope="col">Needs</th><th scope="col">Light</th><th scope="col">Night</th></tr></thead>
+          <tbody>
+            {
+              rows.map((row) => (
+                <tr>
+                  <th scope="row"><code>{row.fg}</code> on <code>{row.bg}</code></th>
+                  <td>{need(row.min)}, {row.min}:1</td>
+                  {
+                    [
+                      { colors: light, ratio: row.ratio },
+                      { colors: dark, ratio: row.dark.ratio },
+                    ].map(({ colors, ratio }) => (
+                      <td>
+                        {/* Text pairs show letters, at the size the pair is for; the rest show a mark. */}
+                        <span class:list={['sample', row.min === 4.5 && 'large']} style={`background:${colors[row.bg]};color:${colors[row.fg]}`} aria-hidden={row.min === 3 ? 'true' : undefined}>
+                          {row.min === 3 ? <span class="mark" /> : 'Aa'}
+                        </span>{' '}
+                        <span class="eu-data">{ratio.toFixed(1)}:1</span>
+                      </td>
+                    ))
+                  }
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="eu-stack" aria-labelledby="colours">
+      <h2 id="colours">Colours</h2>
+      <div class="eu-scroll eu-prose wide">
+        <table>
+          <thead><tr><th scope="col">Token</th><th scope="col">Light</th><th scope="col">Night</th><th scope="col">Use</th></tr></thead>
+          <tbody>
+            {
+              tokens.color.tokens.map((token) => (
+                <tr>
+                  <th scope="row"><code>--{token.name}</code></th>
+                  <td><span class="eu-swatch" style={`--swatch:${light[token.name]}`} /> <span class="eu-data">{light[token.name]}</span></td>
+                  <td><span class="eu-swatch" style={`--swatch:${dark[token.name]}`} /> <span class="eu-data">{dark[token.name]}</span></td>
+                  <td>{token.usage}</td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="eu-stack" aria-labelledby="type">
+      <h2 id="type">Type</h2>
+      <p>The device's own fonts, nothing downloaded: <code>--font-sans</code> ({tokens.type.families.sans}) for everything, <code>--font-mono</code> ({tokens.type.families.mono}) for code, data and exports. Set a style with <code>font: var(--type-title)</code>.</p>
+      <div class="eu-scroll eu-prose wide">
+        <table>
+          <thead><tr><th scope="col">Token</th><th scope="col">Size</th><th scope="col">Sample</th><th scope="col">Use</th></tr></thead>
+          <tbody>
+            {
+              styles.map((style) => (
+                <tr>
+                  <th scope="row"><code>--type-{style.name}</code></th>
+                  <td class="eu-data">{style.fontSize}/{style.lineHeight} {style.fontWeight}</td>
+                  <td><span class="specimen" style={`font:var(--type-${style.name})`}>{style.sample}</span></td>
+                  <td>{style.usage}</td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    {
+      scales.map((scale) => (
+        <section class="eu-stack" aria-labelledby={scale.name.toLowerCase()}>
+          <h2 id={scale.name.toLowerCase()}>{scale.name}</h2>
+          <div class="eu-scroll eu-prose wide">
+            <table>
+              <thead><tr><th scope="col">Token</th><th scope="col">Value</th><th scope="col">Use</th></tr></thead>
+              <tbody>
+                {scale.list.map((token) => (
+                  <tr><th scope="row"><code>--{token.name}</code></th><td class="eu-data">{token.value}</td><td>{token.usage}</td></tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
+      ))
+    }
+  </div>
+</Page>
+
+<style>
+  .page {
+    gap: var(--space-12);
+  }
+
+  .wide {
+    max-width: none;
+  }
+
+  .sample {
+    display: inline-block;
+    padding: 0 var(--space-2);
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius-sm);
+    font-weight: 700;
+  }
+
+  .sample.large {
+    font: var(--type-pill);
+  }
+
+  .mark {
+    display: inline-block;
+    width: var(--space-4);
+    height: var(--space-3);
+    border-radius: var(--radius-sm);
+    background: currentColor;
+  }
+
+  .specimen {
+    display: inline-block;
+    max-width: 420px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  th[scope='row'] {
+    white-space: nowrap;
+  }
+</style>

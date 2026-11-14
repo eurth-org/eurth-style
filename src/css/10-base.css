@@ -1,0 +1,240 @@
+/* Base: the page, its text and what every element shares. Only tokens: no colour, font or
+   spacing value is written here by hand. */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--surface);
+  color: var(--ink);
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  scroll-padding-top: var(--space-4);
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  min-height: 100dvh;
+  margin: 0;
+  background: var(--surface);
+  color: var(--ink);
+  font: var(--type-body);
+}
+
+/* A frame in the other theme (the docs show both side by side). */
+[data-theme]:not(:root) {
+  background: var(--surface);
+  color: var(--ink);
+}
+
+h1,
+h2,
+h3,
+h4 {
+  margin: 0;
+  text-wrap: balance;
+}
+
+h1 {
+  font: var(--type-title);
+}
+
+h2 {
+  font: var(--type-subtitle);
+}
+
+h3,
+h4 {
+  font: var(--type-heading);
+}
+
+p,
+ul,
+ol,
+dl,
+figure,
+blockquote {
+  margin: 0;
+}
+
+a {
+  color: var(--accent-text);
+  text-underline-offset: 2px;
+}
+
+a:hover {
+  color: var(--ink);
+}
+
+button,
+select,
+input,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+code,
+kbd,
+samp,
+pre {
+  font: var(--type-data);
+}
+
+pre {
+  overflow-x: auto;
+}
+
+img,
+svg,
+video,
+canvas {
+  max-width: 100%;
+}
+
+mark {
+  background: var(--highlight);
+  color: var(--on-highlight);
+}
+
+[hidden] {
+  display: none !important;
+}
+
+:focus-visible {
+  outline: var(--size-ring) solid var(--focus-ring);
+  outline-offset: var(--size-ring);
+}
+
+/* Read out, not shown. */
+.eu-visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* "Skip to the content": the first thing the Tab key finds. */
+.eu-skip {
+  position: absolute;
+  left: -9999px;
+  top: var(--space-2);
+  z-index: 100;
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--size-target);
+  padding: 0 var(--space-3);
+  border-radius: var(--radius-md);
+  background: var(--ink);
+  color: var(--surface);
+  font: var(--type-label);
+}
+
+.eu-skip:focus {
+  left: var(--space-4);
+  color: var(--surface);
+}
+
+/* An icon beside text: as tall as the text, and never squeezed. */
+.eu-icon {
+  flex: none;
+  width: auto;
+  height: 1em;
+  vertical-align: -0.125em;
+}
+
+/* Small helpers for laying things out with the tokens. */
+.eu-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.eu-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.eu-muted {
+  color: var(--ink-muted);
+}
+
+.eu-data {
+  font: var(--type-data);
+}
+
+.eu-lead {
+  max-width: var(--size-measure);
+  font: var(--type-lead);
+}
+
+.eu-kicker {
+  color: var(--ink-muted);
+  font: var(--type-kicker);
+  letter-spacing: var(--type-kicker-tracking);
+  text-transform: uppercase;
+}
+
+/* Written pages (guides, glossaries): a readable column with room between its parts. */
+.eu-prose {
+  max-width: var(--size-measure);
+}
+
+.eu-prose > * + * {
+  margin-top: var(--space-4);
+}
+
+.eu-prose > h2 {
+  margin-top: var(--space-8);
+}
+
+.eu-prose > h3 {
+  margin-top: var(--space-6);
+}
+
+.eu-prose ul,
+.eu-prose ol {
+  padding-left: var(--space-6);
+}
+
+.eu-prose li + li {
+  margin-top: var(--space-2);
+}
+
+.eu-prose dt {
+  font-weight: 700;
+}
+
+.eu-prose dd {
+  margin: var(--space-1) 0 var(--space-4);
+}
+
+.eu-prose table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.eu-prose th,
+.eu-prose td {
+  padding: var(--space-2) var(--space-3);
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  vertical-align: top;
+}
+
+.eu-prose th {
+  font: var(--type-label);
+}
+
+/* Wide tables scroll inside their own box, never the page. */
+.eu-scroll {
+  overflow-x: auto;
+}

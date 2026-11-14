@@ -1,0 +1,106 @@
+{
+  "name": "@eurth/style",
+  "version": "1.0.0",
+  "description": "The shared look and shell of Eurth's worldbuilding tools: tokens, stylesheet, header, footer, Deluminator, sharing, offline and delights.",
+  "type": "module",
+  "license": "Apache-2.0",
+  "homepage": "https://style.eurth.org",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/eurth-org/eurth-style.git"
+  },
+  "keywords": [
+    "eurth",
+    "astro-component",
+    "svelte",
+    "design-tokens"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "sideEffects": [
+    "*.css",
+    "*.astro",
+    "*.svelte"
+  ],
+  "files": [
+    "dist",
+    "src",
+    "bin",
+    "tokens.json",
+    "tools.json",
+    "lighthouserc.cjs",
+    "HANDBOOK.md",
+    "roadmap.md"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/types/index.d.ts",
+      "default": "./src/index.js"
+    },
+    "./build": {
+      "types": "./dist/types/build.d.ts",
+      "default": "./src/build.js"
+    },
+    "./astro": {
+      "types": "./dist/types/astro/integration.d.ts",
+      "default": "./src/astro/integration.js"
+    },
+    "./testing": {
+      "types": "./dist/types/testing/index.d.ts",
+      "default": "./src/testing/index.js"
+    },
+    "./images": {
+      "types": "./dist/types/images.d.ts",
+      "default": "./src/images.js"
+    },
+    "./eurth.css": "./dist/eurth.css",
+    "./tokens.json": "./tokens.json",
+    "./tools.json": "./tools.json",
+    "./components/*": "./src/components/*",
+    "./assets/*": "./src/assets/*",
+    "./package.json": "./package.json"
+  },
+  "bin": {
+    "eurth-axe": "./bin/axe.mjs"
+  },
+  "scripts": {
+    "build": "node build/build.mjs && tsc -p tsconfig.json",
+    "check": "tsc -p tsconfig.json --noEmit && astro check --root site",
+    "test": "vitest run",
+    "api:accept": "node build/api.mjs --accept",
+    "starter": "node build/try-starter.mjs",
+    "site:dev": "astro dev --root site",
+    "site:build": "astro build --root site",
+    "site:axe": "node bin/axe.mjs site/dist",
+    "site:deploy": "npm run site:build && wrangler deploy --config site/wrangler.jsonc"
+  },
+  "dependencies": {
+    "@astrojs/sitemap": "^3.7.5",
+    "@axe-core/playwright": "^4.14.0",
+    "@fortawesome/free-brands-svg-icons": "^7.3.1",
+    "@fortawesome/free-solid-svg-icons": "^7.3.1",
+    "playwright-core": "^1.65.1"
+  },
+  "peerDependencies": {
+    "astro": "^7.4.0",
+    "svelte": "^5.57.0",
+    "vitest": "^5.0.0"
+  },
+  "peerDependenciesMeta": {
+    "vitest": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.12",
+    "@astrojs/svelte": "^9.1.6",
+    "@types/node": "^26.6.6",
+    "astro": "^7.4.12",
+    "jsdom": "^31.0.1",
+    "svelte": "^5.57.3",
+    "typescript": "^6.0.3",
+    "vitest": "^5.1.0",
+    "wrangler": "^4.162.0"
+  }
+}

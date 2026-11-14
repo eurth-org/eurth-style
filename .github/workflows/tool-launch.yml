@@ -1,0 +1,56 @@
+# Opening a tool's door, called from the tool's own .github/workflows/launch.yml:
+#
+#   on:
+#     schedule: [{ cron: '30 22 9 12 *' }]   # 22:30 UTC on the evening before the door
+#     workflow_dispatch:                      # by hand, because scheduled runs can start late
+#   jobs:
+#     launch:
+#       uses: eurth-org/eurth-style/.github/workflows/tool-launch.yml@v1
+#       secrets: inherit
+#
+# It builds the site as it will be at the door's time (the LAUNCH_AT file: an ISO time with its
+# offset, 00:00 in Brussels), checks and tests that build, waits for the door's time and then
+# deploys to production, which creates the custom domain. Run after the door's time, it deploys
+# at once. Run more than three hours early, it refuses, so a slip of the hand can't open a door.
+name: Tool launch
+
+on:
+  workflow_call:
+    inputs:
+      node-version:
+        type: string
+        default: '26'
+    secrets:
+      CLOUDFLARE_API_TOKEN:
+        required: true
+
+jobs:
+  launch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    concurrency: deploy
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+    steps:
+      - uses: actions/checkout@v5
+      - name: Read the door's time
+        run: |
+          at=$(tr -d '[:space:]' < LAUNCH_AT)
+          wait=$(( $(date -u -d "$at" +%s) - $(date -u +%s) ))
+          if [ "$wait" -gt 10800 ]; then echo "::error::The door opens at $at, more than three hours from now. Run this on the evening before."; exit 1; fi
+          if [ -z "$CLOUDFLARE_API_TOKEN" ]; then echo "::error::No CLOUDFLARE_API_TOKEN secret: the door can't be opened without it."; exit 1; fi
+          echo "EURTH_BUILD_TIME=$at" >> "$GITHUB_ENV"
+      - uses: actions/setup-node@v5
+        with:
+          node-version: ${{ inputs.node-version }}
+          cache: npm
+      - run: npm ci
+      - run: npm run check
+      - run: npm run build
+      - run: npm test
+      - name: Wait for the door
+        run: |
+          wait=$(( $(date -u -d "$EURTH_BUILD_TIME" +%s) - $(date -u +%s) ))
+          if [ "$wait" -gt 0 ]; then echo "Waiting $wait seconds for $EURTH_BUILD_TIME."; sleep "$wait"; fi
+      - name: Open the door
+        run: npx wrangler deploy

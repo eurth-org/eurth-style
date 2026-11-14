@@ -1,0 +1,94 @@
+---
+// Every page of every tool: the head (search and sharing tags, icons, the theme before the first
+// paint), the header, the footer, the offline note and the page's shared behaviour. A tool
+// writes its own content into the slot and never rebuilds any of this.
+//
+//   <Page site={site} title="Guide" description="…" crumbs={[{ name: 'Guide', path: '/guide/' }]}>
+//     …the page…
+//     <Fragment slot="inspirations">Inspired by …</Fragment>
+//   </Page>
+import '../../dist/eurth.css';
+import { HEAD_SCRIPT, THEME_COLOR } from '../generated.js';
+import { breadcrumbs, organization, pageTitle, webSite, type Site } from '../build.js';
+import Footer from './Footer.astro';
+import Header from './Header.astro';
+import OfflineNote from './OfflineNote.svelte';
+
+interface Props {
+  /** The tool's own facts, from defineSite() in eurth.config.mjs. */
+  site: Site & { host: string };
+  /** The page's own title; the site's name is added. The start page uses site.title. */
+  title?: string;
+  /** Unique to this page. The start page may leave it out and use site.description. */
+  description?: string;
+  /** The trail below the start page, for the breadcrumb search engines show: guides and glossaries. */
+  crumbs?: { name: string; path: string }[];
+  /** More structured data: webApplication() on the maker, definedTermSet() on a glossary. */
+  jsonld?: object[];
+  /** This page's sharing image, 1200 by 630 PNG, and what it shows. Defaults: /og.png and site.ogAlt. */
+  ogImage?: string;
+  ogAlt?: string;
+  /** Keep the page out of search engines (the 404 page). */
+  noindex?: boolean;
+}
+
+const { site, title, description = site.description, crumbs, jsonld = [], ogImage = '/og.png', ogAlt = site.ogAlt, noindex = false } = Astro.props;
+const path = Astro.url.pathname;
+const canonical = new URL(path, site.url).href;
+const fullTitle = pageTitle(site, path, title);
+const data: object[] = [organization(), webSite(site), ...(crumbs?.length ? [breadcrumbs(site, crumbs)] : []), ...jsonld];
+---
+
+<!doctype html>
+<html lang="en-GB">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex" />}
+    <!-- The browser's own colour around the page: the device's choice until the script below
+         has read this visit's. -->
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content={THEME_COLOR.light} />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content={THEME_COLOR.dark} />
+    <script is:inline set:html={HEAD_SCRIPT} />
+    {!noindex && <link rel="canonical" href={canonical} />}
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={`${site.name}, by Eurth`} />
+    <meta property="og:locale" content="en_GB" />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={new URL(ogImage, site.url).href} />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={ogAlt} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image:alt" content={ogAlt} />
+    <link rel="icon" href="/favicon.ico" sizes="48x48" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    {data.map((item) => <script type="application/ld+json" is:inline set:html={JSON.stringify(item)} />)}
+    <slot name="head" />
+  </head>
+  <body>
+    <a class="eu-skip" href="#main">Skip to the content</a>
+    <Header site={site} path={path} />
+    <main id="main" class="eu-main">
+      <slot />
+    </main>
+    <Footer site={site}>
+      <slot name="inspirations" slot="inspirations" />
+    </Footer>
+    <OfflineNote client:idle name={site.name} />
+    <script>
+      import { startShell } from '../shell.js';
+
+      // Offline: a copy of the site kept on the device (the service worker), in the built site only.
+      startShell({ serviceWorker: import.meta.env.PROD });
+    </script>
+  </body>
+</html>

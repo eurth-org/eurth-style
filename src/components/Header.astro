@@ -1,0 +1,73 @@
+---
+// The header: the yurt, the tool's name and "by Eurth" (to the tool's start); the tool's own
+// pages; the Tools menu; the Deluminator; the Join Eurth pill. A tool's own actions (Random,
+// Simple/Advanced) belong in the tool's toolbar, not here.
+//
+// The Tools menu lists only tools whose launch date has passed when the site is built.
+import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
+import yurt from '../assets/eurth-yurt-circle.svg?raw';
+import { EURTH, launchedTools, ref, type Site } from '../build.js';
+import Deluminator from './Deluminator.svelte';
+import Fa from './Fa.astro';
+
+interface Props {
+  site: Site & { host: string };
+  /** The page being shown: Astro.url.pathname. */
+  path: string;
+}
+const { site, path } = Astro.props;
+const launched = launchedTools();
+const tools = launched.filter((tool) => tool.kind === 'tool');
+const hub = launched.find((tool) => tool.kind === 'hub');
+const isCurrent = (href: string) => (href === '/' ? path === '/' : path.startsWith(href));
+---
+
+<header class="eu-header">
+  <a class="eu-brand" href="/" title={`${site.name}: start afresh`}>
+    <span class="eu-yurt" data-seasonal aria-hidden="true" set:html={yurt} />
+    <span class="eu-brand-name">{site.name}</span>
+    <span class="eu-brand-by">by Eurth</span>
+  </a>
+
+  {
+    site.pages.length > 1 && (
+      <nav class="eu-nav" aria-label={`${site.name} pages`}>
+        {site.pages.map((page) => (
+          <a href={page.href} aria-current={isCurrent(page.href) ? 'page' : undefined}>
+            {page.label}
+          </a>
+        ))}
+      </nav>
+    )
+  }
+
+  <div class="eu-header-actions">
+    <details class="eu-menu">
+      <summary class="eu-btn">Tools <Fa icon={faChevronDown} class="eu-chevron" /></summary>
+      <ul class="eu-menu-list">
+        {
+          tools.map((tool) => (
+            <li>
+              <a href={tool.id === site.id ? '/' : ref(tool.url, site.host)} aria-current={tool.id === site.id ? 'true' : undefined} data-same-tab>
+                {tool.name}
+                <span>{tool.pitch}</span>
+              </a>
+            </li>
+          ))
+        }
+        {
+          hub && (
+            <li>
+              <a href={hub.id === site.id ? '/' : ref(hub.url, site.host)} data-same-tab>
+                All tools
+                <span>{hub.pitch}</span>
+              </a>
+            </li>
+          )
+        }
+      </ul>
+    </details>
+    <span class="eu-deluminator-slot"><Deluminator client:only="svelte" /></span>
+    <a class="eu-join" href={ref(EURTH.join, site.host)}>Join Eurth</a>
+  </div>
+</header>

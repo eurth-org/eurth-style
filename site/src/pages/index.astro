@@ -1,0 +1,193 @@
+---
+// The components, each in both themes. The header and footer of this page are the real ones.
+import { faCheck, faDownload, faLink, faShareNodes, faSignal, faTrash, faXmark } from '@fortawesome/free-solid-svg-icons';
+import Fa from '../../../src/components/Fa.astro';
+import Page from '../../../src/components/Page.astro';
+import { APPROVED, SEASONS } from '../../../src/seasonal.js';
+import { ART } from '../../../src/seasonal-art.js';
+import yurt from '../../../src/assets/eurth-yurt-circle.svg?raw';
+import { VERSION } from '../../../src/generated.js';
+import { site } from '../../eurth.config.mjs';
+import Demo from '../parts/Demo.astro';
+import Playground from '../parts/Playground.svelte';
+---
+
+<Page site={site}>
+  <div class="eu-stack page">
+    <header class="eu-stack intro">
+      <p class="eu-kicker">@eurth/style {VERSION} · shared by every tool</p>
+      <h1>The shell: header, footer and shared parts</h1>
+      <p class="eu-lead">
+        The header above and the footer below are the real ones. Everything here ships once, from one package, so every Eurth tool looks and behaves the same.
+        The rules are in the <a href="/handbook/">handbook</a>; the colours, type and spacing are in the <a href="/tokens/">tokens</a>.
+      </p>
+    </header>
+
+    <Demo title="Buttons" uses=".eu-btn  .eu-btn--primary  .eu-btn--quiet  .eu-btn--icon  aria-pressed">
+      <div class="eu-row">
+        <button type="button" class="eu-btn eu-btn--primary"><Fa icon={faLink} /> Copy link</button>
+        <button type="button" class="eu-btn"><Fa icon={faShareNodes} /> Share</button>
+        <button type="button" class="eu-btn" aria-pressed="true"><Fa icon={faCheck} /> Advanced</button>
+        <button type="button" class="eu-btn" disabled><Fa icon={faDownload} /> Save profile</button>
+        <button type="button" class="eu-btn eu-btn--quiet eu-btn--icon" aria-label="Close" data-tip="Close" data-tip-align="start"><Fa icon={faXmark} /></button>
+      </div>
+      <p class="eu-help">At least 44 by 44 pixels. The main action wears eurth-blue with a 19px bold label; one per group. Off is a dashed edge, not a paler colour.</p>
+    </Demo>
+
+    <Demo title="The Join Eurth pill" uses=".eu-join">
+      <p><a class="eu-join" href="https://eurth.org/signup">Join Eurth</a></p>
+      <p class="eu-help">Night on eurth-blue, 19px bold: 4.7:1, which large text needs. It lives in the header, once.</p>
+    </Demo>
+
+    <Demo title="Options" uses=".eu-pill  .eu-check">
+      <fieldset class="plain">
+        <legend class="eu-label">Parts</legend>
+        <div class="eu-row">
+          <label class="eu-pill"><input type="checkbox" checked /><span class="eu-check"><Fa icon={faCheck} /></span> Stripes</label>
+          <label class="eu-pill"><input type="checkbox" /><span class="eu-check"><Fa icon={faCheck} /></span> Emblem</label>
+        </div>
+      </fieldset>
+      <p class="eu-help">A chosen option gets a check mark as well as its colour: never colour alone.</p>
+    </Demo>
+
+    <Demo title="Chips and swatches" uses=".eu-chip  .eu-swatch">
+      <div class="eu-row">
+        <span class="eu-chip" style="--chip: var(--cat-teal)">Map of Eurth</span>
+        <span class="eu-chip" style="--chip: var(--cat-vermilion)">Diplomacy</span>
+        <span class="eu-chip">Affairs</span>
+        <span class="eu-swatch" style="--swatch: var(--festive-red)" role="img" aria-label="Festive red"></span>
+      </div>
+      <p class="eu-help">A square of colour beside a name. Text never sits on the colour. Small swatches are the only 2px corners.</p>
+    </Demo>
+
+    <Demo title="Fields" uses=".eu-field  .eu-label  .eu-input  .eu-select  .eu-textarea  .eu-help  .eu-error  .eu-range">
+      <label class="eu-field">
+        <span class="eu-label">Nation</span>
+        <input class="eu-input" value="Orioni" autocomplete="off" />
+        <span class="eu-help">Up to 60 characters.</span>
+      </label>
+      <label class="eu-field">
+        <span class="eu-label">Capital</span>
+        <input class="eu-input" value="" aria-invalid="true" autocomplete="off" />
+        <span class="eu-error"><Fa icon={faTrash} /> A capital needs a name.</span>
+      </label>
+      <label class="eu-field">
+        <span class="eu-label">Link</span>
+        <input class="eu-input eu-input--data" readonly value="https://flag.eurth.org/?d=1.eyJkIjoiaDMifQ" />
+      </label>
+      <label class="eu-field">
+        <span class="eu-label">Width</span>
+        <input class="eu-range" type="range" min="0" max="100" value="40" style="--fill: 40%" />
+      </label>
+    </Demo>
+
+    <Demo title="Cards and text" uses=".eu-card  .eu-kicker  .eu-lead  .eu-muted  .eu-data">
+      <div class="eu-card">
+        <span class="eu-kicker">Guide</span>
+        <h3>Headline, system sans bold</h3>
+        <p>Body text in the device's own font. <a href="/tokens/">A link</a>, and <span class="eu-muted">a muted aside</span>.</p>
+        <p class="eu-data">2026-11-14 · v1.0 · monospace for data</p>
+      </div>
+    </Demo>
+
+    <Demo title="Toast and offline note" uses="toast()  .eu-toast  OfflineNote.svelte">
+      <div class="eu-stack still">
+        <div class="eu-toast" role="presentation">Freshly drawn, and copied.</div>
+        <p class="eu-offline"><Fa icon={faSignal} /> No signal: Flagwright keeps working from the copy on this device.</p>
+      </div>
+      <p class="eu-help">A toast speaks in the tool's own voice and leaves after a moment. The offline note stays for as long as it's true; "Back online." follows.</p>
+    </Demo>
+
+    <section class="eu-stack" aria-labelledby="live">
+      <h2 id="live">Sharing, toasts and delights, live</h2>
+      <div class="eu-card">
+        <Playground client:visible url={`${site.url}/`} />
+      </div>
+    </section>
+
+    <section class="eu-stack" aria-labelledby="deluminator">
+      <h2 id="deluminator">The Deluminator</h2>
+      <div class="eu-card eu-prose">
+        <p>The switch in the header. <strong>Auto</strong> follows the device, and every visit starts there. A click flips the page; the next keeps the device's look even if the device changes; the next returns to Auto. A choice lasts for the visit only.</p>
+        <p>The theme is set before the first paint, so a dark page never flashes white. Going dark, the lit page shrinks into the switch; going light, it grows back out, drawn by the stylesheet from the first frame. With reduced motion: still icons and an instant switch. Without script there is no switch, and the stylesheet follows the device.</p>
+      </div>
+    </section>
+
+    <section class="eu-stack" aria-labelledby="seasons">
+      <h2 id="seasons">Seasonal yurts</h2>
+      <p class="eu-lead">For a few international events the yurt in the header changes its ground. The yurt's own shape never changes, and neither does the logo anywhere else.</p>
+      <ul class="seasons">
+        <li><span class="mark" set:html={yurt} /><strong>Every day</strong><span class="eu-muted">the rest of the year</span><span class="eu-chip" style="--chip: var(--success)">In use</span></li>
+        {
+          SEASONS.map((season) => (
+            <li>
+              <span class="mark" set:html={ART[season.id]} />
+              <strong>{season.name}</strong>
+              <span class="eu-muted">{season.window}</span>
+              {APPROVED.includes(season.id) ? <span class="eu-chip" style="--chip: var(--success)">In use</span> : <span class="eu-chip" style="--chip: var(--cat-amber)">Awaiting approval</span>}
+            </li>
+          ))
+        }
+      </ul>
+      <p class="eu-help">Pride and Earth Day are the design kit's own files. Valentine's Day, Halloween and December are drawn for the tools from the same yurt, after the Discord icons. A yurt marked "Awaiting approval" is shown here only; no tool uses it yet.</p>
+    </section>
+  </div>
+</Page>
+
+<style>
+  .page {
+    gap: var(--space-12);
+  }
+
+  .intro {
+    gap: var(--space-2);
+  }
+
+  .plain {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+
+  /* Shown in place here, not floating at the bottom of the screen. */
+  .still :global(.eu-toast),
+  .still :global(.eu-offline) {
+    position: static;
+    align-self: flex-start;
+    transform: none;
+    animation: none;
+  }
+
+  .seasons {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: var(--space-4);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .seasons li {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-1);
+    text-align: center;
+  }
+
+  .mark {
+    display: block;
+    width: 96px;
+    height: 96px;
+  }
+
+  .mark :global(svg) {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: var(--radius-full);
+  }
+</style>

@@ -1,0 +1,76 @@
+# The CI every Eurth tool runs, called from the tool's own .github/workflows/ci.yml:
+#
+#   jobs:
+#     ci:
+#       uses: eurth-org/eurth-style/.github/workflows/tool-ci.yml@v1
+#       secrets: inherit
+#
+# Every push and pull request: check, build, test (in that order: the tests read the built
+# site). On main also: the accessibility checks (axe) and Lighthouse. Then main is deployed,
+# but only once the tool's door has opened (the LAUNCH_AT file) and only if the organisation's
+# CLOUDFLARE_API_TOKEN secret is there; without it, a warning and nothing else.
+name: Tool CI
+
+on:
+  workflow_call:
+    inputs:
+      node-version:
+        type: string
+        default: '26'
+    secrets:
+      CLOUDFLARE_API_TOKEN:
+        required: false
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: ${{ inputs.node-version }}
+          cache: npm
+      - run: npm ci
+      - run: npm run check
+      - run: npm run build
+      # After the build, so the tests also check the built pages.
+      - run: npm test
+      - name: Accessibility (axe), every page, both themes
+        if: github.ref == 'refs/heads/main'
+        run: npx eurth-axe dist
+      - name: Lighthouse
+        if: github.ref == 'refs/heads/main'
+        run: npx --yes @lhci/cli@0.16 autorun --config=node_modules/@eurth/style/lighthouserc.cjs
+
+  deploy:
+    needs: check
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    concurrency: deploy
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+    steps:
+      - uses: actions/checkout@v5
+      - name: Has the door opened?
+        id: door
+        run: |
+          at=$(tr -d '[:space:]' < LAUNCH_AT)
+          if [ "$(date -u +%s)" -ge "$(date -u -d "$at" +%s)" ]; then
+            echo "open=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "open=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::The door opens at $at. Until then nothing is deployed: the launch workflow does that."
+          fi
+      - uses: actions/setup-node@v5
+        if: steps.door.outputs.open == 'true'
+        with:
+          node-version: ${{ inputs.node-version }}
+          cache: npm
+      - run: npm ci
+        if: steps.door.outputs.open == 'true'
+      - name: Deploy
+        if: steps.door.outputs.open == 'true' && env.CLOUDFLARE_API_TOKEN != ''
+        run: npm run deploy
+      - name: Skip without a token
+        if: steps.door.outputs.open == 'true' && env.CLOUDFLARE_API_TOKEN == ''
+        run: echo "::warning::No CLOUDFLARE_API_TOKEN secret, so nothing was deployed. See the handbook, Stack and hosting."

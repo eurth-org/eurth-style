@@ -1,0 +1,103 @@
+# The nightly run every Eurth tool has, called from the tool's own .github/workflows/nightly.yml:
+#
+#   on:
+#     schedule: [{ cron: '10 23 * * *' }]   # ten past midnight in Brussels (winter)
+#     workflow_dispatch:
+#   jobs:
+#     nightly:
+#       permissions: { contents: write }
+#       uses: eurth-org/eurth-style/.github/workflows/tool-nightly.yml@v1
+#       secrets: inherit
+#
+# It updates @eurth/style and @eurth/profile within version 1, then checks, builds and tests.
+# If the build differs from what the live site serves (a new style release, or another tool's
+# door has opened and now belongs in the menus), it deploys. If the packages moved, it commits
+# the new package-lock.json. A tool whose own door hasn't opened is never deployed.
+#
+# No tokens pass between repositories: each tool pulls, nothing pushes.
+#
+# ahead: true is for the hub. It builds for the coming midnight in Brussels, waits for it and
+# then deploys, so a door opens on the hub at 00:00 exactly. Schedule that one at 22:30 UTC.
+name: Tool nightly
+
+on:
+  workflow_call:
+    inputs:
+      node-version:
+        type: string
+        default: '26'
+      ahead:
+        type: boolean
+        default: false
+    secrets:
+      CLOUDFLARE_API_TOKEN:
+        required: false
+
+jobs:
+  nightly:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    concurrency: deploy
+    permissions:
+      contents: write
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: ${{ inputs.node-version }}
+          cache: npm
+      - run: npm ci
+      - name: Update within version 1
+        id: update
+        run: |
+          for name in style profile; do
+            if node -e "process.exit(require('./package.json').dependencies?.['@eurth/$name'] ? 0 : 1)"; then
+              npm install "@eurth/$name@github:eurth-org/eurth-$name#semver:^1"
+            fi
+          done
+          if git diff --quiet -- package.json package-lock.json; then echo "changed=false" >> "$GITHUB_OUTPUT"; else echo "changed=true" >> "$GITHUB_OUTPUT"; fi
+      - name: Build for the coming midnight in Brussels
+        if: inputs.ahead
+        run: echo "EURTH_BUILD_TIME=$(TZ=Europe/Brussels date -d 'tomorrow 00:00' +%Y-%m-%dT%H:%M:%S%:z)" >> "$GITHUB_ENV"
+      - run: npm run check
+      - run: npm run build
+      - run: npm test
+      - name: Has the door opened, and has anything changed?
+        id: state
+        run: |
+          at=$(tr -d '[:space:]' < LAUNCH_AT)
+          now=$(date -u -d "${EURTH_BUILD_TIME:-now}" +%s)
+          if [ "$now" -lt "$(date -u -d "$at" +%s)" ]; then
+            echo "deploy=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::The door opens at $at. Nothing is deployed before then."
+            exit 0
+          fi
+          site=$(sed -n 's#^Sitemap: \(https://[^/]*\)/.*#\1#p' dist/robots.txt)
+          if curl -fsS --max-time 20 "$site/sw.js" -o live-sw.js && cmp -s live-sw.js dist/sw.js; then
+            echo "deploy=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::$site already serves this build."
+          else
+            echo "deploy=true" >> "$GITHUB_OUTPUT"
+          fi
+          rm -f live-sw.js
+      - name: Wait for midnight
+        if: inputs.ahead && steps.state.outputs.deploy == 'true'
+        run: |
+          wait=$(( $(date -u -d "$EURTH_BUILD_TIME" +%s) - $(date -u +%s) ))
+          if [ "$wait" -gt 7200 ]; then echo "::error::Midnight in Brussels is more than two hours away: run this later."; exit 1; fi
+          if [ "$wait" -gt 0 ]; then sleep "$wait"; fi
+      - name: Deploy
+        if: steps.state.outputs.deploy == 'true' && env.CLOUDFLARE_API_TOKEN != ''
+        run: npx wrangler deploy
+      - name: Skip without a token
+        if: steps.state.outputs.deploy == 'true' && env.CLOUDFLARE_API_TOKEN == ''
+        run: echo "::warning::No CLOUDFLARE_API_TOKEN secret, so nothing was deployed."
+      - name: Keep the update
+        if: steps.update.outputs.changed == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Update @eurth packages within version 1" -- package.json package-lock.json
+          git push

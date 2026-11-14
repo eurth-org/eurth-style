@@ -1,0 +1,265 @@
+/* The shell: header, main and footer, the same on every tool (components/Page.astro). */
+.eu-header {
+  position: relative;
+  z-index: 30;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3) var(--space-6);
+  padding: var(--space-3) var(--space-8);
+  border-bottom: 1px solid var(--line);
+  background: var(--surface);
+}
+
+/* The yurt, the tool's name and "by Eurth": like any site's logo, it goes to the start. */
+.eu-brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: var(--size-target);
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.eu-brand:hover {
+  color: var(--ink);
+}
+
+.eu-yurt {
+  display: inline-flex;
+  flex: none;
+  width: var(--space-8);
+  height: var(--space-8);
+}
+
+.eu-yurt svg,
+.eu-yurt img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: var(--radius-full);
+}
+
+.eu-brand-name {
+  font: var(--type-brand);
+}
+
+.eu-brand-by {
+  color: var(--ink-muted);
+  font: var(--type-body-sm);
+}
+
+/* The tool's own pages. The page you're on is marked by the bar under it as well as its colour. */
+.eu-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 var(--space-5);
+  font: var(--type-label);
+}
+
+.eu-nav a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: var(--size-target);
+  min-height: var(--size-target);
+  border-bottom: 2px solid transparent;
+  color: var(--ink-muted);
+  text-decoration: none;
+}
+
+.eu-nav a:hover {
+  color: var(--ink);
+  border-bottom-color: var(--line-strong);
+}
+
+.eu-nav a[aria-current='page'] {
+  color: var(--ink);
+  border-bottom-color: var(--accent-fill);
+}
+
+.eu-header-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-left: auto;
+}
+
+/* The Deluminator arrives with the script; its place is kept, so nothing shifts. */
+.eu-deluminator-slot {
+  display: inline-flex;
+  width: var(--size-target);
+  height: var(--size-target);
+}
+
+/* Without script there is no switch (the page follows the device), so no gap either. */
+@media (scripting: none) {
+  .eu-deluminator-slot {
+    display: none;
+  }
+}
+
+/* The Tools menu: a <details>, so it opens without script. */
+.eu-menu {
+  position: relative;
+}
+
+.eu-menu > summary {
+  list-style: none;
+}
+
+.eu-menu > summary::-webkit-details-marker {
+  display: none;
+}
+
+.eu-menu > summary .eu-chevron {
+  width: var(--space-3);
+  height: var(--space-3);
+  transition: transform 0.15s;
+}
+
+.eu-menu[open] > summary .eu-chevron {
+  transform: rotate(180deg);
+}
+
+.eu-menu-list {
+  position: absolute;
+  top: calc(100% + var(--space-2));
+  right: 0;
+  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  width: max-content;
+  max-width: min(320px, calc(100vw - 2 * var(--space-4)));
+  max-height: calc(100dvh - 6 * var(--space-8));
+  margin: 0;
+  padding: var(--space-2);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-md);
+  background: var(--surface-raised);
+  list-style: none;
+  overflow-y: auto;
+}
+
+.eu-menu-list a {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: var(--size-target);
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-md);
+  color: var(--ink);
+  font: var(--type-label);
+  text-decoration: none;
+}
+
+.eu-menu-list a span {
+  color: var(--ink-muted);
+  font: var(--type-note);
+}
+
+.eu-menu-list a:hover {
+  background: var(--hover);
+}
+
+.eu-menu-list a:hover span {
+  color: var(--ink);
+}
+
+.eu-menu-list a[aria-current='page'] {
+  box-shadow: inset 2px 0 0 var(--accent-fill);
+}
+
+.eu-main {
+  flex: 1;
+  width: 100%;
+  max-width: var(--size-page);
+  margin: 0 auto;
+  padding: var(--space-8);
+}
+
+/* The footer: the rest of Eurth, who made this, and the promises. */
+.eu-footer {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-6) var(--space-8);
+  border-top: 1px solid var(--line);
+  color: var(--ink-muted);
+  font: var(--type-body-sm);
+  overflow: hidden;
+}
+
+.eu-footer-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 var(--space-5);
+  font-weight: 700;
+}
+
+.eu-footer-nav a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+  min-width: var(--size-target);
+  min-height: var(--size-target);
+}
+
+.eu-footer p {
+  max-width: 960px;
+}
+
+.eu-heart {
+  display: inline-flex;
+  margin-right: var(--space-1);
+  color: var(--love);
+}
+
+/* Install, sound and motion: this visit's switches. */
+.eu-visit {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  min-height: var(--size-target);
+}
+
+/* Without script the switches never arrive, so their row isn't kept either. */
+@media (scripting: none) {
+  .eu-visit {
+    display: none;
+  }
+}
+
+@media (max-width: 720px) {
+  .eu-header {
+    gap: var(--space-2) var(--space-4);
+    padding: var(--space-2) var(--space-4);
+  }
+
+  /* The pages move under the name and the buttons, on a row of their own. */
+  .eu-nav {
+    order: 3;
+    width: 100%;
+  }
+
+  .eu-main {
+    padding: var(--space-6) var(--space-4);
+  }
+
+  .eu-footer {
+    padding: var(--space-6) var(--space-4);
+  }
+}
+
+/* The narrowest phones: the name gives way to the buttons. */
+@media (max-width: 420px) {
+  .eu-brand-by {
+    display: none;
+  }
+
+  .eu-join {
+    padding: 0 var(--space-3);
+  }
+}

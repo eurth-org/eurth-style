@@ -1,0 +1,96 @@
+---
+// The handbook, from HANDBOOK.md as it is, with a list of its sections. Like every site, this
+// one says nothing about a launch before it happens: the Launch section appears once the hub
+// has opened, decided when the site is built.
+import { compiledContent } from '../../../HANDBOOK.md';
+import Page from '../../../src/components/Page.astro';
+import { findTool, hasLaunched } from '../../../src/build.js';
+import { site } from '../../eurth.config.mjs';
+
+let html: string = await compiledContent();
+const hub = findTool('tools');
+if (!hub || !hasLaunched(hub)) html = html.replace(/<h2 id="launch">[\s\S]*?(?=<h2 )/, '');
+// The page has its own h1 and lead.
+html = html.replace(/<h1[\s\S]*?<\/h1>/, '');
+const sections = [...html.matchAll(/<h2 id="([^"]+)">([\s\S]*?)<\/h2>/g)].map(([, id, name]) => ({ id, name: name!.replace(/<[^>]+>/g, '') }));
+---
+
+<Page
+  site={site}
+  title="The Eurth tools handbook"
+  description="The rules every Eurth worldbuilding tool follows: stack, look, shell, privacy, accessibility, search, sharing, offline, delight and writing."
+  crumbs={[{ name: 'Handbook', path: '/handbook/' }]}
+>
+  <div class="layout">
+    <nav class="contents" aria-label="Sections of the handbook">
+      <p class="eu-kicker">In the handbook</p>
+      <ul>
+        {sections.map((section) => <li><a href={`#${section.id}`}>{section.name}</a></li>)}
+      </ul>
+    </nav>
+    <article class="eu-prose handbook">
+      <p class="eu-kicker">HANDBOOK.md · the rules</p>
+      <h1>The Eurth tools handbook</h1>
+      <Fragment set:html={html} />
+    </article>
+  </div>
+</Page>
+
+<style>
+  .layout {
+    display: grid;
+    grid-template-columns: 220px minmax(0, 1fr);
+    gap: var(--space-8);
+    align-items: start;
+  }
+
+  .contents {
+    position: sticky;
+    top: var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    max-height: calc(100dvh - 2 * var(--space-4));
+    overflow-y: auto;
+  }
+
+  .contents ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .contents a {
+    display: flex;
+    align-items: center;
+    min-height: var(--size-target);
+  }
+
+  .handbook :global(h2) {
+    scroll-margin-top: var(--space-4);
+  }
+
+  .handbook :global(pre) {
+    padding: var(--space-3);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    background: var(--surface-raised);
+  }
+
+  .handbook :global(.eu-scroll),
+  .handbook :global(table) {
+    display: block;
+    overflow-x: auto;
+  }
+
+  @media (max-width: 800px) {
+    .layout {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .contents {
+      position: static;
+      max-height: none;
+    }
+  }
+</style>

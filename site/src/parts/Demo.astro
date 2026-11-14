@@ -1,0 +1,58 @@
+---
+// One example, shown in both themes side by side: the same markup in a light frame and a dark one.
+interface Props {
+  title: string;
+  /** The classes or component this shows, for the builders. */
+  uses?: string;
+}
+const { title, uses } = Astro.props;
+const id = title.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+---
+
+<section class="demo" aria-labelledby={id}>
+  <header>
+    <h2 id={id}>{title}</h2>
+    {uses && <code>{uses}</code>}
+  </header>
+  <slot name="note" />
+  <div class="frames">
+    <div class="frame" data-theme="light"><span class="eu-kicker">Light</span><slot /></div>
+    <!-- The second copy is for looking at only: one set of controls is enough to tab through. -->
+    <div class="frame" data-theme="dark" inert><span class="eu-kicker">Night</span><slot /></div>
+  </div>
+</section>
+
+<style>
+  .demo {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--space-2) var(--space-4);
+  }
+
+  code {
+    color: var(--ink-muted);
+  }
+
+  .frames {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+    gap: var(--space-4);
+  }
+
+  .frame {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    min-width: 0;
+    padding: var(--space-6);
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius-md);
+  }
+</style>

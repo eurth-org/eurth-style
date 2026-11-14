@@ -1,0 +1,259 @@
+/* Delight: the theme switch's reveal, buttons that answer a click, and the suite's easter eggs.
+   All of it stops for visitors who prefer reduced motion or switch motion off (the end of this file). */
+
+/* The Deluminator's circular reveal (View Transitions). Going light, the new page grows out of
+   the switch; going dark, the lit page shrinks into it. The circle is drawn here, not by script,
+   so it is in place from the very first frame and the old page never flashes.
+   components/Deluminator.svelte sets --vt-x and --vt-y (the switch) and --vt-r (the far corner). */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+html.eu-vt-grow::view-transition-old(root) {
+  z-index: 1;
+}
+
+html.eu-vt-grow::view-transition-new(root) {
+  z-index: 9999;
+  animation: eu-vt-grow 0.5s cubic-bezier(0.25, 0.55, 0.45, 1) forwards;
+}
+
+html.eu-vt-shrink::view-transition-old(root) {
+  z-index: 9999;
+  animation: eu-vt-shrink 0.5s cubic-bezier(0.55, 0, 0.75, 0.45) forwards;
+}
+
+html.eu-vt-shrink::view-transition-new(root) {
+  z-index: 1;
+}
+
+@keyframes eu-vt-grow {
+  from {
+    clip-path: circle(0 at var(--vt-x) var(--vt-y));
+  }
+  to {
+    clip-path: circle(var(--vt-r) at var(--vt-x) var(--vt-y));
+  }
+}
+
+@keyframes eu-vt-shrink {
+  from {
+    clip-path: circle(var(--vt-r) at var(--vt-x) var(--vt-y));
+  }
+  to {
+    clip-path: circle(0 at var(--vt-x) var(--vt-y));
+  }
+}
+
+/* A clicked button's icon acts out what the button does. data-click names it: pop (the
+   default), spin, tumble, bounce, swing-left, swing-right. src/fun.js adds .eu-clicked. */
+.eu-clicked .eu-icon {
+  animation: eu-click-pop 0.35s cubic-bezier(0.3, 1.6, 0.6, 1);
+}
+
+.eu-clicked[data-click='spin'] .eu-icon {
+  animation: eu-click-spin 0.45s cubic-bezier(0.3, 1.2, 0.5, 1);
+}
+
+.eu-clicked[data-click='tumble'] .eu-icon {
+  animation: eu-click-tumble 0.45s cubic-bezier(0.3, 1.2, 0.5, 1);
+}
+
+.eu-clicked[data-click='bounce'] .eu-icon {
+  animation: eu-click-bounce 0.45s ease-out;
+}
+
+.eu-clicked[data-click='swing-left'] .eu-icon {
+  animation: eu-click-swing-left 0.45s ease-out;
+}
+
+.eu-clicked[data-click='swing-right'] .eu-icon {
+  animation: eu-click-swing-right 0.45s ease-out;
+}
+
+@keyframes eu-click-pop {
+  40% {
+    transform: scale(1.35);
+  }
+}
+
+@keyframes eu-click-spin {
+  to {
+    transform: rotate(-360deg);
+  }
+}
+
+@keyframes eu-click-tumble {
+  30% {
+    transform: translateY(-6px) rotate(-90deg);
+  }
+  70% {
+    transform: translateY(0) rotate(-200deg);
+  }
+  to {
+    transform: rotate(-360deg);
+  }
+}
+
+@keyframes eu-click-bounce {
+  30% {
+    transform: translateY(3px) scaleY(0.8);
+  }
+  60% {
+    transform: translateY(-3px);
+  }
+}
+
+@keyframes eu-click-swing-left {
+  40% {
+    transform: rotate(-60deg);
+  }
+}
+
+@keyframes eu-click-swing-right {
+  40% {
+    transform: rotate(60deg);
+  }
+}
+
+/* The check mark pops in when an option is chosen. */
+.eu-pill:has(input:checked) .eu-check {
+  animation: eu-pop 0.25s cubic-bezier(0.3, 1.6, 0.6, 1);
+}
+
+@keyframes eu-pop {
+  from {
+    transform: scale(0);
+  }
+}
+
+/* A paper plane flies off the Copy link button (src/fun.js moves it). */
+.eu-plane {
+  position: fixed;
+  z-index: 50;
+  width: var(--space-5);
+  color: var(--accent-text);
+  pointer-events: none;
+}
+
+/* "Nice." above a number that settled on 69. */
+.eu-nice {
+  position: fixed;
+  z-index: 50;
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-md);
+  background: var(--ink);
+  color: var(--surface);
+  font: var(--type-note);
+  font-weight: 700;
+  pointer-events: none;
+  transform: translate(-50%, calc(-100% - 6px));
+  animation: eu-nice 1.6s ease-out forwards;
+}
+
+@keyframes eu-nice {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, calc(-100% + 4px)) scale(0.8);
+  }
+  12%,
+  75% {
+    opacity: 1;
+    transform: translate(-50%, calc(-100% - 6px)) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, calc(-100% - 14px));
+  }
+}
+
+/* The footer's hearts beat three times when it comes into view. */
+.eu-beating .eu-heart svg {
+  animation: eu-beat 0.9s ease-in-out 3;
+}
+
+@keyframes eu-beat {
+  15% {
+    transform: scale(1.3);
+  }
+  30% {
+    transform: scale(1);
+  }
+  45% {
+    transform: scale(1.2);
+  }
+  60% {
+    transform: scale(1);
+  }
+}
+
+/* The Konami code sends an emu across the footer. Eurth has been at war with them before. */
+.eu-emu {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  z-index: 1;
+  width: 56px;
+  color: var(--ink);
+  pointer-events: none;
+  animation:
+    eu-emu-run 3.2s linear forwards,
+    eu-emu-bob 0.28s ease-in-out infinite;
+}
+
+@keyframes eu-emu-run {
+  from {
+    left: -64px;
+  }
+  to {
+    left: 100%;
+  }
+}
+
+@keyframes eu-emu-bob {
+  50% {
+    translate: 0 -4px;
+  }
+}
+
+/* In-page jumps glide. */
+@media (prefers-reduced-motion: no-preference) {
+  html:not([data-motion='still']) {
+    scroll-behavior: smooth;
+  }
+}
+
+/* Reduced motion, asked for by the device or switched on in the footer: nothing moves, nothing
+   fades, and what would have animated is simply there. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .eu-btn:hover,
+  .eu-pill:hover,
+  .eu-join:hover,
+  a.eu-card:hover {
+    transform: none;
+  }
+}
+
+html[data-motion='still'] *,
+html[data-motion='still'] *::before,
+html[data-motion='still'] *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
+}
+
+html[data-motion='still'] :is(.eu-btn, .eu-pill, .eu-join, a.eu-card):hover {
+  transform: none;
+}

@@ -1,0 +1,9 @@
+node_modules/
+.astro/
+.wrangler/
+.lighthouseci/
+# Built sites. The package's own dist/ is committed: tools install straight from GitHub.
+site/dist/
+starter/dist/
+*.tgz
+.DS_Store
