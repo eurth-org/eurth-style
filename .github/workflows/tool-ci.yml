@@ -6,7 +6,7 @@
 #       secrets: inherit
 #
 # Every push and pull request: check, build, test (in that order: the tests read the built
-# site). On main also: the accessibility checks (axe) and Lighthouse. Then main is deployed,
+# site). On main also: the accessibility checks (axe), a smoke test in real Chrome and Lighthouse. Then main is deployed,
 # but only once the tool's door has opened (the LAUNCH_AT file) and only if the organisation's
 # CLOUDFLARE_API_TOKEN secret is there; without it, a warning and nothing else.
 name: Tool CI
@@ -37,7 +37,15 @@ jobs:
       - run: npm test
       - name: Accessibility (axe), every page, both themes
         if: github.ref == 'refs/heads/main'
-        run: npx eurth-axe dist
+        run: npx --no-install eurth-axe dist
+      - name: Smoke test in real Chrome, under the real headers
+        if: github.ref == 'refs/heads/main'
+        run: |
+          if [ -x node_modules/.bin/eurth-smoke ]; then
+            npx --no-install eurth-smoke
+          else
+            echo "::notice::eurth-smoke arrives with @eurth/style 1.1.0: the nightly run will bring it."
+          fi
       - name: Lighthouse
         if: github.ref == 'refs/heads/main'
         run: npx --yes @lhci/cli@0.16 autorun --config=node_modules/@eurth/style/lighthouserc.cjs

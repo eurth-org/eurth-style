@@ -27,7 +27,9 @@ jobs:
       - run: npm test
       - name: Accessibility (axe), the docs site
         run: npm run site:axe
-      - name: The starter, as a tool would use it (install, check, build, test, axe)
+      - name: Smoke test in real Chrome, the docs site under its real headers
+        run: npm run site:smoke
+      - name: The starter, as a tool would use it (install, check, build, test, axe, smoke)
         run: node build/try-starter.mjs
       - name: Lighthouse, the docs site
         if: github.ref == 'refs/heads/main'

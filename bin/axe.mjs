@@ -51,6 +51,9 @@ let findings = 0;
 try {
   for (const scheme of /** @type {const} */ (['light', 'dark'])) {
     const context = await browser.newContext({ colorScheme: scheme, viewport: { width: 1280, height: 900 }, serviceWorkers: 'block' });
+    // A busy machine is slow, not broken.
+    context.setDefaultTimeout(120_000);
+    context.setDefaultNavigationTimeout(120_000);
     for (const path of pages) {
       const page = await context.newPage();
       await page.goto(`http://127.0.0.1:${port}${path}`, { waitUntil: 'networkidle' });

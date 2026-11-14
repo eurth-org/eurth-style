@@ -1,6 +1,6 @@
 // Proves the starter the way a tool would use it: copies starter/ somewhere else, installs
 // @eurth/style (and @eurth/profile) as packed tarballs, exactly what a tool gets from GitHub,
-// then checks, builds, tests and runs the accessibility checks.
+// then checks, builds, tests, and runs the accessibility checks and the real-browser smoke test.
 //   node build/try-starter.mjs [folder] [--no-axe] [--keep]
 // @eurth/profile comes from ../eurth-profile when that checkout exists, else from GitHub.
 import { execFileSync } from 'node:child_process';
@@ -35,6 +35,9 @@ run('npm', ['install'], target);
 run('npm', ['run', 'check'], target);
 run('npm', ['run', 'build'], target);
 run('npm', ['test'], target);
-if (!args.includes('--no-axe')) run('npx', ['eurth-axe', 'dist'], target);
+if (!args.includes('--no-axe')) {
+  run('npx', ['--no-install', 'eurth-axe', 'dist'], target);
+  run('npx', ['--no-install', 'eurth-smoke'], target);
+}
 console.log(`\ntry-starter: the starter passes${args.includes('--no-axe') ? ' (axe not run)' : ''}.`);
 if (!args.includes('--keep') && !args.find((a) => !a.startsWith('--'))) rmSync(target, { recursive: true, force: true });

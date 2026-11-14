@@ -13,9 +13,9 @@ This is the handbook of `@eurth/style` version 1. The same text is at style.eurt
 3. `npm install`, and commit the `package-lock.json` it writes.
 4. Replace `src/tool/` and the four pages with your tool. Keep the habits the starter shows.
 5. `npm run images` after you have a logo and a sharing image; commit what it writes to `public/`.
-6. `npm run check && npm run build && npm test && npm run axe` until all four pass. `npm run preview` serves the built site with its real headers.
+6. `npm run check && npm run build && npm test && npm run axe && npm run smoke` until all five pass. `npm run preview` serves the built site with its real headers.
 
-Commands every tool has: `dev`, `build`, `preview`, `check`, `test`, `axe`, `images`, `deploy`.
+Commands every tool has: `dev`, `build`, `preview`, `check`, `test`, `axe`, `smoke`, `images`, `deploy`.
 
 ## Stack and hosting
 
@@ -28,7 +28,7 @@ Commands every tool has: `dev`, `build`, `preview`, `check`, `test`, `axe`, `ima
   ```
   Nothing is loaded at run time from another address: not these packages, not fonts, not icons.
 - `astro.config.mjs` has two integrations, `svelte()` and `eurth(site)` from `@eurth/style/astro`. The second sets static output, addresses ending in a slash, the stylesheet inside each page and scripts as separate files, adds the sitemap, and after the build writes `_headers`, `sw.js`, `manifest.webmanifest`, `robots.txt` and `llms.txt`. Don't write those by hand.
-- **GitHub Actions**: check, build and test on every push and pull request; deploy `main`. All three workflows are thin callers of the reusable ones in `eurth-org/eurth-style` (`tool-ci.yml`, `tool-nightly.yml`, `tool-launch.yml`, at `@v1`); copy them from the starter and don't add steps of your own without asking.
+- **GitHub Actions**: check, build and test on every push and pull request (plus axe, the smoke test and Lighthouse on `main`); deploy `main`. All three workflows are thin callers of the reusable ones in `eurth-org/eurth-style` (`tool-ci.yml`, `tool-nightly.yml`, `tool-launch.yml`, at `@v1`); copy them from the starter and don't add steps of your own without asking.
 - Deploying uses `CLOUDFLARE_API_TOKEN`, an organisation secret set once for all eurth-org repositories. Without it, the deploy step is skipped with a warning. **That is the only secret anywhere.** No tokens pass between repositories.
 - Everything must run on the **Cloudflare Workers Free plan** and never cost money. Ask Stijn before adding anything that could bill.
 - Each repository has `README.md`, `CLAUDE.md`, `roadmap.md`, `docs/feedback-log.md` and `LICENSE` (Apache 2.0).
@@ -170,7 +170,9 @@ Tools launch through Eurth's advent calendar: 10 to 24 December 2026, one door a
 | Pages | A page without exactly one `h1`, its own title and description, a canonical link, a 1200 x 630 sharing image with alt text, or structured data; a missing icon, manifest, sitemap, `robots.txt`, `llms.txt` or service worker. |
 | Launch | `LAUNCH_AT` missing, malformed, or different from `tools.json`. |
 
-Besides these: `npm run check` (types), your own tests of the tool's logic (links read back safely, the description, the picture), `npm run axe`, and Lighthouse in CI.
+Besides these: `npm run check` (types), your own tests of the tool's logic (links read back safely, the description, the picture), `npm run axe`, `npm run smoke`, and Lighthouse in CI.
+
+`npm run smoke` (`npx eurth-smoke`) serves the built site with `wrangler dev` and opens it in real Chrome: nothing blocked by the Content-Security-Policy, the theme set before the first paint and carried from page to page, nothing stored, the service worker installed, every page open again without signal, and real HTML without script.
 
 ## Versions
 

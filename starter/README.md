@@ -21,6 +21,7 @@ npm run check        # types
 npm run build        # the static site, into dist/
 npm test             # the tool's own tests and the suite's checks (they read dist/)
 npm run axe          # accessibility: every page, both themes
+npm run smoke        # the built site in real Chrome: theme, nothing stored, offline
 npm run preview      # the built site with its real headers (wrangler dev)
 npm run images       # icons and the sharing image, after changing them
 ```

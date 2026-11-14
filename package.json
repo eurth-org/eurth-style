@@ -1,6 +1,6 @@
 {
   "name": "@eurth/style",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "The shared look and shell of Eurth's worldbuilding tools: tokens, stylesheet, header, footer, Deluminator, sharing, offline and delights.",
   "type": "module",
   "license": "Apache-2.0",
@@ -62,7 +62,8 @@
     "./package.json": "./package.json"
   },
   "bin": {
-    "eurth-axe": "./bin/axe.mjs"
+    "eurth-axe": "./bin/axe.mjs",
+    "eurth-smoke": "./bin/smoke.mjs"
   },
   "scripts": {
     "build": "node build/build.mjs && tsc -p tsconfig.json",
@@ -73,7 +74,8 @@
     "site:dev": "astro dev --root site",
     "site:build": "astro build --root site",
     "site:axe": "node bin/axe.mjs site/dist",
-    "site:deploy": "npm run site:build && wrangler deploy --config site/wrangler.jsonc"
+    "site:deploy": "npm run site:build && wrangler deploy --config site/wrangler.jsonc",
+    "site:smoke": "node bin/smoke.mjs --config site/wrangler.jsonc"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.5",
@@ -95,6 +97,7 @@
   "devDependencies": {
     "@astrojs/check": "^0.9.12",
     "@astrojs/svelte": "^9.1.6",
+    "@eurth/profile": "github:eurth-org/eurth-profile#semver:^1",
     "@types/node": "^26.6.6",
     "astro": "^7.4.12",
     "jsdom": "^31.0.1",

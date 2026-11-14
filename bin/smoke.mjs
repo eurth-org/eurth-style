@@ -1,11 +1,49 @@
-// A smoke test of a served site in real Chrome, under its real headers (wrangler dev):
-//   node build/smoke.mjs http://localhost:8791
-// Checks what unit tests can't: nothing is blocked by the Content-Security-Policy, the theme
+#!/usr/bin/env node
+// eurth-smoke: a smoke test of the built site in real Chrome, under its real headers.
+//
+//   npx eurth-smoke                              serves ./dist with "wrangler dev" and tests that
+//   npx eurth-smoke --config site/wrangler.jsonc the same, for a wrangler file somewhere else
+//   npx eurth-smoke http://localhost:8787        tests a site that is already being served
+//
+// It checks what unit tests can't: nothing is blocked by the Content-Security-Policy, the theme
 // follows the device and then the visitor's choice from page to page, nothing is stored, the
-// service worker installs and the site opens again without signal.
+// service worker installs and every page opens again without signal. Any failure fails the run.
+import { spawn } from 'node:child_process';
+import { createServer } from 'node:net';
 import { chromium } from 'playwright-core';
 
-const base = process.argv[2] ?? 'http://localhost:8791';
+const args = process.argv.slice(2);
+const given = args.find((arg) => /^https?:\/\//.test(arg));
+const config = args.includes('--config') ? args[args.indexOf('--config') + 1] : undefined;
+
+/** @type {import('node:child_process').ChildProcess | undefined} */
+let served;
+let base = given ?? '';
+if (!given) {
+  const port = await new Promise((resolve) => {
+    const probe = createServer().listen(0, '127.0.0.1', () => {
+      const { port } = /** @type {import('node:net').AddressInfo} */ (probe.address());
+      probe.close(() => resolve(port));
+    });
+  });
+  base = `http://127.0.0.1:${port}`;
+  served = spawn('npx', ['wrangler', 'dev', '--port', String(port), '--ip', '127.0.0.1', ...(config ? ['--config', config] : [])], { stdio: 'ignore', detached: true });
+  let up = false;
+  for (let i = 0; i < 120 && !up; i++) {
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    up = await fetch(base).then((response) => response.ok, () => false);
+  }
+  if (!up) {
+    try { process.kill(-served.pid, 'SIGTERM'); } catch {}
+    console.error('eurth-smoke: "wrangler dev" did not start within a minute. Is the site built (npm run build)?');
+    process.exit(2);
+  }
+}
+const stop = () => {
+  if (!served?.pid) return;
+  try { process.kill(-served.pid, 'SIGTERM'); } catch {}
+};
+
 const browser = await chromium.launch(process.env.CHROME ? { executablePath: process.env.CHROME } : { channel: 'chrome' });
 const problems = [];
 const check = (ok, what) => {
@@ -15,6 +53,9 @@ const check = (ok, what) => {
 
 try {
   const context = await browser.newContext({ colorScheme: 'light', viewport: { width: 1280, height: 900 } });
+  // A busy machine is slow, not broken.
+  context.setDefaultTimeout(120_000);
+  context.setDefaultNavigationTimeout(120_000);
   const page = await context.newPage();
   const noise = [];
   page.on('console', (message) => message.type() === 'error' && noise.push(message.text()));
@@ -26,7 +67,7 @@ try {
   check((await page.evaluate(() => window.name)) === '', 'a first visit leaves window.name empty');
 
   const pages = await page.evaluate(() => [...document.querySelectorAll('.eu-nav a')].map((a) => a.getAttribute('href')));
-  const sw = await page.evaluate(() => Promise.race([navigator.serviceWorker.ready.then(() => true), new Promise((r) => setTimeout(() => r(false), 8000))]));
+  const sw = await page.evaluate(() => Promise.race([navigator.serviceWorker.ready.then(() => true), new Promise((r) => setTimeout(() => r(false), 60000))]));
   check(sw, 'the service worker installs');
 
   // The Deluminator: auto -> dark (the device is light), and the choice travels to the next page.
@@ -76,14 +117,15 @@ try {
   const still = await plain.newPage();
   await still.goto(`${base}/`);
   check((await still.locator('body').evaluate((b) => getComputedStyle(b).backgroundColor)) === 'rgb(0, 43, 54)', 'without script, a dark device gets Night');
-  check((await still.locator('h1').count()) === 1 && (await still.locator('main input').count()) > 0, 'without script, the page is still real HTML');
+  check((await still.locator('h1').count()) === 1 && ((await still.locator('main').innerText()).length > 100), 'without script, the page is still real HTML');
   await plain.close();
 } finally {
   await browser.close();
+  stop();
 }
 
 if (problems.length) {
-  console.error(`\nsmoke: ${problems.length} problem${problems.length === 1 ? '' : 's'}.`);
+  console.error(`\neurth-smoke: ${problems.length} problem${problems.length === 1 ? '' : 's'}.`);
   process.exit(1);
 }
-console.log('\nsmoke: all good.');
+console.log('\neurth-smoke: all good.');

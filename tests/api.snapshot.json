@@ -13,7 +13,8 @@
     "./tools.json"
   ],
   "bin": [
-    "eurth-axe"
+    "eurth-axe",
+    "eurth-smoke"
   ],
   "modules": {
     "index": [

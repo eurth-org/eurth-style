@@ -31,6 +31,7 @@ Nothing is built on install (the built files are committed) and nothing is loade
 | `@eurth/style/eurth.css` | The stylesheet (`Page.astro` already includes it). |
 | `@eurth/style/tokens.json`, `tools.json` | The tokens; every tool with its launch date. |
 | `npx eurth-axe` | Accessibility checks on every built page, in both themes. |
+| `npx eurth-smoke` | The built site in real Chrome under its real headers: theme, nothing stored, offline. |
 
 ## What's where
 
@@ -52,15 +53,14 @@ npm run check        # types, for the package and the docs site
 npm run site:build   # the docs site, into site/dist
 npm test             # the package, and the built docs site
 npm run site:axe     # accessibility, the docs site
-npm run starter      # the starter as a tool would use it: install, check, build, test, axe
+npm run site:smoke   # the docs site in real Chrome, served with its real headers
+npm run starter      # the starter as a tool would use it: install, check, build, test, axe, smoke
 npm run site:dev     # the docs site while you work
 ```
 
 `dist/` and `src/generated.js` are committed, because tools install from GitHub with no build step: run `npm run build` and commit the result with any change to `tokens.json` or `src/css`. CI fails if they are stale.
 
 `npm run api:accept` records a change to the public surface (a new export, prop, class or custom property). Something gone from that list is a breaking change, and that is version 2: version 1 releases stay compatible, because every tool updates to the newest 1.x by itself each night.
-
-`node build/smoke.mjs http://localhost:8787` runs a real-Chrome check against a tool served by `wrangler dev`: theme from page to page, nothing stored, service worker, offline.
 
 ## Deployment
 
@@ -69,7 +69,7 @@ The docs site runs as the `eurth-style` Worker (static assets only) on the Cloud
 ## Releasing
 
 1. In the same commits as the work, update [roadmap.md](roadmap.md): move finished items out of Next, and add or extend the release's dated section.
-2. `npm run build`, `npm run site:build`, `npm run check`, `npm test`, `npm run starter`.
+2. `npm run build`, `npm run site:build`, `npm run check`, `npm test`, `npm run site:axe`, `npm run site:smoke`, `npm run starter`.
 3. Bump the version in `package.json`, merge to `main`, and push a tag `vX.Y.Z`. The release workflow checks once more, publishes the GitHub release and moves the `v1` tag that the tools' workflows call. Tools pick the release up on their next nightly run.
 
 ## Credits
