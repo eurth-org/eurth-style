@@ -7,6 +7,8 @@ module.exports = {
   ci: {
     collect: {
       staticDistDir: './dist',
+      // The 404 page keeps itself out of search engines on purpose, so it isn't scored.
+      autodiscoverUrlBlocklist: ['/404.html'],
       numberOfRuns: 3,
       settings: { preset: 'desktop' },
     },
