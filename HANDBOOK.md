@@ -85,7 +85,7 @@ The shell comes from `@eurth/style` and is **never rebuilt per tool**. A page is
 ## Accessibility: WCAG 2.2 AAA wherever it can be met
 
 - **Contrast** as above, tested in CI for both themes. If a tool pairs tokens in a new way, add the pair: `standardSuites({ site, pairs: [['ink', 'hover', 7]] })`.
-- **Keyboard for everything**, a visible 2px focus ring, targets at least **44 by 44px** (links inside a sentence are exempt).
+- **Keyboard for everything**, a visible 2px focus ring, targets at least **44 by 44px** (links inside a sentence are exempt). An input kept out of sight (`eu-visually-hidden`: a file picker behind a button, a switch drawn by its label) is measured by its `<label>`, so give it one.
 - **Never colour alone**: always a word or an icon as well. Several users are red-green colour blind; colours that must be told apart differ in lightness.
 - **A written description of every result** ("Copy description"), for screen readers and for sharing. A picture's `alt` is that description.
 - One `h1` per page; headings in order; real `<button>`, `<a href>`, `<label>` and `<input>`; `lang` on text in another language.

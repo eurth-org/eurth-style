@@ -8,7 +8,7 @@ Three parts: what comes next, what each release added (newest first), and what's
 
 - **Pitches in `tools.json`:** the one-liners for doors 5 to 15 come from the mock-up boards and may be reworded by each tool's own brief before its door opens.
 - **Flagwright and Governmint on the shared shell:** both still carry their own header, footer and theme switch (and remember the theme in the browser). Moving them over needs Stijn's go-ahead.
-- **The tools' workflows, run for real:** `tool-ci.yml`, `tool-nightly.yml` and `tool-launch.yml` have not yet run from a tool's own repository; the first tool to use them is their proof.
+- **The nightly and launch workflows, run for real:** `tool-ci.yml` runs from the tools' own repositories; `tool-nightly.yml` and `tool-launch.yml` have not had their first run yet.
 - **After 24 December:** check that style.eurth.org/schemas/eurth-profile-1.json has appeared on the nightly run.
 - **After 25 December:** check that every site's footer has gained its GitHub link on the nightly run.
 
@@ -16,7 +16,9 @@ Three parts: what comes next, what each release added (newest first), and what's
 
 - **`eurth-smoke`:** the built site in real Chrome, served by `wrangler dev` under its real headers. It checks what unit tests can't: nothing blocked by the Content-Security-Policy, the theme before the first paint and from page to page, nothing stored, the service worker, every page offline, and real HTML without script. Every tool has it as `npm run smoke`, and the tools' CI runs it on `main`.
 - **The profile's schema at its address:** style.eurth.org/schemas/eurth-profile-1.json, in builds made after the last door has opened, so it arrives by itself on the nightly run.
-- **Proved:** a tool locked to 1.0.0 moves to the newest 1.x with the nightly run's update step.
+- **`eurth-axe` and hidden inputs:** an input kept out of sight is measured by its label, the thing that is actually pressed, so a file picker behind a button no longer counts as a 1 by 1 pixel target. Both browser checks are also more patient on a busy machine.
+- **The tools' CI only runs what the lock file installed:** `npx --no-install`, so a command is never fetched from the registry by name.
+- **Proved:** a tool locked to 1.0.0 moves to the newest 1.x with the nightly run's update step, also on a machine with no SSH keys; and the shared CI workflow runs from the tools' own repositories.
 
 ## 14 November 2026: 1.0.1
 

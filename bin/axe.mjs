@@ -72,6 +72,12 @@ try {
           // A hidden radio or checkbox takes the size of the option around it.
           const pill = el.closest('.eu-pill');
           if (pill && el.matches('input')) box = pill.getBoundingClientRect();
+          // An input kept out of sight (a file picker behind a button, a switch drawn by its
+          // label) is pressed through its label: that is what must be large enough.
+          else if (el.matches('input') && (el.classList.contains('eu-visually-hidden') || box.width <= 2 || box.height <= 2)) {
+            const label = el.labels?.[0];
+            if (label) box = label.getBoundingClientRect();
+          }
           const style = getComputedStyle(el);
           if (!box.width || !box.height || style.visibility === 'hidden' || el.closest('[hidden], dialog:not([open]), details:not([open]) > :not(summary)')) continue;
           if (box.width < 43.5 || box.height < 43.5) out.push(`${el.tagName.toLowerCase()}${el.className && typeof el.className === 'string' ? '.' + el.className.trim().split(/\s+/).join('.') : ''} "${(el.textContent ?? '').trim().slice(0, 40)}" is ${Math.round(box.width)} by ${Math.round(box.height)}`);
