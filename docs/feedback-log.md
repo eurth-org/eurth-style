@@ -7,5 +7,6 @@ Every numbered point from the reviews, and the release that did it. The releases
 | 1 | The theme choice carried in `window.name`, for the visit only | 1.0.0 |
 | 2 | Door order from the hub's board, with Cities fourth | 1.0.0 (`tools.json`) |
 | 3 | Seasonal yurts as SVG, shown on the docs site for approval first; the Discord files left alone | 1.0.0 (only Pride is switched on) |
+| 6 | The four other seasonal yurts switched on | 1.0.1 |
 | 4 | style.eurth.org deployed through CI, showing only tools that have launched | 1.0.0 |
 | 5 | Node 26 for building and in every CI workflow | 1.0.0 |

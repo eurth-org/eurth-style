@@ -1,6 +1,6 @@
 {
   "name": "@eurth/style",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "The shared look and shell of Eurth's worldbuilding tools: tokens, stylesheet, header, footer, Deluminator, sharing, offline and delights.",
   "type": "module",
   "license": "Apache-2.0",

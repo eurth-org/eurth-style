@@ -6,12 +6,15 @@ Three parts: what comes next, what each release added (newest first), and what's
 
 ## Next
 
-- **Seasonal yurts:** Valentine's Day, Earth Day, Halloween and December are drawn and shown on style.eurth.org, waiting for a yes. Each is switched on by adding it to `APPROVED` in `src/seasonal.js`.
 - **Pitches in `tools.json`:** the one-liners for doors 5 to 15 come from the mock-up boards and may be reworded by each tool's own brief before its door opens.
 - **Flagwright and Governmint on the shared shell:** both still carry their own header, footer and theme switch (and remember the theme in the browser). Moving them over needs Stijn's go-ahead.
 - **The profile's schema at its address:** serve `eurth-profile-1.json` from style.eurth.org/schemas/ once the last door has opened.
 - **A real-browser smoke test in CI:** `build/smoke.mjs` (theme from page to page, nothing stored, offline) runs by hand today against `wrangler dev`.
 - **After 25 December:** check that every site's footer has gained its GitHub link on the nightly run.
+
+## 14 November 2026: 1.0.1
+
+- **Seasonal yurts switched on:** Valentine's Day (1 to 14 February), Earth Day (16 to 22 April), Halloween (October) and December join Pride, so the header's yurt dresses for all five of the design kit's events.
 
 ## 14 November 2026: 1.0.0
 

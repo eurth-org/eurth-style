@@ -18,11 +18,11 @@ export const SEASONS = [
 ];
 
 /**
- * The seasons whose yurt is approved for use on the tools. The rest are drawn and shown on
- * style.eurth.org, and switch on here once Eurth's staff say yes.
+ * The seasons whose yurt is approved for use on the tools: all five, since 14 November 2026.
+ * A new one is drawn, shown on style.eurth.org, and added here once Eurth's staff say yes.
  * @type {Season[]}
  */
-export const APPROVED = ['pride'];
+export const APPROVED = ['valentines', 'earth-day', 'pride', 'halloween', 'december'];
 
 /**
  * The season a date falls in, if any.

@@ -171,9 +171,11 @@ describe('the seasonal yurt', () => {
     expect([on('2026-10-31'), on('2026-11-14'), on('2026-12-01'), on('2026-12-31'), on('2027-01-01')]).toEqual(['halloween', null, 'december', 'december', null]);
   });
 
-  it('shows only approved yurts on the tools', () => {
-    expect(seasonOf(new Date('2027-06-10'))).toBe(APPROVED.includes('pride') ? 'pride' : null);
-    expect(seasonOf(new Date('2026-12-10'))).toBe(APPROVED.includes('december') ? 'december' : null);
+  it('shows only approved yurts on the tools, and all five are', () => {
+    expect([...APPROVED].sort()).toEqual(['december', 'earth-day', 'halloween', 'pride', 'valentines']);
+    expect(seasonOf(new Date('2027-06-10'))).toBe('pride');
+    expect(seasonOf(new Date('2026-12-10'))).toBe('december');
+    expect(seasonOf(new Date('2026-11-14'))).toBeNull();
   });
 
   it("never changes the yurt's own shape", () => {
