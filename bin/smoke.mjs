@@ -106,7 +106,8 @@ try {
     const response = await page.goto(new URL(href, base).href, { waitUntil: 'load' }).catch(() => null);
     check(!!response && (await page.locator('h1').count()) === 1, `${href} opens without signal`);
   }
-  check(await page.locator('.eu-offline').isVisible().catch(() => false), 'the offline note shows');
+  // The note arrives once the page has idled: wait for it rather than look once.
+  check(await page.locator('.eu-offline').waitFor({ state: 'visible', timeout: 20_000 }).then(() => true, () => false), 'the offline note shows');
   await context.setOffline(false);
 
   check(noise.filter((n) => !/ERR_INTERNET_DISCONNECTED|Failed to load resource/.test(n)).length === 0, `no errors in the console, nothing blocked by the Content-Security-Policy${noise.length ? `: ${noise.join(' | ')}` : ''}`);
