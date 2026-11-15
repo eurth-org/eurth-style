@@ -6,7 +6,7 @@
     { "id": "news", "kind": "site", "name": "Newsroom", "url": "https://news.eurth.org", "pitch": "News from across the wurld", "launch": "2026-09-28T00:00:00+02:00" },
     { "id": "gov", "kind": "tool", "name": "Governmint", "url": "https://gov.eurth.org", "pitch": "Mint a government and see what you made", "launch": "2026-10-29T00:00:00+01:00" },
     { "id": "flag", "kind": "tool", "name": "Flagwright", "url": "https://flag.eurth.org", "pitch": "Flags made to fly", "launch": "2026-11-12T00:00:00+01:00" },
-    { "id": "tools", "kind": "hub", "name": "Tools", "url": "https://tools.eurth.org", "pitch": "Free worldbuilding tools", "launch": "2026-12-09T00:00:00+01:00" },
+    { "id": "tools", "kind": "hub", "name": "Tools", "url": "https://tools.eurth.org", "pitch": "Free worldbuilding tools", "launch": "2026-11-15T00:00:00+01:00" },
     { "id": "arms", "kind": "tool", "name": "Arms", "url": "https://arms.eurth.org", "pitch": "Coats of arms that follow the rules", "launch": "2026-12-10T00:00:00+01:00", "door": 1},
     { "id": "seats", "kind": "tool", "name": "Seats", "url": "https://seats.eurth.org", "pitch": "Turn votes into seats", "launch": "2026-12-11T00:00:00+01:00", "door": 2},
     { "id": "names", "kind": "tool", "name": "Names", "url": "https://names.eurth.org", "pitch": "One naming language per nation", "launch": "2026-12-12T00:00:00+01:00", "door": 3},

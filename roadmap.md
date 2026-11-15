@@ -13,6 +13,10 @@ Three parts: what comes next, what each release added (newest first), and what's
 - **What older versions left in the browser:** Flagwright and Governmint used to keep the theme and saved designs in localStorage. Those entries stay on returning visitors' devices, unread; removing them means touching localStorage once more, which is Stijn's call.
 - **After 25 December:** check that every site's footer has gained its GitHub link on the nightly run.
 
+## 15 November 2026: 1.2.1
+
+- **The hub is live early:** tools.eurth.org opened on 15 November 2026 on Stijn's word, with every door still locked, so its launch in `tools.json` moves from 9 December to 15 November. Every tool's header and footer gain the "All tools" link on their next nightly run, and the handbook on style.eurth.org now shows its Launch section. The fifteen doors keep their dates, 10 to 24 December.
+
 ## 15 November 2026: 1.2.0
 
 Found while moving Governmint onto the shared shell.

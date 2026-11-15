@@ -46,8 +46,8 @@ describe('tools.json and the advent calendar', () => {
   it('shows only what has launched at build time', () => {
     const names = (at) => launchedTools(new Date(at)).map((tool) => tool.id);
     expect(names('2026-11-14T12:00:00+01:00')).toEqual(['map', 'news', 'gov', 'flag']);
-    expect(names('2026-12-08T23:59:59+01:00')).not.toContain('tools');
-    expect(names('2026-12-09T00:00:00+01:00')).toContain('tools');
+    expect(names('2026-11-14T23:59:59+01:00')).not.toContain('tools');
+    expect(names('2026-11-15T00:00:00+01:00')).toContain('tools');
     expect(names('2026-12-09T23:59:59+01:00')).not.toContain('arms');
     expect(names('2026-12-10T00:00:00+01:00')).toContain('arms');
     expect(names('2026-12-10T00:00:00+01:00')).not.toContain('seats');
