@@ -18,12 +18,14 @@ self.addEventListener('install', (event) => {
   );
 });
 
-// A new version clears out the old copies.
+// A new version clears out every other copy kept for this site: its own older versions, and
+// whatever a service worker from before the shared shell left behind under another name. The
+// one cache of the tool's current files is all that stays on the device.
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches
       .keys()
-      .then((keys) => Promise.all(keys.filter((k) => k.startsWith(`${NAME}-`) && k !== CACHE).map((k) => caches.delete(k))))
+      .then((keys) => Promise.all(keys.filter((k) => k !== CACHE).map((k) => caches.delete(k))))
       .then(() => self.clients.claim()),
   );
 });

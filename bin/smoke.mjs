@@ -29,13 +29,14 @@ if (!given) {
   base = `http://127.0.0.1:${port}`;
   served = spawn('npx', ['wrangler', 'dev', '--port', String(port), '--ip', '127.0.0.1', ...(config ? ['--config', config] : [])], { stdio: 'ignore', detached: true });
   let up = false;
-  for (let i = 0; i < 120 && !up; i++) {
+  // A cold start on a busy machine can take a couple of minutes.
+  for (let i = 0; i < 360 && !up; i++) {
     await new Promise((resolve) => setTimeout(resolve, 500));
     up = await fetch(base).then((response) => response.ok, () => false);
   }
   if (!up) {
     try { process.kill(-served.pid, 'SIGTERM'); } catch {}
-    console.error('eurth-smoke: "wrangler dev" did not start within a minute. Is the site built (npm run build)?');
+    console.error('eurth-smoke: "wrangler dev" did not start within three minutes. Is the site built (npm run build)?');
     process.exit(2);
   }
 }

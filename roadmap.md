@@ -12,6 +12,14 @@ Three parts: what comes next, what each release added (newest first), and what's
 - **After 24 December:** check that style.eurth.org/schemas/eurth-profile-1.json has appeared on the nightly run.
 - **After 25 December:** check that every site's footer has gained its GitHub link on the nightly run.
 
+## 15 November 2026: 1.1.1
+
+Found while moving Flagwright onto the shared shell.
+
+- **Old caches are cleared:** the service worker now removes every cache on the site but its current one, so what an older, differently named service worker kept (Flagwright's and Governmint's own, before the shared shell) no longer stays on returning visitors' devices.
+- **`eurth-smoke` waits longer for a cold start:** up to three minutes for `wrangler dev` on a busy machine.
+- **The web manifest's description** is the site's description as written, no longer the tagline and the description run together.
+
 ## 14 November 2026: 1.1.0
 
 - **`eurth-smoke`:** the built site in real Chrome, served by `wrangler dev` under its real headers. It checks what unit tests can't: nothing blocked by the Content-Security-Policy, the theme before the first paint and from page to page, nothing stored, the service worker, every page offline, and real HTML without script. Every tool has it as `npm run smoke`, and the tools' CI runs it on `main`.

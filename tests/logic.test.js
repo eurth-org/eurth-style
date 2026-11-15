@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { GITHUB_FROM, defineSite, everyTool, githubLinksAllowed, launchedTools, pageTitle, ref, unlaunchedTools, webApplication, breadcrumbs, definedTermSet } from '../src/build.js';
 import { decodeState, encodeState, stateLink } from '../src/link.js';
@@ -158,6 +159,19 @@ describe('sharing', () => {
 
   it('keeps a typed name from turning into Markdown', () => {
     expect(markdownText('*Orioni* [x](y)')).toBe('\\*Orioni\\* \\[x\\]\\(y\\)');
+  });
+});
+
+describe('the service worker', () => {
+  const worker = readFileSync(new URL('../src/offline/sw.js', import.meta.url), 'utf8');
+
+  it('keeps one cache and clears every other, whatever an older worker called it', () => {
+    expect(worker).toContain('keys.filter((k) => k !== CACHE)');
+    expect(worker).not.toContain('startsWith(`${NAME}-`) &&');
+  });
+
+  it('leaves the tool\'s own API alone', () => {
+    expect(worker).toContain("url.pathname.startsWith('/api/')");
   });
 });
 

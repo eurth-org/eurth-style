@@ -144,7 +144,7 @@ export function finishBuild(dist, site, options = {}) {
         {
           name: site.name,
           short_name: site.name,
-          description: `${site.tagline}: ${site.description}`,
+          description: site.description,
           lang: 'en-GB',
           start_url: '/',
           display: 'standalone',

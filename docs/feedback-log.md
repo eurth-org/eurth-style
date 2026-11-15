@@ -9,5 +9,6 @@ Every numbered point from the reviews, and the release that did it. The releases
 | 3 | Seasonal yurts as SVG, shown on the docs site for approval first; the Discord files left alone | 1.0.0 (only Pride is switched on) |
 | 6 | The four other seasonal yurts switched on | 1.0.1 |
 | 7 | Carry on with the roadmap: the smoke test in CI, the profile's schema at its address | 1.1.0 |
+| 8 | Flagwright and Governmint onto the shared shell | Under way, on a `shared-shell` branch in each; what it turned up in this package went into 1.1.1 |
 | 4 | style.eurth.org deployed through CI, showing only tools that have launched | 1.0.0 |
 | 5 | Node 26 for building and in every CI workflow | 1.0.0 |
