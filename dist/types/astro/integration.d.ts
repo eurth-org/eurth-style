@@ -1,7 +1,7 @@
 /** @typedef {import('../build.js').Site & { host: string }} Site */
 /**
  * @typedef {object} Options
- * @property {RegExp[]} [offlineSkip]  Files the service worker shouldn't keep up front (large galleries), matched against paths like "flags/be.svg".
+ * @property {RegExp[]} [offlineSkip]  Files the service worker shouldn't keep up front (large galleries), matched against paths like "flags/be.svg". They are kept once they have been fetched.
  * @property {string[]} [connect]      More sources the pages may fetch from, for the rare tool with a Worker elsewhere. Same-origin needs nothing.
  */
 /** Every file under a folder, as paths relative to it with forward slashes. @param {string} dir */
@@ -48,7 +48,7 @@ export type Site = import("../build.js").Site & {
 };
 export type Options = {
     /**
-     * Files the service worker shouldn't keep up front (large galleries), matched against paths like "flags/be.svg".
+     * Files the service worker shouldn't keep up front (large galleries), matched against paths like "flags/be.svg". They are kept once they have been fetched.
      */
     offlineSkip?: RegExp[] | undefined;
     /**

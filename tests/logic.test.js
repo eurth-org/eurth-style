@@ -1,4 +1,8 @@
-import { readFileSync } from 'node:fs';
+import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import { finishBuild } from '../src/astro/integration.js';
+import { ref as browserRef, wikipedia } from '../src/index.js';
 import { describe, expect, it } from 'vitest';
 import { GITHUB_FROM, defineSite, everyTool, githubLinksAllowed, launchedTools, pageTitle, ref, unlaunchedTools, webApplication, breadcrumbs, definedTermSet } from '../src/build.js';
 import { decodeState, encodeState, stateLink } from '../src/link.js';
@@ -88,6 +92,11 @@ describe('a site and its pages', () => {
     expect(ref('mailto:x@example.org', site.host)).toBe('mailto:x@example.org');
   });
 
+  it('offers the same helpers to browser code', () => {
+    expect(browserRef).toBe(ref);
+    expect(wikipedia('Nordic cross flag', site.host)).toBe('https://en.wikipedia.org/wiki/Nordic_cross_flag?ref=flag.eurth.org');
+  });
+
   it('describes itself to search engines', () => {
     expect(webApplication(site)).toMatchObject({ '@type': 'WebApplication', isAccessibleForFree: true, offers: { price: '0' } });
     expect(breadcrumbs(site, [{ name: 'Guide', path: '/guide/' }]).itemListElement.map((step) => step.item)).toEqual(['https://flag.eurth.org/', 'https://flag.eurth.org/guide/']);
@@ -172,6 +181,31 @@ describe('the service worker', () => {
 
   it('leaves the tool\'s own API alone', () => {
     expect(worker).toContain("url.pathname.startsWith('/api/')");
+  });
+
+  it('is written with what to keep now, and what to keep once fetched', () => {
+    const dist = mkdtempSync(join(tmpdir(), 'eurth-dist-'));
+    try {
+      mkdirSync(join(dist, 'flags'));
+      mkdirSync(join(dist, '_astro'));
+      writeFileSync(join(dist, 'index.html'), '<html><head><script>let a = 1;</script><script type="application/ld+json">{}</script></head></html>');
+      writeFileSync(join(dist, '_astro/app.abc123.js'), 'export {};');
+      writeFileSync(join(dist, 'flags/be.svg'), '<svg/>');
+      writeFileSync(join(dist, 'og.png'), '');
+      const result = finishBuild(dist, site, { offlineSkip: [/^flags\//] });
+      const built = readFileSync(join(dist, 'sw.js'), 'utf8');
+      expect(built).toContain('const NAME = "eurth-flag";');
+      expect(built).toContain('const APP = ["/_astro/app.abc123.js","/"');
+      expect(built).not.toContain('"/flags/be.svg"');
+      expect(built).not.toContain('"/og.png"');
+      expect(built).toContain('const LATER = ["^flags\\\\/"].map(');
+      expect(result).toMatchObject({ hashes: 1, kept: 3 });
+      expect(readFileSync(join(dist, '_headers'), 'utf8')).toMatch(/script-src 'self' 'sha256-[A-Za-z0-9+/=]+';/);
+      expect(JSON.parse(readFileSync(join(dist, 'manifest.webmanifest'), 'utf8'))).toMatchObject({ name: 'Flagwright', description: site.description, display: 'standalone' });
+      expect(readFileSync(join(dist, 'robots.txt'), 'utf8')).toContain('Sitemap: https://flag.eurth.org/sitemap-index.xml');
+    } finally {
+      rmSync(dist, { recursive: true, force: true });
+    }
   });
 });
 

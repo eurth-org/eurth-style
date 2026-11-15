@@ -31,7 +31,7 @@ import { THEME_COLOR } from '../generated.js';
 
 /**
  * @typedef {object} Options
- * @property {RegExp[]} [offlineSkip]  Files the service worker shouldn't keep up front (large galleries), matched against paths like "flags/be.svg".
+ * @property {RegExp[]} [offlineSkip]  Files the service worker shouldn't keep up front (large galleries), matched against paths like "flags/be.svg". They are kept once they have been fetched.
  * @property {string[]} [connect]      More sources the pages may fetch from, for the rare tool with a Worker elsewhere. Same-origin needs nothing.
  */
 
@@ -180,7 +180,8 @@ export function finishBuild(dist, site, options = {}) {
   const worker = readFileSync(new URL('../offline/sw.js', import.meta.url), 'utf8')
     .replace("'__NAME__'", JSON.stringify(`eurth-${site.id}`))
     .replace("'__VERSION__'", JSON.stringify(version.digest('hex').slice(0, 12)))
-    .replace('__APP__', JSON.stringify(urls));
+    .replace('__APP__', JSON.stringify(urls))
+    .replace('__LATER__', JSON.stringify((options.offlineSkip ?? []).map((pattern) => pattern.source)));
   write('sw.js', worker);
 
   const missing = ['favicon.ico', 'favicon.svg', 'apple-touch-icon.png', 'icon-192.png', 'icon-512.png', 'og.png'].filter((name) => !has(name));

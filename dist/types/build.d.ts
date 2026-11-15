@@ -25,15 +25,6 @@ export function defineSite(site: Site): Site & {
     host: string;
 };
 /**
- * Links to other websites carry ?ref=<our host>, so the sites we link to can see where their
- * visitors came from. Links within the site, and anything that isn't https, stay as they are.
- * @param {string} href
- * @param {string} host the linking site's host: site.host
- */
-export function ref(href: string, host: string): string;
-/** A Wikipedia article's address, from its title. @param {string} title @param {string} host */
-export function wikipedia(title: string, host: string): string;
-/**
  * A page's <title>: the start page carries the site's own; every other page its name, then the site's.
  * @param {Site} site @param {string} path @param {string} [title]
  */
@@ -293,3 +284,4 @@ export type Site = {
      */
     llms?: string | undefined;
 };
+export { ref, wikipedia } from "./ref.js";

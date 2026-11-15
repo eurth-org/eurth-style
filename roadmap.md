@@ -10,7 +10,19 @@ Three parts: what comes next, what each release added (newest first), and what's
 - **Flagwright and Governmint on the shared shell:** both still carry their own header, footer and theme switch (and remember the theme in the browser). Moving them over needs Stijn's go-ahead.
 - **The nightly and launch workflows, run for real:** `tool-ci.yml` runs from the tools' own repositories; `tool-nightly.yml` and `tool-launch.yml` have not had their first run yet.
 - **After 24 December:** check that style.eurth.org/schemas/eurth-profile-1.json has appeared on the nightly run.
+- **What older versions left in the browser:** Flagwright and Governmint used to keep the theme and saved designs in localStorage. Those entries stay on returning visitors' devices, unread; removing them means touching localStorage once more, which is Stijn's call.
 - **After 25 December:** check that every site's footer has gained its GitHub link on the nightly run.
+
+## 15 November 2026: 1.2.0
+
+Found while moving Governmint onto the shared shell.
+
+- **Kept once fetched:** files left out of the first download with `offlineSkip` (a gallery of flags, say) are now kept from the moment they are first shown, so they are there offline afterwards.
+- **`ShareButtons` tells you when Share is opened:** an `onshare` callback, beside `oncopy`.
+- **`ref()` and `wikipedia()` for browser code:** exported from `@eurth/style` as well as `@eurth/style/build`.
+- **`eurth-smoke` and one-page tools:** the start page is always opened offline, also when a tool has no pages of its own in the header.
+- **`eurth-axe` and inputs that aren't drawn:** an input that is `display: none`, or whose label is itself kept out of sight, is no longer measured as a target.
+- **The starter checks its Svelte components' types:** `npm run check` is `astro check && svelte-check`.
 
 ## 15 November 2026: 1.1.1
 

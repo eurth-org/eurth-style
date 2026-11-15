@@ -26,6 +26,7 @@
     heading = 'Share',
     said = {},
     oncopy,
+    onshare,
   }: {
     /** The link that brings the result back, whole. */
     url: string;
@@ -45,6 +46,8 @@
     said?: Partial<Record<What | 'failed', string>>;
     /** Called after something is copied: the place for a tool's signature touch. */
     oncopy?: (what: What) => void;
+    /** Called when the Share dialog is opened. */
+    onshare?: () => void;
   } = $props();
 
   let sharing = $state(false);
@@ -99,6 +102,6 @@
       {copied === 'description' ? 'Copied' : 'Copy description'}
     </button>
   {/if}
-  <button type="button" class="eu-btn" data-click="swing-right" onclick={() => (sharing = true)}><Icon icon={faShareNodes} /> Share</button>
+  <button type="button" class="eu-btn" data-click="swing-right" onclick={() => ((sharing = true), onshare?.())}><Icon icon={faShareNodes} /> Share</button>
 </div>
 <ShareDialog bind:open={sharing} {url} {title} {text} {forumBody} {heading} oncopy={() => oncopy?.('link')} />

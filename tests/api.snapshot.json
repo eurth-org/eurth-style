@@ -60,6 +60,7 @@
       "onPrefs",
       "paperPlane",
       "playTones",
+      "ref",
       "resolveColors",
       "seasonOf",
       "seasonalYurt",
@@ -73,7 +74,8 @@
       "stateToLocation",
       "svgToPicture",
       "toast",
-      "watchInstall"
+      "watchInstall",
+      "wikipedia"
     ],
     "build": [
       "EURTH",
@@ -160,6 +162,7 @@
       "forumBody",
       "heading",
       "oncopy",
+      "onshare",
       "picture",
       "said",
       "text",

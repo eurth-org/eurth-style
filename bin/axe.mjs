@@ -75,8 +75,12 @@ try {
           // An input kept out of sight (a file picker behind a button, a switch drawn by its
           // label) is pressed through its label: that is what must be large enough.
           else if (el.matches('input') && (el.classList.contains('eu-visually-hidden') || box.width <= 2 || box.height <= 2)) {
+            // Not drawn at all (display: none): nothing to press, so nothing to measure.
+            if (!el.getClientRects().length) continue;
             const label = el.labels?.[0];
             if (label) box = label.getBoundingClientRect();
+            // A label that is itself kept out of sight only names the input for screen readers.
+            if (label && (box.width <= 2 || box.height <= 2)) continue;
           }
           const style = getComputedStyle(el);
           if (!box.width || !box.height || style.visibility === 'hidden' || el.closest('[hidden], dialog:not([open]), details:not([open]) > :not(summary)')) continue;

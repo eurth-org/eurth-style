@@ -13,5 +13,6 @@ export { SEASONS, APPROVED, seasonOf, seasonalYurt } from './seasonal.js';
 export { contrast, luminance, resolveColors, checkPairs, PAIRS, TEXT, LARGE_TEXT, NOT_TEXT } from './contrast.js';
 export { encodeState, decodeState, stateLink, stateFromLocation, stateToLocation } from './link.js';
 export { download, fileSlug, svgToPicture } from './download.js';
+export { ref, wikipedia } from './ref.js';
 export { startShell } from './shell.js';
 export { THEME_COLOR, VERSION } from './generated.js';

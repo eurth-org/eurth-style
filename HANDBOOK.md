@@ -80,7 +80,7 @@ The shell comes from `@eurth/style` and is **never rebuilt per tool**. A page is
 - Big designs also save and load as the nation's **profile file** (below). **"Save" never means browser storage.**
 - The service worker's cache of the app's own files is the only thing kept on a device.
 - **Security headers** as Flagwright's: a strict Content-Security-Policy with script hashes, `frame-ancestors` allowing eurth.org. `eurth(site)` writes them and the tests check them. No inline event handlers, no `eval`, no scripts or styles from elsewhere.
-- Outbound links carry `?ref=<this tool's host>` (`ref()` from `@eurth/style/build`) and open in a new tab; the shell marks them for screen readers. Links between Eurth tools stay in the same tab (`data-same-tab`).
+- Outbound links carry `?ref=<this tool's host>` (`ref()`, from `@eurth/style/build` at build time and from `@eurth/style` in browser code) and open in a new tab; the shell marks them for screen readers. Links between Eurth tools stay in the same tab (`data-same-tab`).
 
 ## Accessibility: WCAG 2.2 AAA wherever it can be met
 
@@ -104,11 +104,11 @@ The shell comes from `@eurth/style` and is **never rebuilt per tool**. A page is
 
 - An **Open Graph image**, 1200 x 630 PNG with alt text, for every page, plus `twitter:card` `summary_large_image`. `/og.png` and `site.ogAlt` are the default; a page may pass its own `ogImage` and `ogAlt`. `sharingImage()` from `@eurth/style/images` gives the suite's layout.
 - **Image downloads** where a tool makes a picture (`PICTURE_SIZES`): link preview 1200 x 630, square 1080 x 1080, portrait 1080 x 1350, story 1080 x 1920, pin 1000 x 1500, wide 1600 x 900; SVG, PNG and WebP where it fits. `svgToPicture()` and `download()` do the work.
-- **The share row** (`ShareButtons.svelte`): Copy link (with the paper plane), Copy picture, Copy description, and Share, which opens the dialog (`ShareDialog.svelte`): Eurth forum (new topic, pre-filled), Reddit, Bluesky, X, Facebook, LinkedIn, Tumblr, WhatsApp, Telegram, Email, and the device's share sheet. **Plain links only**: no share scripts, no embeds.
+- **The share row** (`ShareButtons.svelte`): Copy link (with the paper plane), Copy picture, Copy description, and Share, which opens the dialog (`ShareDialog.svelte`; `oncopy` and `onshare` tell the tool when either happens): Eurth forum (new topic, pre-filled), Reddit, Bluesky, X, Facebook, LinkedIn, Tumblr, WhatsApp, Telegram, Email, and the device's share sheet. **Plain links only**: no share scripts, no embeds.
 
 ## Offline and install
 
-- **Service worker** as Flagwright's: content-hashed files cache-first, pages network-first with the cached copy as fallback, old versions cleared. The build writes it; the shell registers it. Large galleries can be left out of the first download with `eurth(site, { offlineSkip: [/^flags\//] })`.
+- **Service worker** as Flagwright's: content-hashed files cache-first, pages network-first with the cached copy as fallback, old versions cleared. The build writes it; the shell registers it. Large galleries can be left out of the first download with `eurth(site, { offlineSkip: [/^flags\//] })`; such a file is kept once it has been shown.
 - **Web manifest**: name, 192 and 512px icons (one maskable), the theme and background colours, display standalone; each page carries the light and Night theme colours. `npm run images` makes the icons.
 - **Install button** where the browser offers it, and a short how-to for iPhone (Add to Home Screen): `InstallButton.svelte`, already in the footer.
 - **Offline note**: "No signal: <Tool> keeps working from the copy on this device." and "Back online." Already in `Page`.
@@ -170,7 +170,7 @@ Tools launch through Eurth's advent calendar: 10 to 24 December 2026, one door a
 | Pages | A page without exactly one `h1`, its own title and description, a canonical link, a 1200 x 630 sharing image with alt text, or structured data; a missing icon, manifest, sitemap, `robots.txt`, `llms.txt` or service worker. |
 | Launch | `LAUNCH_AT` missing, malformed, or different from `tools.json`. |
 
-Besides these: `npm run check` (types), your own tests of the tool's logic (links read back safely, the description, the picture), `npm run axe`, `npm run smoke`, and Lighthouse in CI.
+Besides these: `npm run check` (types: `astro check` for pages and `svelte-check` for components), your own tests of the tool's logic (links read back safely, the description, the picture), `npm run axe`, `npm run smoke`, and Lighthouse in CI.
 
 `npm run smoke` (`npx eurth-smoke`) serves the built site with `wrangler dev` and opens it in real Chrome: nothing blocked by the Content-Security-Policy, the theme set before the first paint and carried from page to page, nothing stored, the service worker installed, every page open again without signal, and real HTML without script.
 

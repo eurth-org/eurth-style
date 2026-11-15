@@ -67,7 +67,8 @@ try {
   check((await theme()) === 'light', 'a first visit follows the device (light)');
   check((await page.evaluate(() => window.name)) === '', 'a first visit leaves window.name empty');
 
-  const pages = await page.evaluate(() => [...document.querySelectorAll('.eu-nav a')].map((a) => a.getAttribute('href')));
+  // A one-page tool has no navigation of its own: the start page is always in.
+  const pages = [...new Set(['/', ...(await page.evaluate(() => [...document.querySelectorAll('.eu-nav a')].map((a) => a.getAttribute('href'))))])];
   const sw = await page.evaluate(() => Promise.race([navigator.serviceWorker.ready.then(() => true), new Promise((r) => setTimeout(() => r(false), 60000))]));
   check(sw, 'the service worker installs');
 

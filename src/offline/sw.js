@@ -7,6 +7,8 @@
 const NAME = '__NAME__';
 const VERSION = '__VERSION__';
 const APP = __APP__;
+// Files left out of the first download (large galleries): kept once they have been shown.
+const LATER = __LATER__.map((source) => new RegExp(source));
 const CACHE = `${NAME}-${VERSION}`;
 
 self.addEventListener('install', (event) => {
@@ -44,6 +46,19 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Everything else: the kept copy first (file names carry a hash of their contents).
-  event.respondWith(caches.match(request, { ignoreSearch: true }).then((kept) => kept || fetch(request)));
+  // Everything else: the kept copy first (file names carry a hash of their contents). A file
+  // that was left out of the first download is kept from the moment it is first fetched.
+  event.respondWith(
+    caches.match(request, { ignoreSearch: true }).then(
+      (kept) =>
+        kept ||
+        fetch(request).then((response) => {
+          if (response.ok && LATER.some((pattern) => pattern.test(url.pathname.slice(1)))) {
+            const copy = response.clone();
+            caches.open(CACHE).then((cache) => cache.put(request, copy));
+          }
+          return response;
+        }),
+    ),
+  );
 });
