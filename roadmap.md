@@ -15,7 +15,7 @@ Three parts: what comes next, what each release added (newest first), and what's
 
 ## 15 November 2026: 1.2.1
 
-- **The hub is live early:** tools.eurth.org opened on 15 November 2026 on Stijn's word, with every door still locked, so its launch in `tools.json` moves from 9 December to 15 November. Every tool's header and footer gain the "All tools" link on their next nightly run, and the handbook on style.eurth.org now shows its Launch section. The fifteen doors keep their dates, 10 to 24 December.
+- **The hub is live early:** tools.eurth.org opened on 15 November 2026 on Stijn's word, with every door still locked, so its launch in `tools.json` moves from 9 December to 15 November. Every site on the shared shell gains the "All tools" link in its header and footer the next time it is built: style.eurth.org has it, and Flagwright and Governmint get it when they move onto the shell (see Next). The handbook on style.eurth.org now shows its Launch section. The fifteen doors keep their dates, 10 to 24 December.
 
 ## 15 November 2026: 1.2.0
 
