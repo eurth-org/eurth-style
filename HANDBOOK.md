@@ -105,7 +105,7 @@ The shell comes from `@eurth/style` and is **never rebuilt per tool**. A page is
 - An **Open Graph image**, 1200 x 630 PNG with alt text, for every page, plus `twitter:card` `summary_large_image`. `/og.png` and `site.ogAlt` are the default; a page may pass its own `ogImage` and `ogAlt`. `sharingImage()` from `@eurth/style/images` gives the suite's layout.
 - **Image downloads** where a tool makes a picture (`PICTURE_SIZES`): link preview 1200 x 630, square 1080 x 1080, portrait 1080 x 1350, story 1080 x 1920, pin 1000 x 1500, wide 1600 x 900; SVG, PNG and WebP where it fits. `svgToPicture()` and `download()` do the work.
   - **Name a picture for what the browser made, not for what you asked for**: `pictureFilename(name, picture, asked)`. A browser that can't make WebP (Safari) hands back a PNG without saying so, and a PNG called `.webp` opens in some programs and not in others. The helper gives the `filename` with the right ending and, when that isn't what was asked for, a `note` to show with `toast()`:
-    ```
+    ```js
     const picture = await svgToPicture(svg, { width, height, type: 'image/webp' });
     const file = pictureFilename(`${fileSlug(nation)}-flag`, picture, 'image/webp');
     download(picture, file.filename);

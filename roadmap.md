@@ -14,6 +14,12 @@ Three parts: what comes next, what each release added (newest first), and what's
 - **Flagwright and Passport onto `pictureFilename()`:** Flagwright's WebP button still saves a PNG called `.webp` in Safari (`savePicture` in its maker); Passport carries its own copy of the fix (`src/passport/files.ts`), to be replaced by the shared helper. Any other tool with a WebP button does the same.
 - **After 25 December:** check that every site's footer has gained its GitHub link on the nightly run.
 
+## 16 November 2026: the docs site, no release
+
+Nothing a tool builds with has changed (the handbook's example gained its `js` tag), so the version stays 1.3.0.
+
+- **Highlighted code reaches 7:1 on style.eurth.org:** the handbook's code examples took their colours from the highlighter's ready-made dark theme, in both themes, and its JavaScript colours reached about 5.5:1, so `eurth-axe` failed on any example tagged `js`. The docs site now colours code with the suite's own text tokens (`--ink`, `--ink-muted`, `--accent-text`, `--success-text`, `--caution-text`) on `--surface-raised`, so it follows the theme and is held to 7:1 by the contrast test. The `pictureFilename()` example in the handbook is tagged `js` again, which keeps the check in CI. No tool renders highlighted code yet; one that does needs the same two steps (`markdown.shikiConfig.theme: 'css-variables'` and the colours in `site/src/pages/handbook.astro`), and that is the moment to move them into `eurth(site)` and `eurth.css`.
+
 ## 16 November 2026: 1.3.0
 
 Found while checking Passport in Safari.
