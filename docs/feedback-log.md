@@ -24,5 +24,10 @@ Every numbered point from the reviews, and the release that did it. The releases
 | 20 | Settings grouped into sections: a shared ground, a bigger title with an icon, a number where it helps | 1.5.0 (`eu-card-title`, `eu-step`, `eu-count`, a handbook rule, the starter; each tool still has its own maker to do) |
 | 21 | In-line links missing a space here and there, in Flagwright's footer and other tools | 1.5.0 (`compressHTML: true` in the integration, and a check in the Pages suite) |
 | 22 | Footer bar icons differ between tools | 1.5.0 (they are set once in the shell since 1.4.0; the sites were on different versions) |
+| 23 | The reworked Governmint is unacceptable: its perfected design, sticky navigation included, must never be replaced by a lesser one | 1.6.0 gives a live tool the means to keep its design (`scrollLine: false`, `eurth.axe`) and the handbook the rule; the restoring itself is on Governmint's branch |
+| 24 | Header: the active pill white with a white outline and eurth-blue text; the others eurth-blue with a white outline and white text | 1.6.0 |
+| 25 | The Markdown button uses the correct Markdown icon | 1.6.0 (`faMarkdown`) |
+| 26 | Split the buttons for copying and for saving | 1.6.0 (a handbook rule and the starter; each tool has its own to do) |
+| 27 | Active buttons are eurth-blue, everywhere | 1.6.0 (`--selected`, `--on-selected`) |
 | 4 | style.eurth.org deployed through CI, showing only tools that have launched | 1.0.0 |
 | 5 | Node 26 for building and in every CI workflow | 1.0.0 |

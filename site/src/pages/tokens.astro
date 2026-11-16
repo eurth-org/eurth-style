@@ -10,8 +10,8 @@ const light = resolveColors(tokens, 'light');
 const dark = resolveColors(tokens, 'dark');
 const pairs = checkPairs(tokens);
 const rows = pairs.filter((pair) => pair.theme === 'light').map((pair) => ({ ...pair, dark: pairs.find((other) => other.theme === 'dark' && other.fg === pair.fg && other.bg === pair.bg)! }));
-const brand = (row: { fg: string; bg: string }) => [row.fg, row.bg].sort().join() === 'accent-fill,on-accent';
-const need = (row: { fg: string; bg: string; min: number }) => (brand(row) ? 'Brand pair, 19px bold' : row.min === 7 ? 'Text' : row.min === 4.5 ? 'Large text' : 'Not text');
+const brand = (row: { fg: string; bg: string }) => ['accent-fill,on-accent', 'on-selected,selected'].includes([row.fg, row.bg].sort().join());
+const need = (row: { fg: string; bg: string; min: number }) => (brand(row) ? 'Brand pair' : row.min === 7 ? 'Text' : row.min === 4.5 ? 'Large text' : 'Not text');
 const styles = tokens.type.groups.flatMap((group) => group.styles.map((style) => ({ ...style, family: (style as { family?: string }).family ?? group.family })));
 const scales = [
   { name: 'Spacing', list: tokens.spacing.tokens },
@@ -29,7 +29,7 @@ const scales = [
 
     <section class="eu-stack" aria-labelledby="contrast">
       <h2 id="contrast">Contrast, tested in both themes</h2>
-      <p>Text reaches 7:1 (WCAG AAA); large text, 19px bold and up, 4.5:1; borders, rings and marks 3:1. The one exception is the brand's: white with eurth-blue, as eurth.org pairs them, is 3.2:1, so it is only used at 19px bold and up (WCAG AA for large text). A change to a token that breaks a pair fails the build.</p>
+      <p>Text reaches 7:1 (WCAG AAA); large text, 19px bold and up, 4.5:1; borders, rings and marks 3:1. The one exception is the brand's: white with eurth-blue, as eurth.org pairs them, is 3.2:1. In the blue bars and on primary buttons it is set at 19px bold (WCAG AA for large text); on a chosen option the label is smaller, which falls short of AA and is kept on purpose, with a tick beside it. A change to a token that breaks a pair fails the build.</p>
       <div class="eu-scroll eu-prose wide">
         <table>
           <thead><tr><th scope="col">Foreground on background</th><th scope="col">Needs</th><th scope="col">Light</th><th scope="col">Night</th></tr></thead>

@@ -12,7 +12,8 @@
    *   - only tokens and eu- classes: no colour, font or spacing of its own.
    * The tool's own actions (Random, Start again) sit in its own toolbar, not in the header.
    */
-  import { faCheck, faFeatherPointed, faRotateLeft, faScaleBalanced } from '@fortawesome/free-solid-svg-icons';
+  import { faMarkdown } from '@fortawesome/free-brands-svg-icons';
+  import { faCheck, faCopy, faFeatherPointed, faFloppyDisk, faRotateLeft, faScaleBalanced } from '@fortawesome/free-solid-svg-icons';
   import { createProfile, getSection, setNation, type EurthProfile } from '@eurth/profile';
   import ProfileButtons from '@eurth/profile/ProfileButtons.svelte';
   import { download, fileSlug, niceWatcher, playTones, stateFromLocation, stateLink, stateToLocation, svgToPicture, toast } from '@eurth/style';
@@ -137,38 +138,42 @@
     <img class="plate" src={picture} alt={description} width="1200" height="630" />
     <p class="eu-muted" aria-hidden="true">{description}</p>
 
-    <ShareButtons
-      url={link}
-      {title}
-      text={`${description} Made with ${siteName}.`}
-      description={() => description}
-      markdown={() => markdown(plate, link)}
-      picture={() => svgToPicture(svg, { width: 1200, height: 630 })}
-      heading={plate.nation ? `Share ${plate.nation}` : 'Share your plate'}
-      said={{ link: 'Link copied: the plate is in it.' }}
-      oncopy={chime}
-    />
+    <!-- Copying and saving are two things, so they are two groups, each under its own heading. -->
+    <section class="eu-card" aria-labelledby="copy-title">
+      <h3 class="eu-card-title" id="copy-title"><Icon icon={faCopy} /> Copy and share</h3>
+      <ShareButtons
+        url={link}
+        {title}
+        text={`${description} Made with ${siteName}.`}
+        description={() => description}
+        markdown={() => markdown(plate, link)}
+        picture={() => svgToPicture(svg, { width: 1200, height: 630 })}
+        heading={plate.nation ? `Share ${plate.nation}` : 'Share your plate'}
+        said={{ link: 'Link copied: the plate is in it.' }}
+        oncopy={chime}
+      />
+      <p class="eu-help">The link holds the whole plate: copying it is saving it.</p>
+    </section>
 
-    <div class="eu-row">
-      <button type="button" class="eu-btn" data-click="bounce" onclick={() => download(svg, `${fileSlug(plate.nation, 'plate')}-motto.svg`, 'image/svg+xml')}>
-        <Line icon={lineDownloadOutline} /> SVG
-      </button>
-      <button
-        type="button"
-        class="eu-btn"
-        data-click="bounce"
-        onclick={async () => download(await svgToPicture(svg, { width: 1200, height: 630 }), `${fileSlug(plate.nation, 'plate')}-motto.png`)}
-      >
-        <Line icon={lineDownloadOutline} /> PNG
-      </button>
-      <button type="button" class="eu-btn" data-click="bounce" onclick={() => download(markdown(plate, link), `${fileSlug(plate.nation, 'plate')}-motto.md`, 'text/markdown')}>
-        <Line icon={lineDownloadOutline} /> Markdown
-      </button>
-      <ProfileButtons profile={saved} onload={loaded} onerror={(errors) => toast(errors[0]?.message ?? "That file isn't a nation profile.")} />
-    </div>
-    <p class="eu-help">
-      The link holds the whole plate. The profile file carries your nation from one Eurth tool to the next; nothing is kept in this browser.
-    </p>
+    <section class="eu-card" aria-labelledby="save-title">
+      <h3 class="eu-card-title" id="save-title"><Icon icon={faFloppyDisk} /> Save as a file</h3>
+      <div class="eu-row">
+        <button type="button" class="eu-btn" data-click="bounce" onclick={() => download(svg, `${fileSlug(plate.nation, 'plate')}-motto.svg`, 'image/svg+xml')}>
+          <Line icon={lineDownloadOutline} /> SVG
+        </button>
+        <button type="button" class="eu-btn" data-click="bounce" onclick={async () => download(await svgToPicture(svg, { width: 1200, height: 630 }), `${fileSlug(plate.nation, 'plate')}-motto.png`)}>
+          <Line icon={lineDownloadOutline} /> PNG
+        </button>
+        <button type="button" class="eu-btn" data-click="bounce" onclick={() => download(markdown(plate, link), `${fileSlug(plate.nation, 'plate')}-motto.md`, 'text/markdown')}>
+          <Icon icon={faMarkdown} /> Markdown
+        </button>
+      </div>
+      <h4 class="eu-label">Your nation's profile</h4>
+      <div class="eu-row">
+        <ProfileButtons profile={saved} onload={loaded} onerror={(errors) => toast(errors[0]?.message ?? "That file isn't a nation profile.")} />
+      </div>
+      <p class="eu-help">The profile file carries your nation from one Eurth tool to the next. Nothing is kept in this browser.</p>
+    </section>
   </section>
 </div>
 

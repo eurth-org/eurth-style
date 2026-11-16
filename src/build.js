@@ -36,6 +36,7 @@ import catalogue from '../tools.json' with { type: 'json' };
  * @property {string} [category]   schema.org applicationCategory (default "DesignApplication").
  * @property {boolean} [sound]     The tool makes a sound somewhere: the footer then offers the sound switch.
  * @property {string} [llms]       Extra lines for llms.txt, as Markdown.
+ * @property {boolean} [scrollLine] false leaves out the suite's scroll line, for a tool that draws its own (Governmint's section bar).
  */
 
 /** From this moment pages may link to GitHub; before it, none does. */

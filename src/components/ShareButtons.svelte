@@ -11,9 +11,10 @@
    * `markdown` too: the forum and most wikis take it. Toasts can be reworded in the tool's own
    * voice.
    */
+  import { faMarkdown } from '@fortawesome/free-brands-svg-icons';
   import { faShareNodes } from '@fortawesome/free-solid-svg-icons';
   import { paperPlane, toast } from '../fun.js';
-  import { lineConfirm, lineHash, lineImage, lineLink, lineTextBox } from '../line.js';
+  import { lineConfirm, lineImage, lineLink, lineTextBox } from '../line.js';
   import { copyPicture, copyText } from '../share.js';
   import Icon from './Icon.svelte';
   import Line from './Line.svelte';
@@ -117,7 +118,7 @@
   {/if}
   {#if markdown}
     <button type="button" class="eu-btn" onclick={copyMarkdown}>
-      <Line icon={copied === 'markdown' ? lineConfirm : lineHash} />
+      {#if copied === 'markdown'}<Line icon={lineConfirm} />{:else}<Icon icon={faMarkdown} />{/if}
       {copied === 'markdown' ? 'Copied' : 'Copy Markdown'}
     </button>
   {/if}

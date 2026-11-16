@@ -9,21 +9,35 @@
 // every button, menu, field and navigation link must be at least 44 by 44 pixels (links inside
 // a sentence are exempt, as WCAG 2.5.5 allows). Any finding fails the run.
 //
-// One pair is let through the AAA contrast rule, and only that rule: white with eurth-blue, the
-// brand's pair, as large text (19px bold and up). It is 3.2:1, which is AA for large text; the
-// AA rule still runs, so the pair at any smaller size is a finding.
+// One pair is let through the contrast rules: white with eurth-blue, the brand's pair (3.2:1),
+// in the blue bars, on primary buttons and on chosen options. Every other pair is held to them.
+//
+// A tool that keeps a design of its own from before the suite (Governmint) may be held to
+// WCAG AA with 24px targets instead, on Stijn's word only, in its package.json:
+//   "eurth": { "axe": { "level": "aa", "targets": 24 } }
 import { AxeBuilder } from '@axe-core/playwright';
-import { createReadStream, existsSync, readdirSync, statSync } from 'node:fs';
+import { createReadStream, existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import { createServer } from 'node:http';
 import { extname, join, relative, sep } from 'node:path';
 import { chromium } from 'playwright-core';
 
 const dist = process.argv[2] ?? 'dist';
 const BRAND = ['#2698d4', '#ffffff'];
-/** The brand pair as large text, under the AAA rule. @param {import('axe-core').Result} violation @param {import('axe-core').NodeResult} node */
+/** The brand pair, under either contrast rule. @param {import('axe-core').Result} violation @param {import('axe-core').NodeResult} node */
 const brandPair = (violation, node) =>
-  violation.id === 'color-contrast-enhanced' &&
-  node.any.some(({ data }) => data && data.expectedContrastRatio === '4.5:1' && [data.fgColor, data.bgColor].sort().join() === BRAND.join());
+  (violation.id === 'color-contrast-enhanced' || violation.id === 'color-contrast') &&
+  node.any.some(({ data }) => data && [data.fgColor, data.bgColor].sort().join() === BRAND.join());
+
+// The tool's own settings, if it has any.
+let own = {};
+try {
+  own = JSON.parse(readFileSync('package.json', 'utf8')).eurth?.axe ?? {};
+} catch {
+  // No package.json here: the suite's rules, then.
+}
+const level = String(own.level ?? 'aaa').toLowerCase() === 'aa' ? 'aa' : 'aaa';
+const targets = Number.isFinite(own.targets) && own.targets >= 24 ? Number(own.targets) : 44;
+const tags = ['wcag2a', 'wcag2aa', ...(level === 'aaa' ? ['wcag2aaa'] : []), 'wcag21a', 'wcag21aa', 'wcag22aa', 'best-practice'];
 if (!existsSync(join(dist, 'index.html'))) {
   console.error(`eurth-axe: no built site in ${dist}/. Run "npm run build" first.`);
   process.exit(2);
@@ -66,7 +80,7 @@ try {
     for (const path of pages) {
       const page = await context.newPage();
       await page.goto(`http://127.0.0.1:${port}${path}`, { waitUntil: 'networkidle' });
-      const { violations } = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag2aaa', 'wcag21a', 'wcag21aa', 'wcag22aa', 'best-practice']).analyze();
+      const { violations } = await new AxeBuilder({ page }).withTags(tags).analyze();
       for (const violation of violations) {
         for (const node of violation.nodes) {
           if (brandPair(violation, node)) continue;
@@ -75,7 +89,7 @@ try {
         }
       }
       // Target size, at 44 by 44: everything pressable that isn't a link inside running text.
-      const small = await page.evaluate(() => {
+      const small = await page.evaluate((least) => {
         const out = [];
         for (const el of document.querySelectorAll('button, summary, select, textarea, input:not([type=hidden]), [role=button], a.eu-btn, a.eu-join, a.eu-card, nav a, .eu-menu-list a')) {
           let box = el.getBoundingClientRect();
@@ -94,13 +108,13 @@ try {
           }
           const style = getComputedStyle(el);
           if (!box.width || !box.height || style.visibility === 'hidden' || el.closest('[hidden], dialog:not([open]), details:not([open]) > :not(summary)')) continue;
-          if (box.width < 43.5 || box.height < 43.5) out.push(`${el.tagName.toLowerCase()}${el.className && typeof el.className === 'string' ? '.' + el.className.trim().split(/\s+/).join('.') : ''} "${(el.textContent ?? '').trim().slice(0, 40)}" is ${Math.round(box.width)} by ${Math.round(box.height)}`);
+          if (box.width < least - 0.5 || box.height < least - 0.5) out.push(`${el.tagName.toLowerCase()}${el.className && typeof el.className === 'string' ? '.' + el.className.trim().split(/\s+/).join('.') : ''} "${(el.textContent ?? '').trim().slice(0, 40)}" is ${Math.round(box.width)} by ${Math.round(box.height)}`);
         }
         return out;
-      });
+      }, targets);
       for (const line of small) {
         findings += 1;
-        console.error(`${scheme} ${path}: target smaller than 44 by 44 pixels\n    ${line}`);
+        console.error(`${scheme} ${path}: target smaller than ${targets} by ${targets} pixels\n    ${line}`);
       }
       await page.close();
     }
@@ -115,4 +129,4 @@ if (findings) {
   console.error(`\neurth-axe: ${findings} finding${findings === 1 ? '' : 's'} on ${pages.length} pages.`);
   process.exit(1);
 }
-console.log(`eurth-axe: ${pages.length} pages, light and dark: no findings.`);
+console.log(`eurth-axe: ${pages.length} pages, light and dark${level === 'aa' ? ', held to WCAG AA and ' + targets + 'px targets' : ''}: no findings.`);

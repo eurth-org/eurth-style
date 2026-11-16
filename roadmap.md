@@ -15,7 +15,17 @@ Three parts: what comes next, what each release added (newest first), and what's
 - **After 25 December:** check that every site's footer has gained its GitHub link on the nightly run.
 - **Every tool onto the 1.4.0 parts:** the blue bars, white labels and the centred footer arrive by themselves on the nightly run. Each tool still has to switch its own Random button to `RandomButton`, add Markdown to its share row and downloads, use line-md icons in its toolbar and results, and build its guide, glossary and templates pages from `PageHead`, `Figure` and the `eu-terms` and `eu-gallery` classes, with pictures. The starter shows each.
 - **Two line-md icons without a still drawing:** `lineMoonRisingFilledAltLoop` and `lineMoonRisingTwotoneAltLoop` show nothing with reduced motion (their finished state can't be read from their animations). No part of the shell uses them; use `lineMoonRisingFilledLoop` instead until they are fixed.
-- **Night's chosen options:** at Night a chosen option is light blue with a night label (`--selected`, 8.1:1). It isn't eurth-blue, so 1.4.0 left it; say if it should follow the brand pair too.
+
+## 16 November 2026: 1.6.0
+
+Stijn's third round (feedback log, 23 to 27).
+
+- **The bars' pills, turned round:** a pill in the blue bars is eurth-blue with a white outline and a white label; the page you're on is the white pill with the eurth-blue label (it was filled with night). The Tools menu, the Deluminator and the foot's links follow.
+- **What is chosen is eurth-blue, everywhere:** `--selected` is eurth-blue and `--on-selected` white in both themes, for chosen options, pressed switches, step numbers and sliders, as on eurth.org and in Governmint. A label that size on eurth-blue is 3.2:1, short of WCAG AA; it is the brand's pair and kept on Stijn's word. `eurth-axe` lets that one pair through its contrast rules, and Lighthouse's own contrast audit is left out (it can't tell the pair from a mistake).
+- **Markdown's own mark:** Copy Markdown wears `faMarkdown`, and so does the starter's Markdown download.
+- **Copying and saving, apart:** the handbook asks for two groups under their own headings, "Copy and share" and "Save as a file", and the starter's result side is built that way.
+- **A live tool keeps its own design:** the handbook now says so, after the Governmint branch was restyled to the suite's rules and should not have been. For such a tool: `scrollLine: false` in `defineSite()` leaves out the suite's scroll line, and `"eurth": { "axe": { "level": "aa", "targets": 24 } }` in its `package.json` holds it to WCAG AA and 24px targets. Both on Stijn's word only.
+- **`RandomButton` as a dice:** `iconOnly` and `class`, for a Random that sits beside a field.
 
 ## 16 November 2026: 1.5.0
 

@@ -1427,6 +1427,7 @@
     ],
     "RandomButton.svelte": [
       "guard",
+      "iconOnly",
       "label",
       "onrandom",
       "what"

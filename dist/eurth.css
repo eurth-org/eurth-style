@@ -1,4 +1,4 @@
-/*! @eurth/style 1.5.0 — built from tokens.json by build/build.mjs. Don't edit: change tokens.json or src/css. */
+/*! @eurth/style 1.6.0 — built from tokens.json by build/build.mjs. Don't edit: change tokens.json or src/css. */
 
 /* Tokens. Light is the default; the head script sets data-theme before the first paint, and
    without script the page follows the device. data-theme also works on any element. */
@@ -71,8 +71,8 @@
   --on-accent: #ffffff;
   --on-accent-small: var(--night);
   --accent-text: #12577b;
-  --selected: var(--accent-text);
-  --on-selected: var(--surface);
+  --selected: var(--eurth-blue);
+  --on-selected: #ffffff;
   --focus-ring: var(--accent-text);
   --highlight: #ffff4d;
   --on-highlight: var(--charcoal);
@@ -121,8 +121,8 @@
   --on-accent: #ffffff;
   --on-accent-small: var(--night);
   --accent-text: #80c8e5;
-  --selected: var(--accent-text);
-  --on-selected: var(--surface);
+  --selected: var(--eurth-blue);
+  --on-selected: #ffffff;
   --focus-ring: var(--accent-text);
   --highlight: #f2f481;
   --on-highlight: var(--night);
@@ -172,8 +172,8 @@
     --on-accent: #ffffff;
     --on-accent-small: var(--night);
     --accent-text: #80c8e5;
-    --selected: var(--accent-text);
-    --on-selected: var(--surface);
+    --selected: var(--eurth-blue);
+    --on-selected: #ffffff;
     --focus-ring: var(--accent-text);
     --highlight: #f2f481;
     --on-highlight: var(--night);
@@ -899,9 +899,10 @@ a.eu-card:hover {
   gap: var(--space-2) var(--space-4);
 }
 
-/* The blue bars, as on eurth.org: eurth-blue with white pills, at the top of every page (the
-   tool's pages, the Tools menu, the Deluminator) and at its foot (the rest of Eurth). White and
-   eurth-blue are 3.2:1 together, so every label here is 19px bold: large text. */
+/* The blue bars, as on eurth.org: eurth-blue, at the top of every page (the tool's pages, the
+   Tools menu, the Deluminator) and at its foot (the rest of Eurth). A pill is eurth-blue with a
+   white outline and a white label; the page you're on is the white pill with the eurth-blue
+   label. White and eurth-blue are 3.2:1 together, so every label here is 19px bold: large text. */
 .eu-topbar,
 .eu-bottombar {
   background: var(--accent-fill);
@@ -932,9 +933,10 @@ a.eu-card:hover {
   min-width: var(--size-target);
   min-height: var(--size-target);
   padding: 0 var(--space-3);
+  border: 2px solid var(--on-accent);
   border-radius: var(--radius-md);
-  background: var(--on-accent);
-  color: var(--accent-fill);
+  background: var(--accent-fill);
+  color: var(--on-accent);
   font: var(--type-pill);
   text-decoration: none;
   white-space: nowrap;
@@ -943,16 +945,17 @@ a.eu-card:hover {
 }
 
 .eu-barlink:hover {
-  color: var(--accent-fill);
+  color: var(--on-accent);
   text-decoration: underline;
   text-underline-offset: 3px;
   transform: translateY(-1px);
 }
 
-/* The page you're on: filled with night, so it differs in lightness and not only in colour. */
-.eu-barlink[aria-current='page'] {
-  background: var(--night);
-  color: var(--on-accent);
+/* The page you're on: the white pill, so it differs in lightness and not only in colour. */
+.eu-barlink[aria-current='page'],
+.eu-barlink[aria-current='page']:hover {
+  background: var(--on-accent);
+  color: var(--accent-fill);
 }
 
 /* The focus ring is white here: the usual blue would be lost on the bar. */
@@ -961,12 +964,12 @@ a.eu-card:hover {
   outline-color: var(--on-accent);
 }
 
-/* The Deluminator, as one of the bar's white pills. */
+/* The Deluminator, as one of the bar's pills. */
 .eu-topbar .eu-btn,
 .eu-topbar .eu-btn:hover {
-  border-color: var(--on-accent);
-  background: var(--on-accent);
-  color: var(--accent-fill);
+  border: 2px solid var(--on-accent);
+  background: var(--accent-fill);
+  color: var(--on-accent);
 }
 
 /* The tool's own pages. */

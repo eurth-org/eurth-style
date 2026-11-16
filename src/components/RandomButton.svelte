@@ -32,6 +32,8 @@
     guard = true,
     what = 'design',
     label = 'Random',
+    iconOnly = false,
+    class: extra = '',
   }: {
     /** Called to roll: replace the design with a random one. */
     onrandom: () => void;
@@ -41,6 +43,10 @@
     what?: string;
     /** The button's word. */
     label?: string;
+    /** Only the dice, with the word as its name for screen readers: for a Random beside a field. */
+    iconOnly?: boolean;
+    /** More classes for the button, for a tool that places it somewhere of its own. */
+    class?: string;
   } = $props();
 
   let dialog: HTMLDialogElement | undefined = $state();
@@ -68,9 +74,16 @@
   }
 </script>
 
-<button type="button" class={['eu-btn', guard && 'eu-btn--risky']} data-click="tumble" data-tip={guard ? `Replaces your ${what}` : undefined} onclick={press}>
+<button
+  type="button"
+  class={['eu-btn', iconOnly && 'eu-btn--icon', guard && 'eu-btn--risky', extra]}
+  data-click="tumble"
+  aria-label={iconOnly ? label : undefined}
+  data-tip={guard ? `Replaces your ${what}` : iconOnly ? label : undefined}
+  onclick={press}
+>
   <Icon icon={faDice} />
-  {label}
+  {#if !iconOnly}{label}{/if}
 </button>
 <dialog bind:this={dialog} class="eu-dialog" aria-labelledby={title}>
   <div class="eu-stack">
