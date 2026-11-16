@@ -16,6 +16,10 @@ Three parts: what comes next, what each release added (newest first), and what's
 - **Every tool onto the 1.4.0 parts:** the blue bars, white labels and the centred footer arrive by themselves on the nightly run. Each tool still has to switch its own Random button to `RandomButton`, add Markdown to its share row and downloads, use line-md icons in its toolbar and results, and build its guide, glossary and templates pages from `PageHead`, `Figure` and the `eu-terms` and `eu-gallery` classes, with pictures. The starter shows each.
 - **Two line-md icons without a still drawing:** `lineMoonRisingFilledAltLoop` and `lineMoonRisingTwotoneAltLoop` show nothing with reduced motion (their finished state can't be read from their animations). No part of the shell uses them; use `lineMoonRisingFilledLoop` instead until they are fixed.
 
+## 16 November 2026: 1.6.1
+
+- **The foot's icons, as Governmint had them** (feedback log, 28): a globe for Map, a newspaper for News, a heart with a pulse through it for Status, speech bubbles for Forums. They are Font Awesome icons that draw their own outline and fill in when pointed at (`draw` on `Fa` and `Icon` now does that anywhere).
+
 ## 16 November 2026: 1.6.0
 
 Stijn's third round (feedback log, 23 to 27).

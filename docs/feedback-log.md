@@ -29,5 +29,6 @@ Every numbered point from the reviews, and the release that did it. The releases
 | 25 | The Markdown button uses the correct Markdown icon | 1.6.0 (`faMarkdown`) |
 | 26 | Split the buttons for copying and for saving | 1.6.0 (a handbook rule and the starter; each tool has its own to do) |
 | 27 | Active buttons are eurth-blue, everywhere | 1.6.0 (`--selected`, `--on-selected`) |
+| 28 | Footer icons: Map always a globe, News a newspaper, Status a heart with a sparkline through it, as on Governmint | 1.6.1 |
 | 4 | style.eurth.org deployed through CI, showing only tools that have launched | 1.0.0 |
 | 5 | Node 26 for building and in every CI workflow | 1.0.0 |

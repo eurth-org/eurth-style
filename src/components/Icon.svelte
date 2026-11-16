@@ -10,7 +10,7 @@
 </script>
 
 <svg
-  class="eu-icon"
+  class={['eu-icon', draw && 'eu-icon--draw']}
   viewBox="0 0 {width} {height}"
   role={label ? 'img' : undefined}
   aria-label={label || undefined}

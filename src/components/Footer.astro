@@ -3,12 +3,18 @@
 // and this visit's switches. Under it the rest of Eurth in a blue bar like the one at the top:
 // Forums, Map, News, Status and Join Eurth. No donation links.
 //
+// The bar's icons are the same on every tool, as Governmint first had them: speech bubbles for
+// Forums, a globe for Map, a newspaper for News, a heart with a pulse through it for Status.
+// Pointed at, each draws its own outline and fills in.
+//
 // Tools are listed only once their launch date has passed at build time; the GitHub link appears
 // from 25 December 2026, and no page links to GitHub before then.
 //
 // A tool adds its own inspirations through Page.astro's "inspirations" slot.
+import { faComments, faGlobe, faHeartPulse, faNewspaper, faUserPlus } from '@fortawesome/free-solid-svg-icons';
 import { EURTH, buildTime, githubLinksAllowed, launchedTools, ref, type Site } from '../build.js';
-import { lineChatRoundDots, lineGauge, lineHeartFilled, lineMapMarker, linePersonAdd, lineTextBoxMultiple } from '../line.js';
+import { lineHeartFilled } from '../line.js';
+import Fa from './Fa.astro';
 import Line from './Line.astro';
 import VisitSwitches from './VisitSwitches.svelte';
 
@@ -69,11 +75,11 @@ const year = buildTime().getFullYear();
 
   <nav class="eu-bottombar" aria-label="Eurth">
     <div class="eu-bar">
-      <a class="eu-barlink" href={out(EURTH.forums)}><Line icon={lineChatRoundDots} /> Forums</a>
-      <a class="eu-barlink" href={out(EURTH.map)}><Line icon={lineMapMarker} /> Map</a>
-      <a class="eu-barlink" href={out(EURTH.news)}><Line icon={lineTextBoxMultiple} /> News</a>
-      <a class="eu-barlink" href={out(EURTH.status)}><Line icon={lineGauge} /> Status</a>
-      <a class="eu-barlink" href={out(EURTH.join)}><Line icon={linePersonAdd} /> Join Eurth</a>
+      <a class="eu-barlink" href={out(EURTH.forums)}><Fa icon={faComments} draw /> Forums</a>
+      <a class="eu-barlink" href={out(EURTH.map)}><Fa icon={faGlobe} draw /> Map</a>
+      <a class="eu-barlink" href={out(EURTH.news)}><Fa icon={faNewspaper} draw /> News</a>
+      <a class="eu-barlink" href={out(EURTH.status)}><Fa icon={faHeartPulse} draw /> Status</a>
+      <a class="eu-barlink" href={out(EURTH.join)}><Fa icon={faUserPlus} draw /> Join Eurth</a>
     </div>
   </nav>
 </footer>

@@ -16,7 +16,7 @@ const d = Array.isArray(path) ? path.join(' ') : path;
 ---
 
 <svg
-  class:list={['eu-icon', cls]}
+  class:list={['eu-icon', draw && 'eu-icon--draw', cls]}
   viewBox={`0 0 ${w} ${h}`}
   width={(w / h).toFixed(3) + 'em'}
   height="1em"

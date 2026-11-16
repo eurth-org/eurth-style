@@ -1,4 +1,4 @@
-/*! @eurth/style 1.6.0 — built from tokens.json by build/build.mjs. Don't edit: change tokens.json or src/css. */
+/*! @eurth/style 1.6.1 — built from tokens.json by build/build.mjs. Don't edit: change tokens.json or src/css. */
 
 /* Tokens. Light is the default; the head script sets data-theme before the first paint, and
    without script the page follows the device. data-theme also works on any element. */
@@ -1873,6 +1873,36 @@ html.eu-vt-shrink::view-transition-new(root) {
   100% {
     opacity: 0;
     transform: translate(-50%, calc(-100% - 14px));
+  }
+}
+
+/* A Font Awesome icon given `draw` (Fa.astro, Icon.svelte) draws its own outline and then
+   fills in when its link or button is pointed at, as line-md's icons do: the icons of the blue
+   bar at the foot, first of all. */
+:is(a, button, summary):is(:hover, :focus-visible) .eu-icon--draw path {
+  stroke: currentColor;
+  stroke-linejoin: round;
+  animation: eu-draw 1s ease-out;
+}
+
+@keyframes eu-draw {
+  0% {
+    fill-opacity: 0;
+    stroke-width: 28;
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+  }
+  65% {
+    fill-opacity: 0;
+    stroke-width: 28;
+    stroke-dasharray: 1;
+    stroke-dashoffset: 0;
+  }
+  100% {
+    fill-opacity: 1;
+    stroke-width: 0;
+    stroke-dasharray: 1;
+    stroke-dashoffset: 0;
   }
 }
 
