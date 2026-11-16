@@ -1,5 +1,5 @@
 export { startShell } from "./shell.js";
-export { toast, paperPlane, nice, niceWatcher, playTones, clickDelights, konami, emu, beatHearts, externalLinks, closingMenus, lineIcons, inView } from "./fun.js";
+export { toast, paperPlane, nice, niceWatcher, playTones, clickDelights, konami, emu, beatHearts, externalLinks, closingMenus, lineIcons, scrollLine, inView } from "./fun.js";
 export { getPrefs, setPrefs, onPrefs, calm, soundOn, decodePrefs, encodePrefs, DEFAULTS } from "./prefs.js";
 export { shareTargets, markdownText, markdownTable, copyText, copyPicture, canShare, shareSheet, PICTURE_SIZES } from "./share.js";
 export { install, installWay, installed, onIos, onInstallChange, watchInstall } from "./install.js";

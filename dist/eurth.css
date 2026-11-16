@@ -1,4 +1,4 @@
-/*! @eurth/style 1.4.1 — built from tokens.json by build/build.mjs. Don't edit: change tokens.json or src/css. */
+/*! @eurth/style 1.5.0 — built from tokens.json by build/build.mjs. Don't edit: change tokens.json or src/css. */
 
 /* Tokens. Light is the default; the head script sets data-theme before the first paint, and
    without script the page follows the device. data-theme also works on any element. */
@@ -791,6 +791,46 @@ mark {
   border: 1px solid var(--line);
 }
 
+/* A section of a tool: settings that belong together share a card, under a heading with an
+   icon. Where the sections are steps to take in order, a number comes first.
+     <section class="eu-card" aria-labelledby="division">
+       <h2 class="eu-card-title" id="division"><span class="eu-step">1</span><Icon … /> Division</h2>
+       <p class="eu-help">How the field is divided.</p> … </section> */
+.eu-card-title {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  font: var(--type-heading);
+}
+
+.eu-card-title > .eu-icon,
+.eu-card-title > .eu-line {
+  color: var(--accent-text);
+}
+
+.eu-step {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: var(--space-6);
+  height: var(--space-6);
+  border-radius: var(--radius-full);
+  background: var(--selected);
+  color: var(--on-selected);
+  font: var(--type-label);
+}
+
+/* How many there are of something, after a title: "Layers 3". */
+.eu-count {
+  padding: 0 var(--space-2);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-md);
+  color: var(--ink-muted);
+  font: var(--type-note);
+}
+
 /* A card that is a link, whole. */
 a.eu-card {
   color: var(--ink);
@@ -1069,6 +1109,23 @@ a.eu-card:hover {
 
 .eu-menu-list a[aria-current='page'] {
   box-shadow: inset 2px 0 0 var(--accent-fill);
+}
+
+/* How far down the page you are, as on Governmint: a thin eurth-blue line along the top of the
+   screen that grows as you scroll. src/fun.js (scrollLine) sets --eu-progress from the scroll
+   position, from 0 to 1. It follows the reader's own scrolling, so it stays for reduced motion;
+   without script it simply isn't there. */
+.eu-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 45;
+  width: 100%;
+  height: var(--space-1);
+  background: var(--accent-fill);
+  pointer-events: none;
+  transform: scaleX(var(--eu-progress, 0));
+  transform-origin: 0 50%;
 }
 
 .eu-main {

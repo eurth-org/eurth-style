@@ -74,5 +74,11 @@ export function externalLinks(): void;
  * finished before anyone saw it. The shell installs this once for the whole page.
  */
 export function lineIcons(): void;
+/**
+ * The scroll line (.eu-progress, placed by components/Page.astro): how far down the page the
+ * reader is, from 0 to 1, kept in --eu-progress for the stylesheet to draw. The shell installs
+ * this once for the whole page.
+ */
+export function scrollLine(): void;
 /** A click outside an open menu, or Escape, closes it (the Tools menu is a <details>). */
 export function closingMenus(): void;

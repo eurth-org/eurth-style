@@ -1,6 +1,6 @@
 ---
 // The components, each in both themes. The header and footer of this page are the real ones.
-import { faCheck, faDice, faDownload, faShareNodes, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faCheck, faDice, faDownload, faLayerGroup, faShareNodes, faTableCellsLarge, faTrash } from '@fortawesome/free-solid-svg-icons';
 import Fa from '../../../src/components/Fa.astro';
 import Figure from '../../../src/components/Figure.astro';
 import Line from '../../../src/components/Line.astro';
@@ -31,7 +31,7 @@ const busy = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 200" role
       <p class="eu-kicker">@eurth/style {VERSION} · shared by every tool</p>
       <h1>The shell: header, footer and shared parts</h1>
       <p class="eu-lead">
-        The header above and the footer below are the real ones. Everything here ships once, from one package, so every Eurth tool looks and behaves the same.
+        The header above, the footer below and the thin line that grows along the top as you scroll are the real ones. Everything here ships once, from one package, so every Eurth tool looks and behaves the same.
         The rules are in the <a href="/handbook/">handbook</a>; the colours, type and spacing are in the <a href="/tokens/">tokens</a>.
       </p>
     </header>
@@ -113,6 +113,22 @@ const busy = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 200" role
         <p>Body text in the device's own font. <a href="/tokens/">A link</a>, and <span class="eu-muted">a muted aside</span>.</p>
         <p class="eu-data">2026-11-14 · v1.0 · monospace for data</p>
       </div>
+    </Demo>
+
+    <Demo title="Sections of a tool" uses=".eu-card  .eu-card-title  .eu-step  .eu-count">
+      <section class="eu-card eu-card--outline">
+        <h3 class="eu-card-title"><span class="eu-step">1</span><Fa icon={faTableCellsLarge} /> Division</h3>
+        <p class="eu-help">How the field is divided. Pick a layout, then its colours.</p>
+        <div class="eu-row">
+          <label class="eu-pill"><input type="checkbox" checked /><span class="eu-check"><Fa icon={faCheck} /></span> Stripes</label>
+          <label class="eu-pill"><input type="checkbox" /><span class="eu-check"><Fa icon={faCheck} /></span> Quarters</label>
+        </div>
+      </section>
+      <section class="eu-card eu-card--outline">
+        <h3 class="eu-card-title"><Fa icon={faLayerGroup} /> Layers <span class="eu-count">3</span></h3>
+        <p class="eu-help">Without a number where the order doesn't matter.</p>
+      </section>
+      <p class="eu-help">Settings that belong together share a card, under a heading with an icon, as in Flagwright and Governmint. Where the sections are steps to take in order, a number comes first.</p>
     </Demo>
 
     <Demo title="Toast and offline note" uses="toast()  .eu-toast  OfflineNote.svelte">

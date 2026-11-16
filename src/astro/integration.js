@@ -10,7 +10,7 @@
  *
  * Settings: static output, addresses ending in a slash, the stylesheet inside each page (one
  * download for the first paint), scripts as separate files (so the Content-Security-Policy can
- * allow only the site's own), and a sitemap.
+ * allow only the site's own), spaces around links kept as written, and a sitemap.
  *
  * After the build, in dist/:
  *   _headers              security headers, with the hash of every inline script
@@ -205,6 +205,9 @@ export default function eurth(site, options = {}) {
             site: site.url,
             output: 'static',
             trailingSlash: 'always',
+            // Astro 7 treats line breaks in a page's source the way JSX does and drops them, so
+            // "made by⏎<a>Orioni</a>" loses its space. true keeps every space that shows.
+            compressHTML: true,
             build: { inlineStylesheets: 'always' },
             vite: {
               build: { assetsInlineLimit: 0 },

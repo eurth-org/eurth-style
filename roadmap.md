@@ -17,6 +17,15 @@ Three parts: what comes next, what each release added (newest first), and what's
 - **Two line-md icons without a still drawing:** `lineMoonRisingFilledAltLoop` and `lineMoonRisingTwotoneAltLoop` show nothing with reduced motion (their finished state can't be read from their animations). No part of the shell uses them; use `lineMoonRisingFilledLoop` instead until they are fixed.
 - **Night's chosen options:** at Night a chosen option is light blue with a night label (`--selected`, 8.1:1). It isn't eurth-blue, so 1.4.0 left it; say if it should follow the brand pair too.
 
+## 16 November 2026: 1.5.0
+
+Stijn's second round on the shell, four points (feedback log, 19 to 22).
+
+- **Spaces beside links are kept:** since Astro 7 a line break next to a link in a page's source lost its space ("made byOrioni forEurth"). The integration now sets `compressHTML: true`, which keeps every space that shows, so each tool is right again the next time it is built, with no change of its own. The Pages suite gains a check: a word that runs straight into a link fails the build.
+- **The scroll line:** a thin eurth-blue line along the top of the screen grows as the reader scrolls, on every page, as Governmint's does. `scrollLine()` in the shell reads the scroll position and the stylesheet draws it; without script it isn't shown.
+- **Sections of a tool:** `eu-card-title` (a heading with an icon), `eu-step` (the number of a step) and `eu-count`, lifted from Flagwright and Governmint, and a handbook rule: settings that belong together share a card under a heading with an icon, numbered where the order matters. The starter's maker is built that way.
+- **One footer bar for every tool:** the icons in the blue bar at the foot (Forums, Map, News, Status, Join Eurth) are set once, in the shell, since 1.4.0. They differed between sites because the sites were on different versions; they are the same everywhere once each site has taken 1.4.0 or later (the hub on its nightly run, Flagwright and Governmint when their pull requests are merged).
+
 ## 16 November 2026: 1.4.1
 
 Found while bringing Flagwright and Governmint onto 1.4.0.

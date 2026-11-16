@@ -165,6 +165,16 @@ export function pagesSuite({ site, dist = 'dist' }) {
       }
     });
 
+    it('never run a word into a link: a space lost before or after <a>', () => {
+      for (const page of pages()) {
+        const html = text(dist, page).replace(/<(script|style|svg|pre|code)\b[\s\S]*?<\/\1>/g, '');
+        const before = /[^<>]{0,24}[\p{L}\p{N},;:.!?]<a\b[^>]*>[^<]{0,24}/u.exec(html)?.[0];
+        const after = /[^<>]{0,24}<\/a>[\p{L}\p{N}(][^<]{0,24}/u.exec(html)?.[0];
+        expect(before, `${page}: no space before a link`).toBeUndefined();
+        expect(after, `${page}: no space after a link`).toBeUndefined();
+      }
+    });
+
     it('each have their own title, description and canonical link', () => {
       const titles = new Map();
       const descriptions = new Map();

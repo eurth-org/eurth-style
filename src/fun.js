@@ -275,6 +275,31 @@ export function lineIcons() {
   for (const icon of document.querySelectorAll('.eu-line')) watcher.observe(icon);
 }
 
+/**
+ * The scroll line (.eu-progress, placed by components/Page.astro): how far down the page the
+ * reader is, from 0 to 1, kept in --eu-progress for the stylesheet to draw. The shell installs
+ * this once for the whole page.
+ */
+export function scrollLine() {
+  const line = document.querySelector('.eu-progress');
+  if (!(line instanceof HTMLElement)) return;
+  let waiting = false;
+  const draw = () => {
+    waiting = false;
+    const max = document.documentElement.scrollHeight - innerHeight;
+    line.style.setProperty('--eu-progress', max > 0 ? Math.min(1, Math.max(0, scrollY / max)).toFixed(4) : '0');
+  };
+  // At most once a frame, however fast the scrolling.
+  const update = () => {
+    if (waiting) return;
+    waiting = true;
+    requestAnimationFrame(draw);
+  };
+  draw();
+  addEventListener('scroll', update, { passive: true });
+  addEventListener('resize', update);
+}
+
 /** A click outside an open menu, or Escape, closes it (the Tools menu is a <details>). */
 export function closingMenus() {
   /** @param {(menu: HTMLDetailsElement) => boolean} which */

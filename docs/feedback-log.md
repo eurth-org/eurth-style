@@ -20,5 +20,9 @@ Every numbered point from the reviews, and the release that did it. The releases
 | 16 | A blue header with white buttons and blue labels, as on Governmint, Flagwright and eurth.org | 1.4.0 |
 | 17 | Export and save: Markdown is often missing | 1.4.0 (`markdown` on `ShareButtons`, `markdownTable()`, a handbook rule; each tool still has its own exports to do) |
 | 18 | Footer: "Orioni" links to the profile on eurth.org, not to iiwiki | 1.4.0 (`EURTH.orioni`) |
+| 19 | A progress bar while scrolling, as Governmint has | 1.5.0 (the scroll line, on every page) |
+| 20 | Settings grouped into sections: a shared ground, a bigger title with an icon, a number where it helps | 1.5.0 (`eu-card-title`, `eu-step`, `eu-count`, a handbook rule, the starter; each tool still has its own maker to do) |
+| 21 | In-line links missing a space here and there, in Flagwright's footer and other tools | 1.5.0 (`compressHTML: true` in the integration, and a check in the Pages suite) |
+| 22 | Footer bar icons differ between tools | 1.5.0 (they are set once in the shell since 1.4.0; the sites were on different versions) |
 | 4 | style.eurth.org deployed through CI, showing only tools that have launched | 1.0.0 |
 | 5 | Node 26 for building and in every CI workflow | 1.0.0 |

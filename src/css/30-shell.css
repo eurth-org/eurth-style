@@ -234,6 +234,23 @@
   box-shadow: inset 2px 0 0 var(--accent-fill);
 }
 
+/* How far down the page you are, as on Governmint: a thin eurth-blue line along the top of the
+   screen that grows as you scroll. src/fun.js (scrollLine) sets --eu-progress from the scroll
+   position, from 0 to 1. It follows the reader's own scrolling, so it stays for reduced motion;
+   without script it simply isn't there. */
+.eu-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 45;
+  width: 100%;
+  height: var(--space-1);
+  background: var(--accent-fill);
+  pointer-events: none;
+  transform: scaleX(var(--eu-progress, 0));
+  transform-origin: 0 50%;
+}
+
 .eu-main {
   flex: 1;
   width: 100%;

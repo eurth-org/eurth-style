@@ -7,10 +7,12 @@
    *   - every result has a written description;
    *   - every result with words in it can be taken away as Markdown too;
    *   - the share row, Random, toasts, "Nice." and click answers come from @eurth/style;
+   *   - settings that belong together share a card, under a heading with an icon; where they
+   *     are steps to take in order, a number comes first;
    *   - only tokens and eu- classes: no colour, font or spacing of its own.
    * The tool's own actions (Random, Start again) sit in its own toolbar, not in the header.
    */
-  import { faCheck, faRotateLeft } from '@fortawesome/free-solid-svg-icons';
+  import { faCheck, faFeatherPointed, faRotateLeft, faScaleBalanced } from '@fortawesome/free-solid-svg-icons';
   import { createProfile, getSection, setNation, type EurthProfile } from '@eurth/profile';
   import ProfileButtons from '@eurth/profile/ProfileButtons.svelte';
   import { download, fileSlug, niceWatcher, playTones, stateFromLocation, stateLink, stateToLocation, svgToPicture, toast } from '@eurth/style';
@@ -84,40 +86,50 @@
 </script>
 
 <div class="maker">
-  <form class="eu-card controls" onsubmit={(e) => e.preventDefault()}>
+  <form class="controls" onsubmit={(e) => e.preventDefault()}>
     <div class="eu-row">
       <RandomButton onrandom={() => (plate = random())} guard={changed} what="plate" />
-      <button type="button" class="eu-btn" data-click="spin" onclick={startAgain}><Icon icon={faRotateLeft} /> Start again</button>
+      <button type="button" class={['eu-btn', changed && 'eu-btn--risky']} data-click="spin" data-tip={changed ? 'Clears your plate' : undefined} onclick={startAgain}>
+        <Icon icon={faRotateLeft} /> Start again
+      </button>
     </div>
 
-    <label class="eu-field">
-      <span class="eu-label">Nation</span>
-      <input class="eu-input" bind:value={plate.nation} maxlength="60" autocomplete="off" placeholder="Your nation" />
-    </label>
+    <section class="eu-card" aria-labelledby="words-title">
+      <h2 class="eu-card-title" id="words-title"><span class="eu-step">1</span><Icon icon={faFeatherPointed} /> The words</h2>
+      <label class="eu-field">
+        <span class="eu-label">Nation</span>
+        <input class="eu-input" bind:value={plate.nation} maxlength="60" autocomplete="off" placeholder="Your nation" />
+      </label>
 
-    <label class="eu-field">
-      <span class="eu-label">Motto</span>
-      <input class="eu-input" bind:value={plate.motto} maxlength="80" autocomplete="off" aria-describedby="motto-help" />
-      <span class="eu-help" id="motto-help">Up to 80 characters. Short ones read best.</span>
-    </label>
+      <label class="eu-field">
+        <span class="eu-label">Motto</span>
+        <input class="eu-input" bind:value={plate.motto} maxlength="80" autocomplete="off" aria-describedby="motto-help" />
+        <span class="eu-help" id="motto-help">Up to 80 characters. Short ones read best.</span>
+      </label>
+    </section>
 
-    <label class="eu-field">
-      <span class="eu-label">Gravitas: <output class="eu-data">{plate.gravitas}</output> out of 100</span>
-      <input bind:this={slider} class="eu-range" type="range" min="0" max="100" bind:value={plate.gravitas} style:--fill="{plate.gravitas}%" />
-    </label>
+    <section class="eu-card" aria-labelledby="weight-title">
+      <h2 class="eu-card-title" id="weight-title"><span class="eu-step">2</span><Icon icon={faScaleBalanced} /> The weight</h2>
+      <p class="eu-help">How solemnly the motto is meant, and how grandly it is framed.</p>
 
-    <fieldset class="options">
-      <legend class="eu-label">Style</legend>
-      <div class="eu-row">
-        {#each STYLES as style (style.id)}
-          <label class="eu-pill">
-            <input type="radio" name="style" value={style.id} bind:group={plate.style} />
-            <span class="eu-check"><Icon icon={faCheck} /></span>
-            {style.name}
-          </label>
-        {/each}
-      </div>
-    </fieldset>
+      <label class="eu-field">
+        <span class="eu-label">Gravitas: <output class="eu-data">{plate.gravitas}</output> out of 100</span>
+        <input bind:this={slider} class="eu-range" type="range" min="0" max="100" bind:value={plate.gravitas} style:--fill="{plate.gravitas}%" />
+      </label>
+
+      <fieldset class="options">
+        <legend class="eu-label">Style</legend>
+        <div class="eu-row">
+          {#each STYLES as style (style.id)}
+            <label class="eu-pill">
+              <input type="radio" name="style" value={style.id} bind:group={plate.style} />
+              <span class="eu-check"><Icon icon={faCheck} /></span>
+              {style.name}
+            </label>
+          {/each}
+        </div>
+      </fieldset>
+    </section>
   </form>
 
   <section class="result" aria-labelledby="result-title">
@@ -169,7 +181,10 @@
   }
 
   .controls {
+    display: flex;
+    flex-direction: column;
     gap: var(--space-4);
+    min-width: 0;
   }
 
   .options {

@@ -326,6 +326,46 @@
   border: 1px solid var(--line);
 }
 
+/* A section of a tool: settings that belong together share a card, under a heading with an
+   icon. Where the sections are steps to take in order, a number comes first.
+     <section class="eu-card" aria-labelledby="division">
+       <h2 class="eu-card-title" id="division"><span class="eu-step">1</span><Icon … /> Division</h2>
+       <p class="eu-help">How the field is divided.</p> … </section> */
+.eu-card-title {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  font: var(--type-heading);
+}
+
+.eu-card-title > .eu-icon,
+.eu-card-title > .eu-line {
+  color: var(--accent-text);
+}
+
+.eu-step {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: var(--space-6);
+  height: var(--space-6);
+  border-radius: var(--radius-full);
+  background: var(--selected);
+  color: var(--on-selected);
+  font: var(--type-label);
+}
+
+/* How many there are of something, after a title: "Layers 3". */
+.eu-count {
+  padding: 0 var(--space-2);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-md);
+  color: var(--ink-muted);
+  font: var(--type-note);
+}
+
 /* A card that is a link, whole. */
 a.eu-card {
   color: var(--ink);

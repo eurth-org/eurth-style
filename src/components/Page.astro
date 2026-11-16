@@ -1,6 +1,6 @@
 ---
 // Every page of every tool: the head (search and sharing tags, icons, the theme before the first
-// paint), the header, the footer, the offline note and the page's shared behaviour. A tool
+// paint), the header, the scroll line, the footer, the offline note and the page's shared behaviour. A tool
 // writes its own content into the slot and never rebuilds any of this.
 //
 //   <Page site={site} title="Guide" description="…" crumbs={[{ name: 'Guide', path: '/guide/' }]}>
@@ -76,6 +76,8 @@ const data: object[] = [organization(), webSite(site), ...(crumbs?.length ? [bre
   </head>
   <body>
     <a class="eu-skip" href="#main">Skip to the content</a>
+    <!-- How far down the page you are: a thin line along the top of the screen. -->
+    <div class="eu-progress" aria-hidden="true"></div>
     <Header site={site} path={path} />
     <main id="main" class="eu-main">
       <slot />

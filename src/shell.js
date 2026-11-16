@@ -5,7 +5,7 @@
  * beat, the Konami code sends an emu, the yurt dresses for the season, the browser's offer to
  * install is caught, and (in the built site) the service worker keeps a copy for offline.
  */
-import { beatHearts, clickDelights, closingMenus, emu, externalLinks, konami, lineIcons } from './fun.js';
+import { beatHearts, clickDelights, closingMenus, emu, externalLinks, konami, lineIcons, scrollLine } from './fun.js';
 import { watchInstall } from './install.js';
 import { seasonalYurt } from './seasonal.js';
 
@@ -17,6 +17,7 @@ export function startShell({ serviceWorker = false } = {}) {
   externalLinks();
   closingMenus();
   lineIcons();
+  scrollLine();
   watchInstall();
   const footer = document.querySelector('.eu-footer');
   if (footer) {
