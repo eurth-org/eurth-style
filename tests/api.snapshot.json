@@ -59,6 +59,7 @@
       "onIos",
       "onPrefs",
       "paperPlane",
+      "pictureFilename",
       "playTones",
       "ref",
       "resolveColors",

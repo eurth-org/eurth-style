@@ -5,6 +5,7 @@ import { finishBuild } from '../src/astro/integration.js';
 import { ref as browserRef, wikipedia } from '../src/index.js';
 import { describe, expect, it } from 'vitest';
 import { GITHUB_FROM, defineSite, everyTool, githubLinksAllowed, launchedTools, pageTitle, ref, unlaunchedTools, webApplication, breadcrumbs, definedTermSet } from '../src/build.js';
+import { fileSlug, pictureFilename } from '../src/download.js';
 import { decodeState, encodeState, stateLink } from '../src/link.js';
 import { DEFAULTS, decodePrefs, encodePrefs } from '../src/prefs.js';
 import { APPROVED, seasonOf } from '../src/seasonal.js';
@@ -206,6 +207,41 @@ describe('the service worker', () => {
     } finally {
       rmSync(dist, { recursive: true, force: true });
     }
+  });
+});
+
+describe('a picture to keep', () => {
+  it('names a picture for what it is, with nothing to say when that is what was asked for', () => {
+    expect(pictureFilename('orioni-flag', new Blob([], { type: 'image/png' }), 'image/png')).toEqual({ filename: 'orioni-flag.png', type: 'image/png', note: null });
+    expect(pictureFilename('orioni-flag', new Blob([], { type: 'image/webp' }), 'image/webp')).toEqual({ filename: 'orioni-flag.webp', type: 'image/webp', note: null });
+  });
+
+  it('calls a PNG a PNG when the browser was asked for WebP, and says so plainly', () => {
+    // Safari 27: canvas.toBlob(…, 'image/webp') answers with a blob whose type is image/png.
+    const file = pictureFilename('orioni-flag', new Blob([], { type: 'image/png' }), 'image/webp');
+    expect(file).toEqual({ filename: 'orioni-flag.png', type: 'image/png', note: 'This browser can’t make WebP pictures, so this one is a PNG.' });
+  });
+
+  it('asks for a PNG unless told otherwise, as svgToPicture() does', () => {
+    expect(pictureFilename('plate', new Blob([], { type: 'image/png' }))).toMatchObject({ filename: 'plate.png', note: null });
+    expect(pictureFilename('plate', new Blob([], { type: 'image/webp' }))).toMatchObject({ filename: 'plate.webp', type: 'image/webp', note: 'This browser can’t make PNG pictures, so this one is a WebP.' });
+  });
+
+  it('reads a media type however it is written', () => {
+    expect(pictureFilename('a', { type: 'IMAGE/PNG' }, 'image/webp').filename).toBe('a.png');
+    expect(pictureFilename('a', { type: ' image/webp; charset=binary' }, 'image/webp')).toMatchObject({ filename: 'a.webp', note: null });
+  });
+
+  it('falls back on what was asked for when the picture does not say what it is', () => {
+    for (const type of ['', 'image/jpeg', 'application/octet-stream', 'toString', '__proto__']) {
+      expect(pictureFilename('a', { type }, 'image/webp')).toEqual({ filename: 'a.webp', type: 'image/webp', note: null });
+      expect(pictureFilename('a', { type })).toEqual({ filename: 'a.png', type: 'image/png', note: null });
+    }
+  });
+
+  it('leaves the name alone: fileSlug() makes it safe first', () => {
+    expect(pictureFilename(`${fileSlug('Côte d’Or')}-flag`, { type: 'image/png' }).filename).toBe('cote-d-or-flag.png');
+    expect(pictureFilename('v1.2-flag', { type: 'image/webp' }, 'image/webp').filename).toBe('v1.2-flag.webp');
   });
 });
 
