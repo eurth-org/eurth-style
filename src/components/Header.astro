@@ -4,6 +4,11 @@
 // linking to the tool's start. A tool's own actions (Random, Simple/Advanced) belong in the
 // tool's toolbar, not here. Join Eurth is in the footer.
 //
+// A tool with a mark of its own (Governmint's coin, Flagwright's flag) shows it in place of
+// the yurt, through the "mark" slot; the seasonal yurts then leave it alone. The "bar" slot
+// adds a pill to the blue bar after the tool's pages (Governmint's About): give it the class
+// eu-barlink. Both come through Page.
+//
 // The Tools menu lists only tools whose launch date has passed when the site is built.
 import type { IconDefinition } from '@fortawesome/free-solid-svg-icons';
 import yurt from '../assets/eurth-yurt-circle.svg?raw';
@@ -17,8 +22,12 @@ interface Props {
   site: Site & { host: string };
   /** The page being shown: Astro.url.pathname. */
   path: string;
+  /** The "mark" slot is filled: the tool's own mark stands in the yurt's place. */
+  ownMark?: boolean;
+  /** The "bar" slot is filled: more pills for the blue bar, after the tool's pages. */
+  moreBar?: boolean;
 }
-const { site, path } = Astro.props;
+const { site, path, ownMark = false, moreBar = false } = Astro.props;
 const launched = launchedTools();
 const tools = launched.filter((tool) => tool.kind === 'tool');
 const hub = launched.find((tool) => tool.kind === 'hub');
@@ -34,14 +43,16 @@ const everyIcon = pages.every((page) => page.icon);
   <div class="eu-topbar">
     <div class="eu-bar">
       {
-        pages.length > 1 && (
+        (pages.length > 1 || moreBar) && (
           <nav class:list={['eu-nav', everyIcon && 'eu-nav--icons']} aria-label={`${site.name} pages`}>
-            {pages.map((page) => (
-              <a class="eu-barlink" href={page.href} aria-current={isCurrent(page.href) ? 'page' : undefined}>
-                {page.icon && ('body' in page.icon ? <Line icon={page.icon} /> : <Fa icon={page.icon} />)}
-                <span class="eu-nav-label">{page.label}</span>
-              </a>
-            ))}
+            {pages.length > 1 &&
+              pages.map((page) => (
+                <a class="eu-barlink" href={page.href} aria-current={isCurrent(page.href) ? 'page' : undefined}>
+                  {page.icon && ('body' in page.icon ? <Line icon={page.icon} /> : <Fa icon={page.icon} />)}
+                  <span class="eu-nav-label">{page.label}</span>
+                </a>
+              ))}
+            <slot name="bar" />
           </nav>
         )
       }
@@ -79,7 +90,15 @@ const everyIcon = pages.every((page) => page.icon);
   <div class="eu-masthead">
     <div class="eu-bar">
       <a class="eu-brand" href="/" title={`${site.name}: start afresh`}>
-        <span class="eu-yurt" data-seasonal aria-hidden="true" set:html={yurt} />
+        {
+          ownMark ? (
+            <span class="eu-yurt eu-mark" aria-hidden="true">
+              <slot name="mark" />
+            </span>
+          ) : (
+            <span class="eu-yurt" data-seasonal aria-hidden="true" set:html={yurt} />
+          )
+        }
         <span class="eu-brand-name">{site.name}</span>
         <span class="eu-brand-by">by Eurth</span>
       </a>

@@ -1,4 +1,4 @@
-/*! @eurth/style 1.6.3 — built from tokens.json by build/build.mjs. Don't edit: change tokens.json or src/css. */
+/*! @eurth/style 1.7.0 — built from tokens.json by build/build.mjs. Don't edit: change tokens.json or src/css. */
 
 /* Tokens. Light is the default; the head script sets data-theme before the first paint, and
    without script the page follows the device. data-theme also works on any element. */
@@ -1013,6 +1013,12 @@ a.eu-card:hover {
   width: 100%;
   height: 100%;
   border-radius: var(--radius-full);
+}
+
+/* A tool's own mark in the yurt's place keeps its own shape. */
+.eu-mark svg,
+.eu-mark img {
+  border-radius: 0;
 }
 
 .eu-brand-name {

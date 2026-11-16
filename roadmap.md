@@ -16,6 +16,11 @@ Three parts: what comes next, what each release added (newest first), and what's
 - **Every tool onto the 1.4.0 parts:** the blue bars, white labels and the centred footer arrive by themselves on the nightly run. Each tool still has to switch its own Random button to `RandomButton`, add Markdown to its share row and downloads, use line-md icons in its toolbar and results, and build its guide, glossary and templates pages from `PageHead`, `Figure` and the `eu-terms` and `eu-gallery` classes, with pictures. The starter shows each.
 - **Two line-md icons without a still drawing:** `lineMoonRisingFilledAltLoop` and `lineMoonRisingTwotoneAltLoop` show nothing with reduced motion (their finished state can't be read from their animations). No part of the shell uses them; use `lineMoonRisingFilledLoop` instead until they are fixed.
 
+## 16 November 2026: 1.7.0
+
+- **A tool's own mark in the header** (feedback log, 30): `Page` takes a `mark` slot, shown in front of the name in place of the yurt, for a tool that had a mark of its own before the suite. Governmint puts its gold coin there, as its own component, so the coin still flips when the name is pointed at.
+- **One more pill in the blue bar:** `Page` takes a `bar` slot, after the tool's pages, for Governmint's About.
+
 ## 16 November 2026: 1.6.3
 
 Found while restoring Flagwright's own design.

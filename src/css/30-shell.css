@@ -138,6 +138,12 @@
   border-radius: var(--radius-full);
 }
 
+/* A tool's own mark in the yurt's place keeps its own shape. */
+.eu-mark svg,
+.eu-mark img {
+  border-radius: 0;
+}
+
 .eu-brand-name {
   font: var(--type-brand);
 }

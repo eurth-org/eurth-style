@@ -1382,6 +1382,8 @@
       "site"
     ],
     "Header.astro": [
+      "moreBar",
+      "ownMark",
       "path",
       "site"
     ],
@@ -1524,6 +1526,7 @@
     "eu-line-moving",
     "eu-line-still",
     "eu-main",
+    "eu-mark",
     "eu-masthead",
     "eu-menu",
     "eu-menu-list",
