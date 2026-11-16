@@ -158,10 +158,11 @@
   font: var(--type-body-sm);
 }
 
-/* Pictures side by side: one that follows the rule and one that doesn't. */
+/* Pictures side by side: one that follows the rule and one that doesn't. Two to a row, so a
+   picture on its own stays the size of the paired ones. */
 .eu-figures {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   align-items: start;
   gap: var(--space-4);
 }
@@ -343,6 +344,10 @@ a.eu-tile:hover {
 }
 
 @media (max-width: 720px) {
+  .eu-figures {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
   .eu-pagehead {
     grid-template-columns: minmax(0, 1fr);
     margin-bottom: var(--space-6);

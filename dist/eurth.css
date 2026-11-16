@@ -1,4 +1,4 @@
-/*! @eurth/style 1.4.0 — built from tokens.json by build/build.mjs. Don't edit: change tokens.json or src/css. */
+/*! @eurth/style 1.4.1 — built from tokens.json by build/build.mjs. Don't edit: change tokens.json or src/css. */
 
 /* Tokens. Light is the default; the head script sets data-theme before the first paint, and
    without script the page follows the device. data-theme also works on any element. */
@@ -536,8 +536,8 @@ mark {
 /* An action that throws work away (Random, Reset, Clear): red once pointed at or reached with
    the keyboard, as a warning, with a data-tip that says what will be lost. .eu-btn--danger is
    red from the start: the button that confirms it. */
-.eu-btn--risky:hover,
-.eu-btn--risky:focus-visible,
+.eu-btn--risky:not(:disabled, [aria-disabled='true']):hover,
+.eu-btn--risky:not(:disabled, [aria-disabled='true']):focus-visible,
 .eu-btn--danger,
 .eu-btn--danger:hover {
   border-color: var(--danger-text);
@@ -1329,10 +1329,11 @@ a.eu-card:hover {
   font: var(--type-body-sm);
 }
 
-/* Pictures side by side: one that follows the rule and one that doesn't. */
+/* Pictures side by side: one that follows the rule and one that doesn't. Two to a row, so a
+   picture on its own stays the size of the paired ones. */
 .eu-figures {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   align-items: start;
   gap: var(--space-4);
 }
@@ -1514,6 +1515,10 @@ a.eu-tile:hover {
 }
 
 @media (max-width: 720px) {
+  .eu-figures {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
   .eu-pagehead {
     grid-template-columns: minmax(0, 1fr);
     margin-bottom: var(--space-6);
@@ -1586,6 +1591,12 @@ a.eu-tile:hover {
    stay while pointed at, and go with Escape (WCAG 1.4.13; src/fun.js). */
 [data-tip] {
   position: relative;
+}
+
+/* The button in question comes forward, so nothing placed after it covers its tooltip. */
+[data-tip]:hover,
+[data-tip]:focus-visible {
+  z-index: 5;
 }
 
 [data-tip]:hover::after,

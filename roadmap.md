@@ -17,6 +17,16 @@ Three parts: what comes next, what each release added (newest first), and what's
 - **Two line-md icons without a still drawing:** `lineMoonRisingFilledAltLoop` and `lineMoonRisingTwotoneAltLoop` show nothing with reduced motion (their finished state can't be read from their animations). No part of the shell uses them; use `lineMoonRisingFilledLoop` instead until they are fixed.
 - **Night's chosen options:** at Night a chosen option is light blue with a night label (`--selected`, 8.1:1). It isn't eurth-blue, so 1.4.0 left it; say if it should follow the brand pair too.
 
+## 16 November 2026: 1.4.1
+
+Found while bringing Flagwright and Governmint onto 1.4.0.
+
+- **`RandomButton` can be pressed from elsewhere:** bind the component and call `press()` for a keyboard shortcut or a second control; it asks the first time, as a click does. One yes now answers for every Random on the page.
+- **Random is red only while there is something to lose:** with `guard` false it is a plain button; with `guard` true it stays red when pointed at and keeps its tooltip, also after the one yes.
+- **A disabled risky button stays quiet:** `eu-btn--risky` no longer turns red when it can't be pressed.
+- **Tooltips are no longer covered** by something placed after their button: the button comes forward while pointed at.
+- **A picture on its own in `eu-figures`** keeps the size of the paired ones; on a phone they stack.
+
 ## 16 November 2026: 1.4.0
 
 Stijn's review of the shell, nine points (feedback log, 10 to 18). A new look for every site on the shell, with nothing a tool relies on removed.

@@ -61,6 +61,12 @@
   position: relative;
 }
 
+/* The button in question comes forward, so nothing placed after it covers its tooltip. */
+[data-tip]:hover,
+[data-tip]:focus-visible {
+  z-index: 5;
+}
+
 [data-tip]:hover::after,
 [data-tip]:focus-visible::after {
   content: attr(data-tip);

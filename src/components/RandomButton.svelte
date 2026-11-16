@@ -1,6 +1,9 @@
 <script lang="ts" module>
-  // Asked once: after the first yes, Random rolls at once for the rest of the page's life.
+  // Asked once: after the first yes, every Random on the page rolls at once for the rest of
+  // the page's life.
   let agreed = false;
+  let made = 0;
+  const told = new Set<() => void>();
 </script>
 
 <script lang="ts">
@@ -12,9 +15,16 @@
    *   <RandomButton onrandom={() => (design = randomDesign())} guard={changed} what="flag" />
    *
    * `guard` is whether there is anything to lose. Leave it out and the first click always asks;
-   * pass false while the design is still untouched and the button rolls straight away.
+   * pass false while the design is still untouched and the button rolls straight away, without
+   * the red.
+   *
+   * A keyboard shortcut, or a second control elsewhere on the page, goes through the same
+   * question: bind the component and call its press().
+   *
+   *   <RandomButton bind:this={random} … />      random.press()
    */
   import { faDice } from '@fortawesome/free-solid-svg-icons';
+  import { onMount } from 'svelte';
   import Icon from './Icon.svelte';
 
   let {
@@ -35,28 +45,36 @@
 
   let dialog: HTMLDialogElement | undefined = $state();
   let asking = $state(!agreed);
-  const warns = $derived(guard && asking);
+  const title = `eu-random-title-${(made += 1)}`;
 
-  function press() {
-    if (warns) dialog?.showModal();
+  // One yes answers for every Random on the page.
+  onMount(() => {
+    const hear = () => (asking = false);
+    told.add(hear);
+    return () => void told.delete(hear);
+  });
+
+  /** Presses Random from elsewhere (a shortcut, a second control): it asks the first time, as a click does. */
+  export function press() {
+    if (guard && asking) dialog?.showModal();
     else onrandom();
   }
 
   function roll() {
     agreed = true;
-    asking = false;
+    for (const hear of told) hear();
     dialog?.close();
     onrandom();
   }
 </script>
 
-<button type="button" class="eu-btn eu-btn--risky" data-click="tumble" data-tip={warns ? `Replaces your ${what}` : undefined} onclick={press}>
+<button type="button" class={['eu-btn', guard && 'eu-btn--risky']} data-click="tumble" data-tip={guard ? `Replaces your ${what}` : undefined} onclick={press}>
   <Icon icon={faDice} />
   {label}
 </button>
-<dialog bind:this={dialog} class="eu-dialog" aria-labelledby="eu-random-title">
+<dialog bind:this={dialog} class="eu-dialog" aria-labelledby={title}>
   <div class="eu-stack">
-    <h2 id="eu-random-title">Roll a random {what}?</h2>
+    <h2 id={title}>Roll a random {what}?</h2>
     <p>It replaces the {what} you have now. Copy its link first if you'd like it back. This is the only time Random asks.</p>
     <div class="eu-row">
       <button type="button" class="eu-btn eu-btn--danger" data-click="tumble" onclick={roll}><Icon icon={faDice} /> Replace it</button>
