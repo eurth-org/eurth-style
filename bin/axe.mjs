@@ -15,6 +15,8 @@
 // A tool that keeps a design of its own from before the suite (Governmint) may be held to
 // WCAG AA with 24px targets instead, on Stijn's word only, in its package.json:
 //   "eurth": { "axe": { "level": "aa", "targets": 24 } }
+// Below 44, targets are judged by axe-core's own WCAG 2.2 rule (24px, or enough room around a
+// smaller one), which is part of the AA rules; the flat measure here is for the suite's 44.
 import { AxeBuilder } from '@axe-core/playwright';
 import { createReadStream, existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import { createServer } from 'node:http';
@@ -23,10 +25,13 @@ import { chromium } from 'playwright-core';
 
 const dist = process.argv[2] ?? 'dist';
 const BRAND = ['#2698d4', '#ffffff'];
+/** Whether a colour is one of the brand's two, give or take a step: eurth-blue written for wide-colour screens reads as #2798d4. */
+const near = (/** @type {unknown} */ colour, /** @type {string} */ brand) =>
+  typeof colour === 'string' && /^#[0-9a-f]{6}$/i.test(colour) && [1, 3, 5].every((i) => Math.abs(parseInt(colour.slice(i, i + 2), 16) - parseInt(brand.slice(i, i + 2), 16)) <= 2);
 /** The brand pair, under either contrast rule. @param {import('axe-core').Result} violation @param {import('axe-core').NodeResult} node */
 const brandPair = (violation, node) =>
   (violation.id === 'color-contrast-enhanced' || violation.id === 'color-contrast') &&
-  node.any.some(({ data }) => data && [data.fgColor, data.bgColor].sort().join() === BRAND.join());
+  node.any.some(({ data }) => data && ((near(data.fgColor, BRAND[0]) && near(data.bgColor, BRAND[1])) || (near(data.fgColor, BRAND[1]) && near(data.bgColor, BRAND[0]))));
 
 // The tool's own settings, if it has any.
 let own = {};
@@ -89,7 +94,7 @@ try {
         }
       }
       // Target size, at 44 by 44: everything pressable that isn't a link inside running text.
-      const small = await page.evaluate((least) => {
+      const small = targets < 44 ? [] : await page.evaluate((least) => {
         const out = [];
         for (const el of document.querySelectorAll('button, summary, select, textarea, input:not([type=hidden]), [role=button], a.eu-btn, a.eu-join, a.eu-card, nav a, .eu-menu-list a')) {
           let box = el.getBoundingClientRect();
