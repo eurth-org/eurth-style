@@ -47,8 +47,10 @@ describe.skipIf(!existsSync(`${dist}/handbook/index.html`))('the handbook on the
       expect(used).toContain('token-keyword');
     });
 
-    it('carries no colour of its own', () => {
-      for (const block of blocks) expect(block.match(/#[0-9a-f]{3,8}\b|rgba?\(|hsla?\(/gi)).toBeNull();
+    it('carries no colour of its own (in its styles: an example may well show one)', () => {
+      const styles = blocks.flatMap((block) => [...block.matchAll(/style="([^"]*)"/g)].map(([, style]) => style));
+      expect(styles.length).toBeGreaterThan(0);
+      for (const style of styles) expect(style.match(/#[0-9a-f]{3,8}\b|rgba?\(|hsla?\(/gi), style).toBeNull();
     });
 
     it('takes every colour from a text token that the contrast test holds to 7:1 on its ground', () => {
