@@ -33,6 +33,7 @@
     what = 'design',
     label = 'Random',
     iconOnly = false,
+    tip = '',
     class: extra = '',
   }: {
     /** Called to roll: replace the design with a random one. */
@@ -45,6 +46,8 @@
     label?: string;
     /** Only the dice, with the word as its name for screen readers: for a Random beside a field. */
     iconOnly?: boolean;
+    /** The tooltip while there is nothing to lose: "A random flag that tries to look good". Once there is, it says what will be replaced. */
+    tip?: string;
     /** More classes for the button, for a tool that places it somewhere of its own. */
     class?: string;
   } = $props();
@@ -79,7 +82,7 @@
   class={['eu-btn', iconOnly && 'eu-btn--icon', guard && 'eu-btn--risky', extra]}
   data-click="tumble"
   aria-label={iconOnly ? label : undefined}
-  data-tip={guard ? `Replaces your ${what}` : iconOnly ? label : undefined}
+  data-tip={guard ? `Replaces your ${what}` : tip || (iconOnly ? label : undefined)}
   onclick={press}
 >
   <Icon icon={faDice} />

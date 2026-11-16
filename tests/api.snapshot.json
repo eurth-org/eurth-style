@@ -1430,6 +1430,7 @@
       "iconOnly",
       "label",
       "onrandom",
+      "tip",
       "what"
     ],
     "ShareButtons.svelte": [

@@ -7,7 +7,7 @@ Three parts: what comes next, what each release added (newest first), and what's
 ## Next
 
 - **Pitches in `tools.json`:** the one-liners for doors 5 to 15 come from the mock-up boards and may be reworded by each tool's own brief before its door opens.
-- **Flagwright and Governmint on the shared shell:** each is moved in an open pull request (eurth-flag#1, eurth-government#12), waiting for Stijn's review before it goes live.
+- **Flagwright and Governmint on the shared shell:** each is moved in an open pull request (eurth-flag#1, eurth-government#12) with its own design kept exactly as live and only the header and footer from the suite, waiting for Stijn's review before it goes live.
 - **The nightly and launch workflows, run for real:** `tool-ci.yml` runs from the tools' own repositories; `tool-nightly.yml` and `tool-launch.yml` have not had their first run yet.
 - **After 24 December:** check that style.eurth.org/schemas/eurth-profile-1.json has appeared on the nightly run.
 - **What older versions left in the browser:** Flagwright and Governmint used to keep the theme and saved designs in localStorage. Those entries stay on returning visitors' devices, unread; removing them means touching localStorage once more, which is Stijn's call.
@@ -15,6 +15,13 @@ Three parts: what comes next, what each release added (newest first), and what's
 - **After 25 December:** check that every site's footer has gained its GitHub link on the nightly run.
 - **Every tool onto the 1.4.0 parts:** the blue bars, white labels and the centred footer arrive by themselves on the nightly run. Each tool still has to switch its own Random button to `RandomButton`, add Markdown to its share row and downloads, use line-md icons in its toolbar and results, and build its guide, glossary and templates pages from `PageHead`, `Figure` and the `eu-terms` and `eu-gallery` classes, with pictures. The starter shows each.
 - **Two line-md icons without a still drawing:** `lineMoonRisingFilledAltLoop` and `lineMoonRisingTwotoneAltLoop` show nothing with reduced motion (their finished state can't be read from their animations). No part of the shell uses them; use `lineMoonRisingFilledLoop` instead until they are fixed.
+
+## 16 November 2026: 1.6.3
+
+Found while restoring Flagwright's own design.
+
+- **`RandomButton` takes `tip`:** the tooltip for as long as there is nothing to lose ("A random flag that tries to look good"); once there is, it says what will be replaced, as before.
+- **The handbook names Flagwright** beside Governmint as a tool that keeps its own design.
 
 ## 16 November 2026: 1.6.2
 
