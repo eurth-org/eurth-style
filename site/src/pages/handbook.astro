@@ -77,6 +77,23 @@ const sections = [...html.matchAll(/<h2 id="([^"]+)">([\s\S]*?)<\/h2>/g)].map(([
     background: var(--surface-raised);
   }
 
+  /* Highlighted code: every colour is a text token that the contrast test holds to 7:1 on
+     surface-raised in both themes, and tests/site.test.js checks the list against that test.
+     No red, which would read as an error. */
+  .handbook :global(.astro-code) {
+    --astro-code-background: var(--surface-raised);
+    --astro-code-foreground: var(--ink);
+    --astro-code-token-keyword: var(--accent-text);
+    --astro-code-token-function: var(--accent-text);
+    --astro-code-token-link: var(--accent-text);
+    --astro-code-token-string: var(--success-text);
+    --astro-code-token-string-expression: var(--success-text);
+    --astro-code-token-constant: var(--caution-text);
+    --astro-code-token-parameter: var(--ink);
+    --astro-code-token-comment: var(--ink-muted);
+    --astro-code-token-punctuation: var(--ink-muted);
+  }
+
   .handbook :global(.eu-scroll),
   .handbook :global(table) {
     display: block;
