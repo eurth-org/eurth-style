@@ -3,10 +3,10 @@
    * Without signal, a note says the tool still works: it runs from the copy the service worker
    * keeps on the device. Back online, the note goes, with a word to say so. Page.astro places it.
    */
-  import { faSignal } from '@fortawesome/free-solid-svg-icons';
   import { onMount } from 'svelte';
   import { toast } from '../fun.js';
-  import Icon from './Icon.svelte';
+  import { lineCloudAltOff } from '../line.js';
+  import Line from './Line.svelte';
 
   let { name }: { name: string } = $props();
 
@@ -29,5 +29,5 @@
 </script>
 
 {#if !online}
-  <p class="eu-offline" role="status"><Icon icon={faSignal} /> No signal: {name} keeps working from the copy on this device.</p>
+  <p class="eu-offline" role="status"><Line icon={lineCloudAltOff} /> No signal: {name} keeps working from the copy on this device.</p>
 {/if}

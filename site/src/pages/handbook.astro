@@ -4,6 +4,7 @@
 // has opened, decided when the site is built.
 import { compiledContent } from '../../../HANDBOOK.md';
 import Page from '../../../src/components/Page.astro';
+import PageHead from '../../../src/components/PageHead.astro';
 import { findTool, hasLaunched } from '../../../src/build.js';
 import { site } from '../../eurth.config.mjs';
 
@@ -21,6 +22,30 @@ const sections = [...html.matchAll(/<h2 id="([^"]+)">([\s\S]*?)<\/h2>/g)].map(([
   description="The rules every Eurth worldbuilding tool follows: stack, look, shell, privacy, accessibility, search, sharing, offline, delight and writing."
   crumbs={[{ name: 'Handbook', path: '/handbook/' }]}
 >
+  <PageHead site={site} kicker="Handbook" title="The Eurth tools handbook" lead="The rules every Eurth tool follows, so that seventeen tools read as one suite. On shared matters the handbook wins.">
+    <span><code>HANDBOOK.md</code>, as it is in the package</span>
+    <svg slot="art" class="anatomy" viewBox="0 0 360 240" role="img" aria-label="A page of an Eurth tool: a blue bar with white pills at the top, the tool's name under it, the tool itself in the middle, the footer's text, and a blue bar with white pills at the foot.">
+      <rect width="360" height="240" fill="var(--surface)"></rect>
+      <rect width="360" height="30" fill="var(--accent-fill)"></rect>
+      <rect x="196" y="8" width="44" height="14" rx="4" fill="var(--night)"></rect>
+      <rect x="246" y="8" width="38" height="14" rx="4" fill="var(--on-accent)"></rect>
+      <rect x="290" y="8" width="38" height="14" rx="4" fill="var(--on-accent)"></rect>
+      <circle cx="343" cy="15" r="7" fill="var(--on-accent)"></circle>
+      <circle cx="28" cy="48" r="9" fill="var(--accent-fill)"></circle>
+      <rect x="44" y="43" width="72" height="10" rx="3" fill="var(--ink)"></rect>
+      <rect x="124" y="45" width="60" height="6" rx="3" fill="var(--ink-muted)"></rect>
+      <rect x="0" y="65" width="360" height="1" fill="var(--line-strong)"></rect>
+      <rect x="18" y="80" width="150" height="96" rx="8" fill="var(--surface-raised)" stroke="var(--line-strong)"></rect>
+      <rect x="182" y="80" width="160" height="96" rx="8" fill="var(--surface-raised)" stroke="var(--line-strong)"></rect>
+      <rect x="18" y="190" width="200" height="5" rx="2.5" fill="var(--ink-muted)"></rect>
+      <rect x="18" y="200" width="150" height="5" rx="2.5" fill="var(--ink-muted)"></rect>
+      <rect y="214" width="360" height="26" fill="var(--accent-fill)"></rect>
+      <rect x="96" y="220" width="38" height="14" rx="4" fill="var(--on-accent)"></rect>
+      <rect x="140" y="220" width="38" height="14" rx="4" fill="var(--on-accent)"></rect>
+      <rect x="184" y="220" width="38" height="14" rx="4" fill="var(--on-accent)"></rect>
+      <rect x="228" y="220" width="38" height="14" rx="4" fill="var(--on-accent)"></rect>
+    </svg>
+  </PageHead>
   <div class="layout">
     <nav class="contents" aria-label="Sections of the handbook">
       <p class="eu-kicker">In the handbook</p>
@@ -29,8 +54,6 @@ const sections = [...html.matchAll(/<h2 id="([^"]+)">([\s\S]*?)<\/h2>/g)].map(([
       </ul>
     </nav>
     <article class="eu-prose handbook">
-      <p class="eu-kicker">HANDBOOK.md · the rules</p>
-      <h1>The Eurth tools handbook</h1>
       <Fragment set:html={html} />
     </article>
   </div>

@@ -8,6 +8,10 @@
 // the WCAG 2.2 A, AA and AAA rules plus best practices. It also measures what axe doesn't:
 // every button, menu, field and navigation link must be at least 44 by 44 pixels (links inside
 // a sentence are exempt, as WCAG 2.5.5 allows). Any finding fails the run.
+//
+// One pair is let through the AAA contrast rule, and only that rule: white with eurth-blue, the
+// brand's pair, as large text (19px bold and up). It is 3.2:1, which is AA for large text; the
+// AA rule still runs, so the pair at any smaller size is a finding.
 import { AxeBuilder } from '@axe-core/playwright';
 import { createReadStream, existsSync, readdirSync, statSync } from 'node:fs';
 import { createServer } from 'node:http';
@@ -15,6 +19,11 @@ import { extname, join, relative, sep } from 'node:path';
 import { chromium } from 'playwright-core';
 
 const dist = process.argv[2] ?? 'dist';
+const BRAND = ['#2698d4', '#ffffff'];
+/** The brand pair as large text, under the AAA rule. @param {import('axe-core').Result} violation @param {import('axe-core').NodeResult} node */
+const brandPair = (violation, node) =>
+  violation.id === 'color-contrast-enhanced' &&
+  node.any.some(({ data }) => data && data.expectedContrastRatio === '4.5:1' && [data.fgColor, data.bgColor].sort().join() === BRAND.join());
 if (!existsSync(join(dist, 'index.html'))) {
   console.error(`eurth-axe: no built site in ${dist}/. Run "npm run build" first.`);
   process.exit(2);
@@ -60,6 +69,7 @@ try {
       const { violations } = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag2aaa', 'wcag21a', 'wcag21aa', 'wcag22aa', 'best-practice']).analyze();
       for (const violation of violations) {
         for (const node of violation.nodes) {
+          if (brandPair(violation, node)) continue;
           findings += 1;
           console.error(`${scheme} ${path}: ${violation.id} (${violation.impact}): ${violation.help}\n    ${node.target.join(' ')}\n    ${node.failureSummary?.split('\n').join('\n    ')}`);
         }

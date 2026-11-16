@@ -22,7 +22,8 @@ const yurt = readFileSync(new URL('./assets/eurth-yurt-circle.svg', import.meta.
 
 /**
  * The suite's sharing image, as a page to photograph: Night ground, the yurt and the tool's
- * name, its tagline, its address in the pill, and the tool's own picture on the right.
+ * name, its tagline, its address in white on the eurth-blue pill, and the tool's own picture
+ * on the right.
  * @param {{ site: import('./build.js').Site & { host: string }, art?: string, title?: string, line?: string }} options
  *   art: HTML or SVG for the right half; title and line: for a page's own image (defaults: the site's name and tagline)
  */
@@ -35,7 +36,7 @@ export function sharingImage({ site, art = '', title = site.name, line = site.ta
     .brand svg{width:72px;height:72px;flex:none}
     h1{margin:0;font-size:${title.length > 16 ? 64 : 84}px;line-height:1.05;font-weight:700}
     p{margin:0;font-size:36px;line-height:1.25}
-    .pill{align-self:flex-start;margin-top:12px;padding:10px 24px;border-radius:12px;background:${night['accent-fill']};color:${night['on-accent-small']};font-size:30px;font-weight:700}
+    .pill{align-self:flex-start;margin-top:12px;padding:10px 24px;border-radius:12px;background:${night['accent-fill']};color:${night['on-accent']};font-size:30px;font-weight:700}
     .art{flex:none;width:480px;display:flex;align-items:center;justify-content:center;padding:48px 64px 48px 0;box-sizing:border-box}
     .art>*{max-width:100%;max-height:100%}
   </style><body>

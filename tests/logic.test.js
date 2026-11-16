@@ -10,7 +10,8 @@ import { decodeState, encodeState, stateLink } from '../src/link.js';
 import { DEFAULTS, decodePrefs, encodePrefs } from '../src/prefs.js';
 import { APPROVED, seasonOf } from '../src/seasonal.js';
 import { ART } from '../src/seasonal-art.js';
-import { markdownText, shareTargets } from '../src/share.js';
+import { lineConfirm, lineHeartFilled, lineStill, lineSunnyLoop, lineSvg } from '../src/line.js';
+import { markdownTable, markdownText, shareTargets } from '../src/share.js';
 import { HEAD_SCRIPT } from '../src/generated.js';
 
 const site = defineSite({
@@ -169,6 +170,40 @@ describe('sharing', () => {
 
   it('keeps a typed name from turning into Markdown', () => {
     expect(markdownText('*Orioni* [x](y)')).toBe('\\*Orioni\\* \\[x\\]\\(y\\)');
+  });
+});
+
+describe('Markdown', () => {
+  it('writes a table, with cells kept literal', () => {
+    expect(markdownTable(['Name', 'Seats'], [['A|B', 12], ['*Reds*', 7]])).toBe('| Name | Seats |\n| --- | --- |\n| A\\|B | 12 |\n| \\*Reds\\* | 7 |');
+  });
+
+  it('keeps a cell on one line', () => {
+    expect(markdownTable(['Note'], [['one\ntwo']])).toContain('| one two |');
+  });
+});
+
+describe('line-md icons', () => {
+  it('have a finished drawing with nothing that moves', () => {
+    for (const icon of [lineConfirm, lineHeartFilled, lineSunnyLoop]) {
+      const still = lineStill(icon);
+      expect(still).not.toMatch(/<(animate|set)\b/);
+      expect(still).toContain('<path');
+    }
+  });
+
+  it('end where their animations leave them', () => {
+    expect(lineStill(lineConfirm)).toContain('stroke-dashoffset="0"');
+    expect(lineStill(lineHeartFilled)).toContain('fill-opacity="1"');
+  });
+
+  it('carry both drawings, with ids of their own', () => {
+    const svg = lineSvg(lineConfirm, 'a1');
+    expect(svg).toContain('class="eu-line-moving"');
+    expect(svg).toContain('class="eu-line-still"');
+    const ids = (text) => [...text.matchAll(/\bid="([^"]+)"/g)].map((m) => m[1]);
+    const twice = [...ids(lineSvg(lineSunnyLoop, 'a1')), ...ids(lineSvg(lineSunnyLoop, 'a2'))];
+    expect(new Set(twice).size).toBe(twice.length);
   });
 });
 

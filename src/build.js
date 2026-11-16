@@ -29,7 +29,8 @@ import catalogue from '../tools.json' with { type: 'json' };
  * @property {string} title        The start page's title: "<Name>: free online <thing> maker for worldbuilders".
  * @property {string} description  The start page's description, and the default for pages without their own.
  * @property {string} tagline      A few words: "Flags made to fly".
- * @property {{ href: string, label: string }[]} pages  The tool's own pages for the header, start page first.
+ * @property {{ href: string, label: string, icon?: import('@fortawesome/free-solid-svg-icons').IconDefinition | import('./line-md.js').LineIcon }[]} pages
+ *   The tool's own pages for the header, start page first. The usual ones (/, /guide/, /glossary/, /templates/, /examples/) have an icon already; give any other page one.
  * @property {string} repo         "https://github.com/eurth-org/eurth-flag".
  * @property {string} ogAlt        What the sharing image shows, in a sentence.
  * @property {string} [category]   schema.org applicationCategory (default "DesignApplication").
@@ -48,7 +49,7 @@ export const EURTH = /** @type {const} */ ({
   map: 'https://map.eurth.org',
   news: 'https://news.eurth.org',
   status: 'https://status.eurth.org',
-  orioni: 'https://iiwiki.com/w/Orioni',
+  orioni: 'https://eurth.org/u/orioni',
 });
 
 /**

@@ -1,12 +1,15 @@
 ---
-// The footer: the rest of Eurth and the other tools, who made this, the promises, the credits.
-// No donation links. Tools are listed only once their launch date has passed at build time; the
-// GitHub link appears from 25 December 2026, and no page links to GitHub before then.
+// The footer, in the page's column: the other tools, who made this, the promises, the credits
+// and this visit's switches. Under it the rest of Eurth in a blue bar like the one at the top:
+// Forums, Map, News, Status and Join Eurth. No donation links.
+//
+// Tools are listed only once their launch date has passed at build time; the GitHub link appears
+// from 25 December 2026, and no page links to GitHub before then.
 //
 // A tool adds its own inspirations through Page.astro's "inspirations" slot.
-import { faHeart } from '@fortawesome/free-solid-svg-icons';
 import { EURTH, buildTime, githubLinksAllowed, launchedTools, ref, type Site } from '../build.js';
-import Fa from './Fa.astro';
+import { lineChatRoundDots, lineGauge, lineHeartFilled, lineMapMarker, linePersonAdd, lineTextBoxMultiple } from '../line.js';
+import Line from './Line.astro';
 import VisitSwitches from './VisitSwitches.svelte';
 
 interface Props {
@@ -22,47 +25,55 @@ const year = buildTime().getFullYear();
 ---
 
 <footer class="eu-footer">
-  <nav class="eu-footer-nav" aria-label="Eurth">
-    <a href={out(EURTH.forums)}>Forums</a>
-    <a href={out(EURTH.map)}>Map</a>
-    <a href={out(EURTH.news)}>News</a>
+  <div class="eu-column eu-footer-text">
     {
-      tools.map((tool) => (
-        <a href={tool.id === site.id ? '/' : out(tool.url)} data-same-tab>
-          {tool.name}
-        </a>
-      ))
-    }
-    {
-      hub && (
-        <a href={hub.id === site.id ? '/' : out(hub.url)} data-same-tab>
-          All tools
-        </a>
+      (tools.length > 0 || hub) && (
+        <nav class="eu-footer-nav" aria-label="Eurth's tools">
+          {tools.map((tool) => (
+            <a href={tool.id === site.id ? '/' : out(tool.url)} data-same-tab>
+              {tool.name}
+            </a>
+          ))}
+          {hub && (
+            <a href={hub.id === site.id ? '/' : out(hub.url)} data-same-tab>
+              All tools
+            </a>
+          )}
+        </nav>
       )
     }
-    <a href={out(EURTH.status)}>Status</a>
+    <p>
+      <span class="eu-heart"><Line icon={lineHeartFilled} /></span>
+      Made by <a href={out(EURTH.orioni)}>Orioni</a> for <a href={out(EURTH.home)}>Eurth</a>, a worldbuilding and roleplay community since
+      2004. <slot name="inspirations" />
+    </p>
+    <p>
+      <span class="eu-heart"><Line icon={lineHeartFilled} /></span>
+      Free forever: no ads, no analytics, trackers, cookies or accounts. Made for fiction and fun.
+    </p>
+    <p>
+      Icons: <a href={out('https://fontawesome.com')}>Font Awesome</a> (CC BY 4.0) and {
+        github ? <a href={out('https://github.com/cyberalien/line-md')}>line-md</a> : 'line-md'
+      } (MIT). © {year > 2026 ? `2026–${year}` : '2026'} Eurth{' · '}<a href="https://www.apache.org/licenses/LICENSE-2.0">Apache 2.0</a>{
+        github && (
+          <>
+            {' · '}
+            <a href={out(site.repo)}>GitHub</a>
+          </>
+        )
+      }
+    </p>
+    <!-- These need script to do anything, so they arrive with it. -->
+    <div class="eu-visit"><VisitSwitches client:only="svelte" name={site.name} sound={site.sound ?? false} /></div>
+  </div>
+
+  <nav class="eu-bottombar" aria-label="Eurth">
+    <div class="eu-bar">
+      <a class="eu-barlink" href={out(EURTH.forums)}><Line icon={lineChatRoundDots} /> Forums</a>
+      <a class="eu-barlink" href={out(EURTH.map)}><Line icon={lineMapMarker} /> Map</a>
+      <a class="eu-barlink" href={out(EURTH.news)}><Line icon={lineTextBoxMultiple} /> News</a>
+      <a class="eu-barlink" href={out(EURTH.status)}><Line icon={lineGauge} /> Status</a>
+      <a class="eu-barlink" href={out(EURTH.join)}><Line icon={linePersonAdd} /> Join Eurth</a>
+    </div>
   </nav>
-  <p>
-    <span class="eu-heart"><Fa icon={faHeart} /></span>
-    Made by <a href={out(EURTH.orioni)}>Orioni</a> for <a href={out(EURTH.home)}>Eurth</a>, a worldbuilding and roleplay community since
-    2004. <slot name="inspirations" />
-  </p>
-  <p>
-    <span class="eu-heart"><Fa icon={faHeart} /></span>
-    Free forever: no ads, no analytics, trackers, cookies or accounts. Made for fiction and fun.
-  </p>
-  <p>
-    Icons: <a href={out('https://fontawesome.com')}>Font Awesome</a> (CC BY 4.0) and {
-      github ? <a href={out('https://github.com/cyberalien/line-md')}>line-md</a> : 'line-md'
-    } (MIT). © {year > 2026 ? `2026–${year}` : '2026'} Eurth{' · '}<a href="https://www.apache.org/licenses/LICENSE-2.0">Apache 2.0</a>{
-      github && (
-        <>
-          {' · '}
-          <a href={out(site.repo)}>GitHub</a>
-        </>
-      )
-    }
-  </p>
-  <!-- These need script to do anything, so they arrive with it. -->
-  <div class="eu-visit"><VisitSwitches client:only="svelte" name={site.name} sound={site.sound ?? false} /></div>
 </footer>

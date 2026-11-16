@@ -1,0 +1,53 @@
+---
+// The head of a written page (a guide, a glossary, templates): the trail back to the start,
+// what kind of page it is, the headline, a lead, the day it was last brought up to date, and a
+// picture of the subject on the right. Put it first inside <Page>.
+//
+//   <PageHead site={site} kicker="Guide" title="How to design a good flag" updated="2026-11-14">
+//     <Fragment slot="lead">Five principles, each with a flag that follows it.</Fragment>
+//     <img slot="art" src={flag} alt="A blue flag with a gold sun." width="600" height="400" />
+//   </PageHead>
+import type { Site } from '../build.js';
+import { lineCalendar } from '../line.js';
+import Line from './Line.astro';
+
+interface Props {
+  site: Site & { host: string };
+  /** One word for the kind of page: "Guide". It is also the last step of the trail. */
+  kicker: string;
+  /** The page's one headline. */
+  title: string;
+  /** A sentence or two under the headline. For links or emphasis, use the "lead" slot instead. */
+  lead?: string;
+  /** The day the page was last brought up to date: YYYY-MM-DD. */
+  updated?: string;
+}
+const { site, kicker, title, lead, updated } = Astro.props;
+const day = updated ? new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' }).format(new Date(`${updated}T00:00:00Z`)) : '';
+---
+
+<header class:list={['eu-pagehead', !Astro.slots.has('art') && 'eu-pagehead--plain']}>
+  <div class="eu-pagehead-words">
+    <nav aria-label="You are here">
+      <ol class="eu-crumbs">
+        <li><a href="/">{site.name}</a></li>
+        <li aria-current="page">{kicker}</li>
+      </ol>
+    </nav>
+    <h1>{title}</h1>
+    {(lead || Astro.slots.has('lead')) && <p class="eu-lead">{lead}<slot name="lead" /></p>}
+    {
+      (updated || Astro.slots.has('default')) && (
+        <p class="eu-pagemeta">
+          {updated && (
+            <span>
+              <Line icon={lineCalendar} /> Last updated <time datetime={updated}>{day}</time>
+            </span>
+          )}
+          <slot />
+        </p>
+      )
+    }
+  </div>
+  {Astro.slots.has('art') && <div class="eu-pagehead-art"><slot name="art" /></div>}
+</header>

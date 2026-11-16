@@ -11,5 +11,14 @@ Every numbered point from the reviews, and the release that did it. The releases
 | 7 | Carry on with the roadmap: the smoke test in CI, the profile's schema at its address | 1.1.0 |
 | 8 | Flagwright and Governmint onto the shared shell | Under way, on a `shared-shell` branch in each; what it turned up in this package went into 1.1.1 and 1.2.0 |
 | 9 | A WebP download that Safari answers with a PNG is named `.png`, for every tool | 1.3.0 (`pictureFilename()`; each tool still has to call it) |
+| 10 | Header: the big Join Eurth pill is too obvious; it belongs in the footer | 1.4.0 (in the blue bar at the foot of every page) |
+| 11 | Footer: its text hugs the left edge on big screens, not the centred column | 1.4.0 (`eu-column`) |
+| 12 | Icons: line-md was asked for, and hardly any were in use | 1.4.0 (`@eurth/style/line`, `Line`, used across the shell; each tool still has its own toolbar to do) |
+| 13 | Random on every tool, red when pointed at, warning the first time only | 1.4.0 (`RandomButton.svelte`) |
+| 14 | Subpages look basic; add pictures where relevant | 1.4.0 (`PageHead`, `Figure`, `Note`, `Toc`, the page classes, the starter's pages; each tool still has its own pages to do) |
+| 15 | White labels on eurth-blue, as on the forum, on pages and on sharing cards | 1.4.0 (at 19px bold: AA for large text, the one exception to AAA) |
+| 16 | A blue header with white buttons and blue labels, as on Governmint, Flagwright and eurth.org | 1.4.0 |
+| 17 | Export and save: Markdown is often missing | 1.4.0 (`markdown` on `ShareButtons`, `markdownTable()`, a handbook rule; each tool still has its own exports to do) |
+| 18 | Footer: "Orioni" links to the profile on eurth.org, not to iiwiki | 1.4.0 (`EURTH.orioni`) |
 | 4 | style.eurth.org deployed through CI, showing only tools that have launched | 1.0.0 |
 | 5 | Node 26 for building and in every CI workflow | 1.0.0 |

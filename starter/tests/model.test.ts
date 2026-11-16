@@ -1,6 +1,6 @@
 import { decodeState, encodeState } from '@eurth/style';
 import { describe as group, expect, it } from 'vitest';
-import { clean, compact, defaults, describe, plateSvg, templates } from '../src/tool/model';
+import { clean, compact, defaults, describe, markdown, plateSvg, templates } from '../src/tool/model';
 
 group('a plate in its link', () => {
   it('comes back as it went in', () => {
@@ -22,6 +22,14 @@ group('a plate in its link', () => {
 group('the result', () => {
   it('is described in words', () => {
     expect(describe(templates[1]!.plate)).toBe('The motto of Hohenfels: “We were here first”. A grand plate, carved in granite (gravitas 96 out of 100).');
+  });
+
+  it('is written as Markdown, with what a visitor typed kept literal', () => {
+    const text = markdown({ ...defaults, nation: '# Loud *Isles*', motto: 'One | two' }, 'https://starter.eurth.org/?d=1.x');
+    expect(text).toContain('## \\# Loud \\*Isles\\*');
+    expect(text).toContain('> One \\| two');
+    expect(text).toContain('| Gravitas | Style |');
+    expect(text).toContain('[Open this plate in Starter](https://starter.eurth.org/?d=1.x)');
   });
 
   it('is drawn without letting text become markup', () => {

@@ -4,12 +4,12 @@
    * is off until switched on; motion follows the device until switched off (the pause WCAG
    * 2.2.2 asks for). None of it is remembered beyond the visit.
    */
-  import { faPause, faPlay, faVolumeHigh, faVolumeXmark } from '@fortawesome/free-solid-svg-icons';
   import { onMount } from 'svelte';
   import { toast } from '../fun.js';
   import { getPrefs, onPrefs, setPrefs } from '../prefs.js';
-  import Icon from './Icon.svelte';
+  import { linePause, linePlay, lineVolumeHigh, lineVolumeHighOff } from '../line.js';
   import InstallButton from './InstallButton.svelte';
+  import Line from './Line.svelte';
 
   let { name, sound = false }: { name: string; sound?: boolean } = $props();
 
@@ -36,13 +36,13 @@
 <InstallButton {name} />
 {#if sound}
   <button type="button" class="eu-btn" aria-pressed={prefs.sound} onclick={toggleSound}>
-    <Icon icon={prefs.sound ? faVolumeHigh : faVolumeXmark} />
+    <Line icon={prefs.sound ? lineVolumeHigh : lineVolumeHighOff} />
     Sound: {prefs.sound ? 'on' : 'off'}
   </button>
 {/if}
 {#if !deviceCalm}
   <button type="button" class="eu-btn" aria-pressed={!prefs.motion} onclick={toggleMotion}>
-    <Icon icon={prefs.motion ? faPause : faPlay} />
+    <Line icon={prefs.motion ? linePause : linePlay} />
     {prefs.motion ? 'Stop motion' : 'Motion: off'}
   </button>
 {/if}

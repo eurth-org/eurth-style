@@ -5,18 +5,22 @@
    *   - the state lives in the link (?d=…), read safely on arrival and kept in step after;
    *   - nothing is stored: "save" is a link, a picture or the nation's profile file;
    *   - every result has a written description;
-   *   - the share row, toasts, "Nice." and click answers come from @eurth/style;
+   *   - every result with words in it can be taken away as Markdown too;
+   *   - the share row, Random, toasts, "Nice." and click answers come from @eurth/style;
    *   - only tokens and eu- classes: no colour, font or spacing of its own.
    * The tool's own actions (Random, Start again) sit in its own toolbar, not in the header.
    */
-  import { faCheck, faDice, faDownload, faRotateLeft } from '@fortawesome/free-solid-svg-icons';
+  import { faCheck, faRotateLeft } from '@fortawesome/free-solid-svg-icons';
   import { createProfile, getSection, setNation, type EurthProfile } from '@eurth/profile';
   import ProfileButtons from '@eurth/profile/ProfileButtons.svelte';
   import { download, fileSlug, niceWatcher, playTones, stateFromLocation, stateLink, stateToLocation, svgToPicture, toast } from '@eurth/style';
   import Icon from '@eurth/style/components/Icon.svelte';
+  import Line from '@eurth/style/components/Line.svelte';
+  import RandomButton from '@eurth/style/components/RandomButton.svelte';
   import ShareButtons from '@eurth/style/components/ShareButtons.svelte';
+  import { lineDownloadOutline } from '@eurth/style/line';
   import { onMount } from 'svelte';
-  import { STYLES, clean, compact, defaults, describe, plateSvg, random, type Plate } from './model';
+  import { STYLES, clean, compact, defaults, describe, markdown, plateSvg, random, type Plate } from './model';
 
   // Passed in by the page: browser code never imports eurth.config.mjs (see the note there).
   let { siteName, siteUrl }: { siteName: string; siteUrl: string } = $props();
@@ -31,6 +35,8 @@
   const description = $derived(describe(plate));
   // Before the page has loaded there is no address to read: the site's own, then.
   const link = $derived(stateLink(compact(plate), { base: ready ? location.href : `${siteUrl}/` }));
+  // Random only asks before it rolls when there is something to lose.
+  const changed = $derived(Object.keys(compact(plate)).length > 0);
   const title = $derived(plate.nation ? `${plate.nation}: “${plate.motto}”` : `“${plate.motto}”`);
 
   onMount(() => {
@@ -80,7 +86,7 @@
 <div class="maker">
   <form class="eu-card controls" onsubmit={(e) => e.preventDefault()}>
     <div class="eu-row">
-      <button type="button" class="eu-btn" data-click="tumble" onclick={() => (plate = random())}><Icon icon={faDice} /> Random</button>
+      <RandomButton onrandom={() => (plate = random())} guard={changed} what="plate" />
       <button type="button" class="eu-btn" data-click="spin" onclick={startAgain}><Icon icon={faRotateLeft} /> Start again</button>
     </div>
 
@@ -124,6 +130,7 @@
       {title}
       text={`${description} Made with ${siteName}.`}
       description={() => description}
+      markdown={() => markdown(plate, link)}
       picture={() => svgToPicture(svg, { width: 1200, height: 630 })}
       heading={plate.nation ? `Share ${plate.nation}` : 'Share your plate'}
       said={{ link: 'Link copied: the plate is in it.' }}
@@ -132,7 +139,7 @@
 
     <div class="eu-row">
       <button type="button" class="eu-btn" data-click="bounce" onclick={() => download(svg, `${fileSlug(plate.nation, 'plate')}-motto.svg`, 'image/svg+xml')}>
-        <Icon icon={faDownload} /> SVG
+        <Line icon={lineDownloadOutline} /> SVG
       </button>
       <button
         type="button"
@@ -140,7 +147,10 @@
         data-click="bounce"
         onclick={async () => download(await svgToPicture(svg, { width: 1200, height: 630 }), `${fileSlug(plate.nation, 'plate')}-motto.png`)}
       >
-        <Icon icon={faDownload} /> PNG
+        <Line icon={lineDownloadOutline} /> PNG
+      </button>
+      <button type="button" class="eu-btn" data-click="bounce" onclick={() => download(markdown(plate, link), `${fileSlug(plate.nation, 'plate')}-motto.md`, 'text/markdown')}>
+        <Line icon={lineDownloadOutline} /> Markdown
       </button>
       <ProfileButtons profile={saved} onload={loaded} onerror={(errors) => toast(errors[0]?.message ?? "That file isn't a nation profile.")} />
     </div>

@@ -1,0 +1,21 @@
+---
+// A line-md icon, drawn at build time: it draws itself when the page opens, again when it comes
+// into view and when its button or link is pointed at (src/fun.js, lineIcons). With reduced
+// motion, or motion switched off in the footer, the finished drawing shows instead.
+//
+//   import { lineHeartFilled } from '@eurth/style/line';
+//   <Line icon={lineHeartFilled} />
+import { lineSvg, type LineIcon } from '../line.js';
+
+interface Props {
+  icon: LineIcon;
+  class?: string;
+  /** An accessible name, when the icon stands alone. Without one it's decorative. */
+  label?: string;
+}
+const { icon, class: cls, label } = Astro.props;
+// One number per icon on the page, so ids inside two copies never meet.
+const count = ((globalThis as { euLine?: number }).euLine = ((globalThis as { euLine?: number }).euLine ?? 0) + 1);
+---
+
+<span class:list={['eu-line', cls]} role={label ? 'img' : undefined} aria-label={label} aria-hidden={label ? undefined : 'true'} set:html={lineSvg(icon, `a${count}`)} />

@@ -4,11 +4,13 @@
    * (Chrome, Edge, Android), and on iPhones and iPads, where it explains Add to Home Screen.
    * The footer carries one; a tool may place another.
    */
-  import { faArrowUpFromBracket, faDownload, faXmark } from '@fortawesome/free-solid-svg-icons';
+  import { faArrowUpFromBracket } from '@fortawesome/free-solid-svg-icons';
   import { onMount } from 'svelte';
   import { toast } from '../fun.js';
   import { install, installWay, onInstallChange } from '../install.js';
+  import { lineCellphoneArrowDown, lineClose } from '../line.js';
   import Icon from './Icon.svelte';
+  import Line from './Line.svelte';
 
   let { name }: { name: string } = $props();
 
@@ -27,13 +29,13 @@
 </script>
 
 {#if way}
-  <button type="button" class="eu-btn" data-click="bounce" onclick={press}><Icon icon={faDownload} /> Install app</button>
+  <button type="button" class="eu-btn" data-click="bounce" onclick={press}><Line icon={lineCellphoneArrowDown} /> Install app</button>
 {/if}
 {#if way === 'ios'}
   <dialog bind:this={dialog} class="eu-dialog" aria-labelledby="eu-install-title">
     <div class="eu-dialog-top">
       <h2 id="eu-install-title">Add {name} to your Home Screen</h2>
-      <button type="button" class="eu-btn eu-btn--quiet eu-btn--icon" aria-label="Close" onclick={() => dialog?.close()}><Icon icon={faXmark} /></button>
+      <button type="button" class="eu-btn eu-btn--quiet eu-btn--icon" aria-label="Close" onclick={() => dialog?.close()}><Line icon={lineClose} /></button>
     </div>
     <ol class="steps">
       <li>Tap the Share button <Icon icon={faArrowUpFromBracket} label="(a square with an arrow pointing up)" /> in Safari's toolbar.</li>

@@ -12,7 +12,7 @@ export async function surface() {
   const css = read('dist/eurth.css');
   const pkg = JSON.parse(read('package.json'));
   const modules = {};
-  for (const entry of ['index', 'build', 'astro/integration', 'testing/index', 'images']) {
+  for (const entry of ['index', 'build', 'astro/integration', 'testing/index', 'images', 'line']) {
     modules[entry] = Object.keys(await import(new URL(`src/${entry}.js`, root).href)).sort();
   }
   const components = {};

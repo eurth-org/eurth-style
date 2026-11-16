@@ -1,38 +1,51 @@
 ---
-// The glossary: each term has an id to link to, and the whole set is given to search engines
-// as a DefinedTermSet.
+// The glossary: each term a card with an id to link to and, where one helps, a small picture
+// drawn by the tool's own code. The whole set is given to search engines as a DefinedTermSet.
 import { definedTermSet } from '@eurth/style/build';
 import Page from '@eurth/style/components/Page.astro';
+import PageHead from '@eurth/style/components/PageHead.astro';
 import { site } from '../../eurth.config.mjs';
+import { describe, plateSvg, type Plate } from '../tool/model';
 
-const terms = [
-  { id: 'gravitas', term: 'Gravitas', definition: 'Weight and seriousness of manner. Here: how solemnly a motto is meant, from 0 (a shrug) to 100 (carved in granite).' },
+const picture = (plate: Plate) => `data:image/svg+xml;charset=utf-8,${encodeURIComponent(plateSvg(plate))}`;
+const plain: Plate = { nation: 'Port Verity', motto: 'Steady as she goes', gravitas: 20, style: 'plain' };
+const solemn: Plate = { nation: 'Port Verity', motto: 'Steady as she goes', gravitas: 100, style: 'plain' };
+const grand: Plate = { nation: 'Hohenfels', motto: 'We were here first', gravitas: 60, style: 'grand' };
+
+const terms: { id: string; term: string; definition: string; art?: Plate }[] = [
+  { id: 'gravitas', term: 'Gravitas', definition: 'Weight and seriousness of manner. Here: how solemnly a motto is meant, from 0 (a shrug) to 100 (carved in granite). The frame thickens with it.', art: solemn },
   { id: 'motto', term: 'Motto', definition: 'A short phrase that states what a nation, family or institution stands for. In heraldry it sits on a scroll under or over the arms.' },
-  { id: 'plate', term: 'Plate', definition: 'The framed panel a motto is shown on: the picture this tool makes.' },
+  { id: 'plate', term: 'Plate', definition: 'The framed panel a motto is shown on: the picture this tool makes.', art: plain },
   { id: 'scroll', term: 'Scroll', definition: 'The ribbon in a coat of arms that carries the motto.' },
+  { id: 'grand', term: 'Grand style', definition: 'A plate with a second, inner frame and wider-spaced letters: for nations that like ceremony.', art: grand },
 ];
 ---
 
 <Page
   site={site}
   title="Glossary of motto terms"
-  description="The words used in Starter, explained in a sentence each: gravitas, motto, plate and scroll. A short glossary for worldbuilders."
+  description="The words used in Starter, explained in a sentence each: gravitas, motto, plate, scroll and the grand style. A short glossary for worldbuilders."
   crumbs={[{ name: 'Glossary', path: '/glossary/' }]}
   jsonld={[definedTermSet(site, { name: 'Glossary of motto terms', path: '/glossary/', terms })]}
 >
-  <article class="eu-prose">
-    <p class="eu-kicker">Glossary</p>
-    <h1>Glossary of motto terms</h1>
-    <p class="eu-lead">The words this tool uses, in a sentence each. See the <a href="/guide/">guide</a> for how they fit together, or go straight to the <a href="/">maker</a>.</p>
-    <dl>
-      {
-        terms.map((t) => (
-          <>
-            <dt id={t.id}>{t.term}</dt>
-            <dd>{t.definition}</dd>
-          </>
-        ))
-      }
-    </dl>
-  </article>
+  <PageHead site={site} kicker="Glossary" title="Glossary of motto terms">
+    <Fragment slot="lead">The words this tool uses, in a sentence each. See the <a href="/guide/">guide</a> for how they fit together, or go straight to the <a href="/">maker</a>.</Fragment>
+  </PageHead>
+  <dl class="eu-terms">
+    {
+      terms.map((t) => (
+        <div class="eu-term" id={t.id}>
+          <dt>{t.term}</dt>
+          <dd>
+            {t.art && (
+              <div class="eu-term-art">
+                <img src={picture(t.art)} alt={describe(t.art)} width="1200" height="630" loading="lazy" />
+              </div>
+            )}
+            <span>{t.definition}</span>
+          </dd>
+        </div>
+      ))
+    }
+  </dl>
 </Page>

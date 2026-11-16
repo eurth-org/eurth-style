@@ -1,8 +1,12 @@
 ---
 // The components, each in both themes. The header and footer of this page are the real ones.
-import { faCheck, faDownload, faLink, faShareNodes, faSignal, faTrash, faXmark } from '@fortawesome/free-solid-svg-icons';
+import { faCheck, faDice, faDownload, faShareNodes, faTrash } from '@fortawesome/free-solid-svg-icons';
 import Fa from '../../../src/components/Fa.astro';
+import Figure from '../../../src/components/Figure.astro';
+import Line from '../../../src/components/Line.astro';
+import Note from '../../../src/components/Note.astro';
 import Page from '../../../src/components/Page.astro';
+import * as line from '../../../src/line.js';
 import { APPROVED, SEASONS } from '../../../src/seasonal.js';
 import { ART } from '../../../src/seasonal-art.js';
 import yurt from '../../../src/assets/eurth-yurt-circle.svg?raw';
@@ -10,6 +14,15 @@ import { VERSION } from '../../../src/generated.js';
 import { site } from '../../eurth.config.mjs';
 import Demo from '../parts/Demo.astro';
 import Playground from '../parts/Playground.svelte';
+
+// The line-md icons the shell itself uses, and a few more to show the range.
+const shown = ['lineLink', 'lineConfirm', 'lineImage', 'lineTextBox', 'lineHash', 'lineHeartFilled', 'lineChevronDown', 'lineClose', 'lineChatRoundDots', 'lineMapMarker', 'lineTextBoxMultiple', 'lineGauge', 'linePersonAdd', 'lineCloudAltOff', 'lineCellphoneArrowDown', 'lineVolumeHigh', 'linePause', 'linePlay', 'lineCalendar', 'lineLightbulb', 'lineAlert', 'lineCompass', 'lineEdit', 'lineGrid3', 'lineList', 'lineDownloadLoop', 'lineLoadingLoop', 'lineStarPulsatingLoop'] as const;
+const total = Object.values(line).filter((value) => typeof value === 'object').length;
+
+// A picture drawn with the tokens, standing in for what a tool draws itself.
+const plate = (ground: string, mark: string) =>
+  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 200" role="img" aria-label="A flag: a plain field with a disc in the middle."><rect width="300" height="200" fill="${ground}"/><circle cx="150" cy="100" r="46" fill="${mark}"/></svg>`;
+const busy = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 200" role="img" aria-label="A flag: nine thin stripes, a canton and four small discs."><rect width="300" height="200" fill="var(--cat-amber)"/>${[0, 2, 4, 6, 8].map((i) => `<rect y="${i * 22.3}" width="300" height="22.3" fill="var(--cat-teal)"/>`).join('')}<rect width="130" height="100" fill="var(--festive-red)"/>${[40, 90, 200, 250].map((x) => `<circle cx="${x}" cy="150" r="12" fill="var(--night)"/>`).join('')}</svg>`;
 ---
 
 <Page site={site}>
@@ -25,18 +38,30 @@ import Playground from '../parts/Playground.svelte';
 
     <Demo title="Buttons" uses=".eu-btn  .eu-btn--primary  .eu-btn--quiet  .eu-btn--icon  aria-pressed">
       <div class="eu-row">
-        <button type="button" class="eu-btn eu-btn--primary"><Fa icon={faLink} /> Copy link</button>
+        <button type="button" class="eu-btn eu-btn--primary"><Line icon={line.lineLink} /> Copy link</button>
         <button type="button" class="eu-btn"><Fa icon={faShareNodes} /> Share</button>
         <button type="button" class="eu-btn" aria-pressed="true"><Fa icon={faCheck} /> Advanced</button>
         <button type="button" class="eu-btn" disabled><Fa icon={faDownload} /> Save profile</button>
-        <button type="button" class="eu-btn eu-btn--quiet eu-btn--icon" aria-label="Close" data-tip="Close" data-tip-align="start"><Fa icon={faXmark} /></button>
+        <button type="button" class="eu-btn eu-btn--quiet eu-btn--icon" aria-label="Close" data-tip="Close" data-tip-align="start"><Line icon={line.lineClose} /></button>
       </div>
-      <p class="eu-help">At least 44 by 44 pixels. The main action wears eurth-blue with a 19px bold label; one per group. Off is a dashed edge, not a paler colour.</p>
+      <p class="eu-help">At least 44 by 44 pixels. The main action is eurth-blue with a white label, 19px bold, as on eurth.org; one per group. Off is a dashed edge, not a paler colour.</p>
     </Demo>
 
-    <Demo title="The Join Eurth pill" uses=".eu-join">
+    <Demo title="Actions that throw work away" uses=".eu-btn--risky  .eu-btn--danger  RandomButton.svelte">
+      <div class="eu-row">
+        <button type="button" class="eu-btn eu-btn--risky" data-click="tumble" data-tip="Replaces your design" data-tip-align="start"><Fa icon={faDice} /> Random</button>
+        <button type="button" class="eu-btn eu-btn--danger"><Fa icon={faDice} /> Replace it</button>
+      </div>
+      <p class="eu-help">Point at Random and it turns red and says what will be lost. The first click asks; after one yes it never asks again. Try the real one below.</p>
+    </Demo>
+
+    <Demo title="The blue bars and the Join Eurth pill" uses=".eu-topbar  .eu-bottombar  .eu-barlink  .eu-join">
+      <div class="bar-sample">
+        <a class="eu-barlink" href="/" aria-current="page"><Line icon={line.lineEdit} /> Maker</a>
+        <a class="eu-barlink" href="/handbook/"><Line icon={line.lineCompass} /> Guide</a>
+      </div>
       <p><a class="eu-join" href="https://eurth.org/signup">Join Eurth</a></p>
-      <p class="eu-help">Night on eurth-blue, 19px bold: 4.7:1, which large text needs. It lives in the header, once.</p>
+      <p class="eu-help">White and eurth-blue together, as on eurth.org: 3.2:1, so always 19px bold. The page you're on is filled with night. The bars at the top and foot of this page are the real ones; Join Eurth lives in the one at the foot.</p>
     </Demo>
 
     <Demo title="Options" uses=".eu-pill  .eu-check">
@@ -93,10 +118,76 @@ import Playground from '../parts/Playground.svelte';
     <Demo title="Toast and offline note" uses="toast()  .eu-toast  OfflineNote.svelte">
       <div class="eu-stack still">
         <div class="eu-toast" role="presentation">Freshly drawn, and copied.</div>
-        <p class="eu-offline"><Fa icon={faSignal} /> No signal: Flagwright keeps working from the copy on this device.</p>
+        <p class="eu-offline"><Line icon={line.lineCloudAltOff} /> No signal: Flagwright keeps working from the copy on this device.</p>
       </div>
       <p class="eu-help">A toast speaks in the tool's own voice and leaves after a moment. The offline note stays for as long as it's true; "Back online." follows.</p>
     </Demo>
+
+    <section class="eu-stack" aria-labelledby="line-md">
+      <h2 id="line-md">Animated icons</h2>
+      <p class="eu-lead">line-md icons draw themselves: when the page opens, when they scroll into view and when their button is pointed at. All {total} are in <code>@eurth/style/line</code>; a page downloads only the ones it uses.</p>
+      <ul class="icons">
+        {
+          shown.map((name) => (
+            <li>
+              <button type="button" class="eu-btn eu-btn--quiet">
+                <Line icon={line[name]} /> <code>{name}</code>
+              </button>
+            </li>
+          ))
+        }
+      </ul>
+      <p class="eu-help">Font Awesome stays the set for still icons. With reduced motion, or motion switched off in the footer, each line-md icon shows its finished drawing.</p>
+    </section>
+
+    <section class="eu-stack" aria-labelledby="pages">
+      <h2 id="pages">Written pages</h2>
+      <p class="eu-lead">Guides, glossaries and templates are built from the same few parts, and show what they explain: every tool can draw its own pictures.</p>
+      <div class="eu-card eu-stack">
+        <p><code>PageHead.astro</code> opens the page; the <a href="/handbook/">handbook</a> and <a href="/tokens/">tokens</a> pages use it. Inside the text:</p>
+        <div class="eu-figures">
+          <Figure caption="One field, one charge. Figure.astro, with a verdict." verdict="good"><Fragment set:html={plate('var(--night)', 'var(--cat-amber)')} /></Figure>
+          <Figure caption="Nine stripes, a canton and four discs." verdict="bad"><Fragment set:html={busy} /></Figure>
+        </div>
+        <Note>A tip, from <code>Note.astro</code>. The design check measures exactly this.</Note>
+        <Note kind="caution">Something to watch for: real flags are named as examples, not endorsements.</Note>
+        <dl class="eu-terms">
+          <div class="eu-term" id="term-field">
+            <dt>Field</dt>
+            <dd>
+              <div class="eu-term-art" set:html={plate('var(--cat-teal)', 'var(--cat-teal)')} />
+              <span>The ground of a flag: what everything else sits on. <code>.eu-terms</code> and <code>.eu-term</code>.</span>
+            </dd>
+          </div>
+          <div class="eu-term" id="term-charge">
+            <dt>Charge</dt>
+            <dd>
+              <div class="eu-term-art" set:html={plate('var(--surface)', 'var(--festive-red)')} />
+              <span>An emblem placed on the field.</span>
+            </dd>
+          </div>
+        </dl>
+        <ul class="eu-gallery">
+          <li>
+            <a class="eu-tile" href="/">
+              <div class="eu-tile-art" set:html={plate('var(--accent-fill)', 'var(--on-accent)')} />
+              <div class="eu-tile-words">
+                <h3>A calm republic</h3>
+                <p>A template is a tile: picture first, opening in the maker. <code>.eu-gallery</code> and <code>.eu-tile</code>.</p>
+                <span class="eu-tile-go">Open in the maker <Line icon={line.lineArrowRight} /></span>
+              </div>
+            </a>
+          </li>
+        </ul>
+        <div class="eu-next">
+          <div class="eu-next-words">
+            <h3>Try it</h3>
+            <p><code>.eu-next</code> ends a page by sending the reader on.</p>
+          </div>
+          <a class="eu-btn eu-btn--primary" href="/"><Line icon={line.lineEdit} /> Open the maker</a>
+        </div>
+      </div>
+    </section>
 
     <section class="eu-stack" aria-labelledby="live">
       <h2 id="live">Sharing, toasts and delights, live</h2>
@@ -150,6 +241,30 @@ import Playground from '../parts/Playground.svelte';
     margin: 0;
     padding: 0;
     border: 0;
+  }
+
+  .bar-sample {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    padding: var(--space-2);
+    border-radius: var(--radius-md);
+    background: var(--accent-fill);
+  }
+
+  .icons {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 0 var(--space-4);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .icons .eu-btn {
+    justify-content: flex-start;
+    width: 100%;
+    font: var(--type-body);
   }
 
   /* Shown in place here, not floating at the bottom of the screen. */

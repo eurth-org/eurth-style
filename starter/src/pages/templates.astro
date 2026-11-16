@@ -1,8 +1,11 @@
 ---
-// Templates: ready-made results, each a link into the maker. The links are made at build time
-// with the same code the maker uses, so they can never drift apart.
+// Templates: ready-made results, each a tile that opens in the maker. The links are made at
+// build time with the same code the maker uses, so they can never drift apart.
 import { encodeState } from '@eurth/style';
+import Line from '@eurth/style/components/Line.astro';
 import Page from '@eurth/style/components/Page.astro';
+import PageHead from '@eurth/style/components/PageHead.astro';
+import { lineArrowRight } from '@eurth/style/line';
 import { site } from '../../eurth.config.mjs';
 import { compact, describe, plateSvg, templates } from '../tool/model';
 ---
@@ -13,46 +16,25 @@ import { compact, describe, plateSvg, templates } from '../tool/model';
   description="Three ready-made motto plates to start from: a calm republic, an old mountain kingdom and a federation that hasn't decided. Open one and make it yours."
   crumbs={[{ name: 'Templates', path: '/templates/' }]}
 >
-  <div class="eu-stack">
-    <header class="eu-prose">
-      <p class="eu-kicker">Templates</p>
-      <h1>Motto plate templates</h1>
-      <p class="eu-lead">Somewhere to start. Open one in the <a href="/">maker</a> and change what you like; the <a href="/guide/">guide</a> says what makes a motto last.</p>
-    </header>
-    <ul class="gallery">
-      {
-        templates.map((t) => (
-          <li>
-            <a class="eu-card" href={`/?d=${encodeState(compact(t.plate))}`}>
+  <PageHead site={site} kicker="Templates" title="Motto plate templates">
+    <Fragment slot="lead">Somewhere to start. Open one in the <a href="/">maker</a> and change what you like; the <a href="/guide/">guide</a> says what makes a motto last.</Fragment>
+  </PageHead>
+  <ul class="eu-gallery">
+    {
+      templates.map((t) => (
+        <li>
+          <a class="eu-tile" href={`/?d=${encodeState(compact(t.plate))}`}>
+            <div class="eu-tile-art">
               <img src={`data:image/svg+xml;charset=utf-8,${encodeURIComponent(plateSvg(t.plate))}`} alt={describe(t.plate)} width="1200" height="630" loading="lazy" />
+            </div>
+            <div class="eu-tile-words">
               <h2>{t.name}</h2>
               <p>{t.note}</p>
-            </a>
-          </li>
-        ))
-      }
-    </ul>
-  </div>
+              <span class="eu-tile-go">Open in the maker <Line icon={lineArrowRight} /></span>
+            </div>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
 </Page>
-
-<style>
-  .gallery {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: var(--space-4);
-    margin: 0;
-    padding: 0;
-    list-style: none;
-  }
-
-  .gallery img {
-    display: block;
-    width: 100%;
-    height: auto;
-    border-radius: var(--radius-md);
-  }
-
-  .gallery h2 {
-    font: var(--type-heading);
-  }
-</style>

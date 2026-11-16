@@ -1,12 +1,36 @@
 ---
-// The guide: the subject explained well, with sources and the day it was last brought up to
-// date. Search engines get the breadcrumb and the article's date as structured data.
+// The guide: the subject explained well, with pictures of what it explains, sources and the day
+// it was last brought up to date. Search engines get the breadcrumb and the article's date as
+// structured data. The pictures are drawn at build time by the tool's own code, so they always
+// show what the maker would make.
+import { encodeState } from '@eurth/style';
 import { article, wikipedia } from '@eurth/style/build';
+import Figure from '@eurth/style/components/Figure.astro';
+import Line from '@eurth/style/components/Line.astro';
+import Note from '@eurth/style/components/Note.astro';
 import Page from '@eurth/style/components/Page.astro';
+import PageHead from '@eurth/style/components/PageHead.astro';
+import Toc from '@eurth/style/components/Toc.astro';
+import { lineEdit } from '@eurth/style/line';
 import { site } from '../../eurth.config.mjs';
+import { compact, describe, plateSvg, type Plate } from '../tool/model';
 
-const updated = '2026-11-14';
+const updated = '2026-11-16';
 const description = 'What makes a national motto last: keep it short, say one thing, and mean it. A short guide for worldbuilders, with real examples and sources.';
+
+const picture = (plate: Plate) => `data:image/svg+xml;charset=utf-8,${encodeURIComponent(plateSvg(plate))}`;
+const open = (plate: Plate) => `/?d=${encodeState(compact(plate))}`;
+const short: Plate = { nation: 'Port Verity', motto: 'Steady as she goes', gravitas: 62, style: 'plain' };
+const long: Plate = { nation: 'Port Verity', motto: 'We shall endeavour to remain broadly steady, weather permitting', gravitas: 62, style: 'plain' };
+const light: Plate = { nation: 'The Loose Isles', motto: 'It seemed a good idea', gravitas: 12, style: 'plain' };
+const heavy: Plate = { nation: 'Hohenfels', motto: 'We were here first', gravitas: 96, style: 'grand' };
+const sections = [
+  { id: 'short', label: 'Keep it short' },
+  { id: 'one-thing', label: 'Say one thing' },
+  { id: 'language', label: 'Choose the language on purpose' },
+  { id: 'weight', label: 'Decide how heavily it is meant' },
+  { id: 'sources', label: 'Sources' },
+];
 ---
 
 <Page
@@ -16,37 +40,64 @@ const description = 'What makes a national motto last: keep it short, say one th
   crumbs={[{ name: 'Guide', path: '/guide/' }]}
   jsonld={[article(site, { headline: 'How to write a national motto', path: '/guide/', description, updated })]}
 >
-  <article class="eu-prose">
-    <p class="eu-kicker">Guide</p>
-    <h1>How to write a national motto</h1>
-    <p class="eu-lead">A motto is the shortest thing a country says about itself. The good ones are three or four words that have outlived the governments that chose them.</p>
+  <PageHead site={site} kicker="Guide" title="How to write a national motto" updated={updated} lead="A motto is the shortest thing a country says about itself. The good ones are three or four words that have outlived the governments that chose them.">
+    <img slot="art" src={picture(heavy)} alt={describe(heavy)} width="1200" height="630" />
+  </PageHead>
 
-    <h2>Keep it short</h2>
-    <p>
-      Most national mottos are under six words. France manages three: <i lang="fr">Liberté, égalité, fraternité</i>. A motto has to fit on a coin, a seal and a
-      schoolroom wall; if yours needs a comma and a subordinate clause, it is a mission statement.
-    </p>
+  <div class="eu-article">
+    <article class="eu-prose">
+      <h2 id="short">Keep it short</h2>
+      <p>
+        Most national mottos are under six words. France manages three: <i lang="fr">Liberté, égalité, fraternité</i>. A motto has to fit on a coin, a seal and
+        a schoolroom wall; if yours needs a comma and a subordinate clause, it is a mission statement.
+      </p>
+      <div class="eu-figures">
+        <Figure caption="Four words. It fits a coin." verdict="good">
+          <a href={open(short)}><img src={picture(short)} alt={describe(short)} width="1200" height="630" loading="lazy" /></a>
+        </Figure>
+        <Figure caption="Nine words and a comma: it runs off the plate." verdict="bad">
+          <a href={open(long)}><img src={picture(long)} alt={describe(long)} width="1200" height="630" loading="lazy" /></a>
+        </Figure>
+      </div>
+      <Note>Every picture here opens in the maker, so you can change it and see for yourself.</Note>
 
-    <h2>Say one thing</h2>
-    <p>
-      A motto names what holds the country together: unity, faith, freedom, endurance. Belgium's <i lang="fr">L'union fait la force</i> ("unity makes strength")
-      is one idea, and a telling one for a country of several languages. Pick the tension your nation lives with, and take a side.
-    </p>
+      <h2 id="one-thing">Say one thing</h2>
+      <p>
+        A motto names what holds the country together: unity, faith, freedom, endurance. Belgium's <i lang="fr">L'union fait la force</i> ("unity makes strength")
+        is one idea, and a telling one for a country of several languages. Pick the tension your nation lives with, and take a side.
+      </p>
 
-    <h2>Choose the language on purpose</h2>
-    <p>
-      Latin lends age; a living language lends ownership; an old local language lends roots. Whichever you choose tells readers who the motto is for. The
-      <a href="/glossary/">glossary</a> explains the terms.
-    </p>
+      <h2 id="language">Choose the language on purpose</h2>
+      <p>
+        Latin lends age; a living language lends ownership; an old local language lends roots. Whichever you choose tells readers who the motto is for.
+        The <a href="/glossary/">glossary</a> explains the terms.
+      </p>
 
-    <h2>Try it</h2>
-    <p>Open the <a href="/">maker</a>, or start from one of the <a href="/templates/">templates</a>. When the plate looks right, give it a country: <a href="https://eurth.org">Eurth</a> has a world for it to live in.</p>
+      <h2 id="weight">Decide how heavily it is meant</h2>
+      <p>The same words read differently on a thin frame and a thick one. Gravitas is that weight: how solemnly the nation means what it says.</p>
+      <div class="eu-figures">
+        <Figure caption="Gravitas 12: lightly held. A young federation that hasn't quite decided.">
+          <a href={open(light)}><img src={picture(light)} alt={describe(light)} width="1200" height="630" loading="lazy" /></a>
+        </Figure>
+        <Figure caption="Gravitas 96, in the grand style: carved in granite.">
+          <a href={open(heavy)}><img src={picture(heavy)} alt={describe(heavy)} width="1200" height="630" loading="lazy" /></a>
+        </Figure>
+      </div>
 
-    <h2>Sources</h2>
-    <ul>
-      <li><a href={wikipedia('List of national mottos', site.host)}>List of national mottos</a>, Wikipedia.</li>
-      <li><a href={wikipedia('Motto', site.host)}>Motto</a>, Wikipedia: origins in heraldry.</li>
-    </ul>
-    <p class="eu-muted">Last updated <time datetime={updated}>14 November 2026</time>.</p>
-  </article>
+      <h2 id="sources">Sources</h2>
+      <ul>
+        <li><a href={wikipedia('List of national mottos', site.host)}>List of national mottos</a>, Wikipedia.</li>
+        <li><a href={wikipedia('Motto', site.host)}>Motto</a>, Wikipedia: origins in heraldry.</li>
+      </ul>
+    </article>
+    <Toc items={sections} />
+  </div>
+
+  <div class="eu-next">
+    <div class="eu-next-words">
+      <h2>Try it</h2>
+      <p>Open the maker, or start from one of the <a href="/templates/">templates</a>. When the plate looks right, give it a country: <a href="https://eurth.org">Eurth</a> has a world for it to live in.</p>
+    </div>
+    <a class="eu-btn eu-btn--primary" href="/"><Line icon={lineEdit} /> Open the maker</a>
+  </div>
 </Page>

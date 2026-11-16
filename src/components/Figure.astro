@@ -1,0 +1,38 @@
+---
+// A picture with its caption, for guides and glossaries. The picture goes in the slot (an
+// <img>, or SVG the tool draws itself); the caption says what it shows. Give `verdict` when the
+// picture is an example of doing it well or badly: a word and an icon, never colour alone.
+// Put two side by side in <div class="eu-figures">.
+//
+//   <Figure caption="One field, one charge." verdict="good"><img src={flag} alt="…" width="600" height="400" /></Figure>
+import { faCheck, faXmark } from '@fortawesome/free-solid-svg-icons';
+import Fa from './Fa.astro';
+
+interface Props {
+  /** What the picture shows, in a sentence. For links or emphasis, use the "caption" slot instead. */
+  caption?: string;
+  /** An example of doing it well ("good") or badly ("bad"). */
+  verdict?: 'good' | 'bad';
+  /** The word before the caption. Defaults: "Does." and "Doesn't." */
+  verdictLabel?: string;
+  class?: string;
+}
+const { caption, verdict, verdictLabel = verdict === 'good' ? 'Does.' : "Doesn't.", class: cls } = Astro.props;
+---
+
+<figure class:list={['eu-figure', cls]}>
+  <div class="eu-figure-art"><slot /></div>
+  {
+    (caption || verdict || Astro.slots.has('caption')) && (
+      <figcaption>
+        {verdict && (
+          <span class:list={['eu-verdict', `eu-verdict--${verdict}`]}>
+            <Fa icon={verdict === 'good' ? faCheck : faXmark} /> {verdictLabel}
+          </span>
+        )}
+        {caption}
+        <slot name="caption" />
+      </figcaption>
+    )
+  }
+</figure>

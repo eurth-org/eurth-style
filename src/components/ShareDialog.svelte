@@ -8,11 +8,13 @@
    *   <ShareDialog bind:open url={link} title="Orioni: a kingdom" text="A kingdom by the sea. Made with Governmint." />
    */
   import { faBluesky, faFacebook, faLinkedin, faReddit, faTelegram, faTumblr, faWhatsapp, faXTwitter } from '@fortawesome/free-brands-svg-icons';
-  import { faCopy, faEllipsis, faEnvelope, faShareNodes, faXmark, type IconDefinition } from '@fortawesome/free-solid-svg-icons';
+  import { faCopy, faEllipsis, faEnvelope, faShareNodes, type IconDefinition } from '@fortawesome/free-solid-svg-icons';
   import yurt from '../assets/eurth-yurt-circle.svg?raw';
   import { paperPlane, toast } from '../fun.js';
   import { canShare, copyText, shareSheet, shareTargets } from '../share.js';
+  import { lineClose } from '../line.js';
   import Icon from './Icon.svelte';
+  import Line from './Line.svelte';
 
   let {
     open = $bindable(false),
@@ -72,7 +74,7 @@
 <dialog bind:this={dialog} class="eu-dialog" onclose={() => (open = false)} aria-labelledby="eu-share-title">
   <div class="eu-dialog-top">
     <h2 id="eu-share-title"><Icon icon={faShareNodes} /> {heading}</h2>
-    <button type="button" class="eu-btn eu-btn--quiet eu-btn--icon" aria-label="Close" onclick={() => dialog.close()}><Icon icon={faXmark} /></button>
+    <button type="button" class="eu-btn eu-btn--quiet eu-btn--icon" aria-label="Close" onclick={() => dialog.close()}><Line icon={lineClose} /></button>
   </div>
   <p class="preview">{text}</p>
 

@@ -6,7 +6,7 @@
  * Replace this with your tool's model. Keep the four habits: defaults, clean(), describe() and
  * a picture that takes its colours from the tokens.
  */
-import { resolveColors } from '@eurth/style';
+import { markdownTable, markdownText, resolveColors } from '@eurth/style';
 import tokens from '@eurth/style/tokens.json';
 
 export interface Plate {
@@ -61,6 +61,22 @@ export function describe(plate: Plate): string {
   const whose = plate.nation ? `The motto of ${plate.nation}` : 'A national motto';
   const motto = plate.motto ? `“${plate.motto}”` : 'still to be written';
   return `${whose}: ${motto}. A ${plate.style} plate, ${weight(plate.gravitas)} (gravitas ${plate.gravitas} out of 100).`;
+}
+
+/**
+ * The result as Markdown, for "Copy Markdown" and the .md download: the forum and most wikis
+ * take it. What a visitor typed is written literally (markdownText), so it can't turn into markup.
+ */
+export function markdown(plate: Plate, link: string): string {
+  return [
+    `## ${markdownText(plate.nation || 'A nation')}`,
+    '',
+    `> ${markdownText(plate.motto || '…')}`,
+    '',
+    markdownTable(['Gravitas', 'Style'], [[`${plate.gravitas} out of 100`, plate.style]]),
+    '',
+    `[Open this plate in Starter](${link})`,
+  ].join('\n');
 }
 
 const xml = (s: string): string => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');

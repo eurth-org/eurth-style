@@ -1,0 +1,18 @@
+---
+// An aside in a box: a tip, or something to watch for. The icon says which, as well as the colour.
+//
+//   <Note>The design check measures exactly this.</Note>
+//   <Note kind="caution">Real flags are named as examples, not endorsements.</Note>
+import { lineAlert, lineLightbulb } from '../line.js';
+import Line from './Line.astro';
+
+interface Props {
+  kind?: 'tip' | 'caution';
+}
+const { kind = 'tip' } = Astro.props;
+---
+
+<aside class:list={['eu-note', kind === 'caution' && 'eu-note--caution']}>
+  <Line icon={kind === 'caution' ? lineAlert : lineLightbulb} label={kind === 'caution' ? 'Take care:' : 'Tip:'} />
+  <div><slot /></div>
+</aside>

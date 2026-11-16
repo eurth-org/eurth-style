@@ -20,6 +20,19 @@ export function markdownText(text) {
 }
 
 /**
+ * A table as Markdown, for results that are rows and columns (a list of names, a set of
+ * figures): it pastes into the forum and most wikis as a real table. Cells are written
+ * literally, so nothing a visitor typed turns into markup.
+ * @param {string[]} head  the column headings
+ * @param {(string | number)[][]} rows
+ */
+export function markdownTable(head, rows) {
+  const cell = (/** @type {string | number} */ value) => markdownText(String(value)).replace(/\s*\n\s*/g, ' ');
+  const line = (/** @type {(string | number)[]} */ cells) => `| ${cells.map(cell).join(' | ')} |`;
+  return [line(head), `| ${head.map(() => '---').join(' | ')} |`, ...rows.map(line)].join('\n');
+}
+
+/**
  * The share links, in the suite's order.
  * @param {Shared} shared
  * @returns {ShareTarget[]}

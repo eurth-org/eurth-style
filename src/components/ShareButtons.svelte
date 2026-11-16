@@ -1,20 +1,25 @@
 <script lang="ts">
   /*
-   * The share row under every result: Copy link (a paper plane flies off), Copy picture and
-   * Copy description where the tool gives them, and Share, which opens the dialog.
+   * The share row under every result: Copy link (a paper plane flies off), Copy picture, Copy
+   * description and Copy Markdown where the tool gives them, and Share, which opens the dialog.
    *
-   *   <ShareButtons url={link} title={name} text={summary} description={() => describe(design)} picture={() => pngBlob()} />
+   *   <ShareButtons url={link} title={name} text={summary} description={() => describe(design)}
+   *     markdown={() => asMarkdown(design)} picture={() => pngBlob()} />
    *
    * Every result has a written description (for screen readers and for sharing), so give
-   * `description` wherever there is a result. Toasts can be reworded in the tool's own voice.
+   * `description` wherever there is a result; and wherever the result has words in it, give
+   * `markdown` too: the forum and most wikis take it. Toasts can be reworded in the tool's own
+   * voice.
    */
-  import { faCheck, faImage, faLink, faQuoteLeft, faShareNodes } from '@fortawesome/free-solid-svg-icons';
+  import { faShareNodes } from '@fortawesome/free-solid-svg-icons';
   import { paperPlane, toast } from '../fun.js';
+  import { lineConfirm, lineHash, lineImage, lineLink, lineTextBox } from '../line.js';
   import { copyPicture, copyText } from '../share.js';
   import Icon from './Icon.svelte';
+  import Line from './Line.svelte';
   import ShareDialog from './ShareDialog.svelte';
 
-  type What = 'link' | 'picture' | 'description';
+  type What = 'link' | 'picture' | 'description' | 'markdown';
 
   let {
     url,
@@ -22,6 +27,7 @@
     text,
     forumBody,
     description,
+    markdown,
     picture,
     heading = 'Share',
     said = {},
@@ -38,6 +44,8 @@
     forumBody?: string;
     /** The written description of the result, or a function that writes it when asked. */
     description?: string | (() => string);
+    /** The result as Markdown (headings, lists, a table, its link), or a function that writes it when asked. */
+    markdown?: string | (() => string);
     /** Makes the picture (a PNG) when asked. Leave out where the tool makes no picture. */
     picture?: () => Blob | Promise<Blob>;
     /** The dialog's heading: "Share Orioni". */
@@ -57,6 +65,7 @@
     link: 'Link copied.',
     picture: 'Picture copied.',
     description: 'Description copied.',
+    markdown: 'Markdown copied: paste it into the forum or a wiki.',
     failed: "That didn't copy. Your browser may not allow it here.",
     ...said,
   });
@@ -83,23 +92,33 @@
   async function copyDescription() {
     done('description', await copyText(typeof description === 'function' ? description() : (description ?? '')));
   }
+
+  async function copyMarkdown() {
+    done('markdown', await copyText(typeof markdown === 'function' ? markdown() : (markdown ?? '')));
+  }
 </script>
 
 <div class="eu-row">
   <button type="button" class="eu-btn eu-btn--primary" onclick={(e) => copyLink(e.currentTarget)}>
-    <Icon icon={copied === 'link' ? faCheck : faLink} />
+    <Line icon={copied === 'link' ? lineConfirm : lineLink} />
     {copied === 'link' ? 'Copied' : 'Copy link'}
   </button>
   {#if picture}
     <button type="button" class="eu-btn" onclick={copyThePicture}>
-      <Icon icon={copied === 'picture' ? faCheck : faImage} />
+      <Line icon={copied === 'picture' ? lineConfirm : lineImage} />
       {copied === 'picture' ? 'Copied' : 'Copy picture'}
     </button>
   {/if}
   {#if description}
     <button type="button" class="eu-btn" onclick={copyDescription}>
-      <Icon icon={copied === 'description' ? faCheck : faQuoteLeft} />
+      <Line icon={copied === 'description' ? lineConfirm : lineTextBox} />
       {copied === 'description' ? 'Copied' : 'Copy description'}
+    </button>
+  {/if}
+  {#if markdown}
+    <button type="button" class="eu-btn" onclick={copyMarkdown}>
+      <Line icon={copied === 'markdown' ? lineConfirm : lineHash} />
+      {copied === 'markdown' ? 'Copied' : 'Copy Markdown'}
     </button>
   {/if}
   <button type="button" class="eu-btn" data-click="swing-right" onclick={() => ((sharing = true), onshare?.())}><Icon icon={faShareNodes} /> Share</button>

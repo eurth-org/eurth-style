@@ -239,6 +239,42 @@ export function externalLinks() {
   new MutationObserver(() => mark(document)).observe(document.body, { childList: true, subtree: true });
 }
 
+/**
+ * line-md icons draw themselves again when their button or link is pointed at or reached with
+ * the keyboard, and when they scroll into view: an icon below the fold would otherwise have
+ * finished before anyone saw it. The shell installs this once for the whole page.
+ */
+export function lineIcons() {
+  /** @param {ParentNode} root */
+  const replay = (root) => {
+    if (calm()) return;
+    for (const svg of root.querySelectorAll('svg.eu-line-moving')) {
+      if (svg instanceof SVGSVGElement) svg.setCurrentTime(0);
+    }
+  };
+  /** @param {Event & { relatedTarget?: EventTarget | null }} event */
+  const entered = (event) => {
+    const host = /** @type {Element | null} */ (event.target)?.closest?.('a, button, summary, label');
+    if (!host || (event.relatedTarget instanceof Node && host.contains(event.relatedTarget))) return;
+    replay(host);
+  };
+  document.addEventListener('pointerover', entered, { passive: true });
+  document.addEventListener('focusin', entered);
+  if (typeof IntersectionObserver === 'undefined') return;
+  // Only icons that were out of view first: the ones on screen are already drawing.
+  const waiting = new WeakSet();
+  const watcher = new IntersectionObserver((entries) => {
+    for (const { target, isIntersecting } of entries) {
+      if (!isIntersecting) waiting.add(target);
+      else if (waiting.has(target)) {
+        waiting.delete(target);
+        replay(target);
+      }
+    }
+  });
+  for (const icon of document.querySelectorAll('.eu-line')) watcher.observe(icon);
+}
+
 /** A click outside an open menu, or Escape, closes it (the Tools menu is a <details>). */
 export function closingMenus() {
   /** @param {(menu: HTMLDetailsElement) => boolean} which */

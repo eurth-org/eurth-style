@@ -5,6 +5,7 @@
    */
   import { faBell, faDice, faFeather, faRotateLeft } from '@fortawesome/free-solid-svg-icons';
   import Icon from '../../../src/components/Icon.svelte';
+  import RandomButton from '../../../src/components/RandomButton.svelte';
   import ShareButtons from '../../../src/components/ShareButtons.svelte';
   import { emu, niceWatcher, playTones, toast } from '../../../src/fun.js';
 
@@ -26,10 +27,19 @@
       {url}
       title="Style, by Eurth"
       text="One look for every Eurth tool."
-      description="The share row: Copy link, Copy description and Share."
+      description="The share row: Copy link, Copy description, Copy Markdown and Share."
+      markdown={() => `**Style, by Eurth**\n\nOne look for every Eurth tool.\n\n[Open Style](${url})`}
       oncopy={() => playTones([[880, 0, 0.03], [1320, 0.06, 0.025]])}
     />
-    <p class="eu-help">Copy link sends a paper plane. Copy picture appears where a tool makes a picture. With sound switched on in the footer, copying chimes.</p>
+    <p class="eu-help">Copy link sends a paper plane. Copy picture appears where a tool makes a picture, Copy Markdown where the result has words. With sound switched on in the footer, copying chimes.</p>
+  </div>
+
+  <div class="eu-stack part">
+    <h3>Random</h3>
+    <div class="eu-row">
+      <RandomButton onrandom={() => (number = Math.floor(Math.random() * 101))} what="number" />
+      <span class="eu-help">Rolls the number below. It asks the first time only.</span>
+    </div>
   </div>
 
   <div class="eu-stack part">

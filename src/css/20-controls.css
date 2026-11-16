@@ -45,12 +45,13 @@
   transform: none;
 }
 
-/* The main action: the brand fill, with a label large enough for it (19px bold). */
+/* The main action: eurth-blue with a white label, as on eurth.org. The pair is 3.2:1, so the
+   label is 19px bold: large text. */
 .eu-btn--primary,
 .eu-btn--primary:hover {
   border-color: var(--accent-fill);
   background: var(--accent-fill);
-  color: var(--on-accent-small);
+  color: var(--on-accent);
   font: var(--type-pill);
 }
 
@@ -67,6 +68,18 @@
   color: var(--on-selected);
 }
 
+/* An action that throws work away (Random, Reset, Clear): red once pointed at or reached with
+   the keyboard, as a warning, with a data-tip that says what will be lost. .eu-btn--danger is
+   red from the start: the button that confirms it. */
+.eu-btn--risky:hover,
+.eu-btn--risky:focus-visible,
+.eu-btn--danger,
+.eu-btn--danger:hover {
+  border-color: var(--danger-text);
+  background: var(--danger-text);
+  color: var(--surface);
+}
+
 /* No edge until pointed at: for the close button of a dialog and the like. */
 .eu-btn--quiet {
   border-color: transparent;
@@ -78,12 +91,18 @@
   padding: 0;
 }
 
-.eu-btn--icon svg {
+.eu-btn--icon > svg {
   width: var(--space-5);
   height: var(--space-5);
 }
 
-/* The Join Eurth pill: night on eurth-blue, 19px bold. One per page, in the header. */
+.eu-btn--icon > .eu-line {
+  width: var(--space-6);
+  height: var(--space-6);
+}
+
+/* The Join Eurth pill: white on eurth-blue, 19px bold. The shell has its own in the footer's
+   blue bar; this one is for a tool's own page, where an invitation fits (the end of a guide). */
 .eu-join {
   display: inline-flex;
   align-items: center;
@@ -92,7 +111,7 @@
   border: 1px solid var(--accent-fill);
   border-radius: var(--radius-md);
   background: var(--accent-fill);
-  color: var(--on-accent-small);
+  color: var(--on-accent);
   font: var(--type-pill);
   text-decoration: none;
   white-space: nowrap;
@@ -103,7 +122,7 @@
 
 .eu-join:hover {
   border-color: var(--ink);
-  color: var(--on-accent-small);
+  color: var(--on-accent);
   transform: translateY(-1px);
 }
 

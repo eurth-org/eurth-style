@@ -3,6 +3,10 @@
  * for AAA: 7:1 for text, 4.5:1 for large text (24px, or 19px bold), 3:1 for what isn't text
  * (control borders, focus rings, icons that carry meaning).
  *
+ * One exception, and it is the brand's: white with eurth-blue, as eurth.org pairs them, is
+ * 3.2:1. That meets AA for large text and no more, so the pair is only ever used at 19px bold
+ * or larger (BRAND_TEXT).
+ *
  * tests/contrast.test.js runs every pair in both themes. A tool with its own pairs (say, a
  * palette it lets people pick from) can run them through the same functions.
  */
@@ -36,6 +40,8 @@ export function checkPairs(tokens: Tokens, pairs?: [string, string, number][]): 
 export const TEXT: 7;
 export const LARGE_TEXT: 4.5;
 export const NOT_TEXT: 3;
+/** White with eurth-blue, at 19px bold or larger: WCAG AA for large text. The one exception to AAA. */
+export const BRAND_TEXT: 3;
 /**
  * [foreground, background, minimum ratio]. Text on a hovered control is ink, so muted and link
  * colours aren't paired with hover.

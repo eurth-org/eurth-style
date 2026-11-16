@@ -49,27 +49,27 @@ html.eu-vt-shrink::view-transition-new(root) {
 
 /* A clicked button's icon acts out what the button does. data-click names it: pop (the
    default), spin, tumble, bounce, swing-left, swing-right. src/fun.js adds .eu-clicked. */
-.eu-clicked .eu-icon {
+.eu-clicked :is(.eu-icon, .eu-line) {
   animation: eu-click-pop 0.35s cubic-bezier(0.3, 1.6, 0.6, 1);
 }
 
-.eu-clicked[data-click='spin'] .eu-icon {
+.eu-clicked[data-click='spin'] :is(.eu-icon, .eu-line) {
   animation: eu-click-spin 0.45s cubic-bezier(0.3, 1.2, 0.5, 1);
 }
 
-.eu-clicked[data-click='tumble'] .eu-icon {
+.eu-clicked[data-click='tumble'] :is(.eu-icon, .eu-line) {
   animation: eu-click-tumble 0.45s cubic-bezier(0.3, 1.2, 0.5, 1);
 }
 
-.eu-clicked[data-click='bounce'] .eu-icon {
+.eu-clicked[data-click='bounce'] :is(.eu-icon, .eu-line) {
   animation: eu-click-bounce 0.45s ease-out;
 }
 
-.eu-clicked[data-click='swing-left'] .eu-icon {
+.eu-clicked[data-click='swing-left'] :is(.eu-icon, .eu-line) {
   animation: eu-click-swing-left 0.45s ease-out;
 }
 
-.eu-clicked[data-click='swing-right'] .eu-icon {
+.eu-clicked[data-click='swing-right'] :is(.eu-icon, .eu-line) {
   animation: eu-click-swing-right 0.45s ease-out;
 }
 
@@ -243,6 +243,15 @@ html.eu-vt-shrink::view-transition-new(root) {
   a.eu-card:hover {
     transform: none;
   }
+
+  /* line-md icons: the finished drawing, not the one that draws itself. */
+  .eu-line-moving {
+    display: none !important;
+  }
+
+  .eu-line-still {
+    display: block !important;
+  }
 }
 
 html[data-motion='still'] *,
@@ -256,4 +265,12 @@ html[data-motion='still'] *::after {
 
 html[data-motion='still'] :is(.eu-btn, .eu-pill, .eu-join, a.eu-card):hover {
   transform: none;
+}
+
+html[data-motion='still'] .eu-line-moving {
+  display: none !important;
+}
+
+html[data-motion='still'] .eu-line-still {
+  display: block !important;
 }

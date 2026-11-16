@@ -22,8 +22,10 @@ Nothing is built on install (the built files are committed) and nothing is loade
 | Import | What it is |
 | --- | --- |
 | `@eurth/style/components/Page.astro` | The layout of every page: head, header, footer, offline note. |
-| `@eurth/style/components/*.svelte` | `ShareButtons`, `ShareDialog`, `Deluminator`, `InstallButton`, `OfflineNote`, `Toast`, `VisitSwitches`, `Icon`. `Fa.astro` for icons in Astro files. |
-| `@eurth/style` | For browser code: `toast`, `niceWatcher`, `playTones`, the link state (`encodeState`, `stateLink`…), this visit's choices (`getPrefs`, `setPrefs`), `svgToPicture`, `pictureFilename`, `download`, `contrast`, `resolveColors`. |
+| `@eurth/style/components/*.svelte` | `ShareButtons`, `ShareDialog`, `RandomButton`, `Deluminator`, `InstallButton`, `OfflineNote`, `Toast`, `VisitSwitches`, `Icon`, `Line`. |
+| `@eurth/style/components/*.astro` | For written pages: `PageHead`, `Figure`, `Note`, `Toc`. Icons in Astro files: `Fa`, `Line`. |
+| `@eurth/style/line` | Every line-md animated icon, by name (`lineConfirm`, `lineHeartFilled`…): a page downloads only the ones it uses. |
+| `@eurth/style` | For browser code: `toast`, `niceWatcher`, `playTones`, the link state (`encodeState`, `stateLink`…), Markdown (`markdownText`, `markdownTable`), this visit's choices (`getPrefs`, `setPrefs`), `svgToPicture`, `pictureFilename`, `download`, `contrast`, `resolveColors`. |
 | `@eurth/style/build` | Build time only: `defineSite`, `launchedTools`, `ref`, and the structured-data builders. |
 | `@eurth/style/astro` | `eurth(site)`: the Astro integration. |
 | `@eurth/style/testing` | `standardSuites({ site })`: the checks every tool runs. |
@@ -84,7 +86,7 @@ The docs site runs as the `eurth-style` Worker (static assets only) on the Cloud
 ## Credits
 
 - The Deluminator follows [Deluminator](https://github.com/stijn/deluminator) as Governmint and Flagwright use it.
-- Icons by [Font Awesome](https://fontawesome.com) Free (CC BY 4.0); sun and moon by [line-md](https://github.com/cyberalien/line-md) (MIT).
+- Icons by [Font Awesome](https://fontawesome.com) Free (CC BY 4.0); animated icons by [line-md](https://github.com/cyberalien/line-md) (Vjacheslav Trushkin, MIT), built into `src/line-md.js` by `node build/line-md.mjs`.
 - Made by Orioni for Eurth, a worldbuilding and roleplay community since 2004.
 
 ## Licence

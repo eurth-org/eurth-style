@@ -1,6 +1,7 @@
 /**
  * The suite's sharing image, as a page to photograph: Night ground, the yurt and the tool's
- * name, its tagline, its address in the pill, and the tool's own picture on the right.
+ * name, its tagline, its address in white on the eurth-blue pill, and the tool's own picture
+ * on the right.
  * @param {{ site: import('./build.js').Site & { host: string }, art?: string, title?: string, line?: string }} options
  *   art: HTML or SVG for the right half; title and line: for a page's own image (defaults: the site's name and tagline)
  */

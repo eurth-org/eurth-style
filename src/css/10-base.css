@@ -149,6 +149,27 @@ mark {
   vertical-align: -0.125em;
 }
 
+/* A line-md icon (components/Line): drawn on a 24px grid with a 2px stroke, so it stands a
+   little taller than the text. It carries two drawings, one that moves and one that is finished;
+   which one shows is decided below and in 50-delight.css. */
+.eu-line {
+  display: inline-flex;
+  flex: none;
+  width: 1.25em;
+  height: 1.25em;
+  vertical-align: -0.25em;
+}
+
+.eu-line svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.eu-line-still {
+  display: none !important;
+}
+
 /* Small helpers for laying things out with the tokens. */
 .eu-stack {
   display: flex;

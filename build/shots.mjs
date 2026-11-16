@@ -1,5 +1,6 @@
 // Screenshots of a built site, for looking at: node build/shots.mjs <dist> <out folder> [path…]
 // Each path is photographed whole, in the light theme and at Night, and at phone width.
+// With ENDS=1 the top and the foot of each page are saved too, as the screen shows them.
 import { createReadStream, existsSync, mkdirSync, statSync } from 'node:fs';
 import { createServer } from 'node:http';
 import { extname, join } from 'node:path';
@@ -23,7 +24,16 @@ for (const path of paths.length ? paths : ['/']) {
     const context = await browser.newContext({ colorScheme: scheme, viewport: { width, height: 900 }, serviceWorkers: 'block' });
     const page = await context.newPage();
     await page.goto(`http://127.0.0.1:${port}${path}`, { waitUntil: 'networkidle' });
-    await page.screenshot({ path: join(out, `${path.replace(/\W+/g, '-').replace(/^-|-$/g, '') || 'home'}-${name}.png`), fullPage: true });
+    const file = `${path.replace(/\W+/g, '-').replace(/^-|-$/g, '') || 'home'}-${name}`;
+    // Icons that draw themselves have finished by now.
+    await page.waitForTimeout(1500);
+    await page.screenshot({ path: join(out, `${file}.png`), fullPage: true });
+    if (process.env.ENDS) {
+      await page.screenshot({ path: join(out, `${file}-top.png`) });
+      await page.evaluate(() => scrollTo(0, document.documentElement.scrollHeight));
+      await page.waitForTimeout(1500);
+      await page.screenshot({ path: join(out, `${file}-foot.png`) });
+    }
     await context.close();
   }
 }

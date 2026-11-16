@@ -68,5 +68,11 @@ export function beatHearts(element: Element): void;
  * hidden note. A watcher catches links added later (dialogs, results), so none is missed.
  */
 export function externalLinks(): void;
+/**
+ * line-md icons draw themselves again when their button or link is pointed at or reached with
+ * the keyboard, and when they scroll into view: an icon below the fold would otherwise have
+ * finished before anyone saw it. The shell installs this once for the whole page.
+ */
+export function lineIcons(): void;
 /** A click outside an open menu, or Escape, closes it (the Tools menu is a <details>). */
 export function closingMenus(): void;

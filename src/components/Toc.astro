@@ -1,0 +1,20 @@
+---
+// "On this page": the headings of a long page, as links. Place it after the text inside
+// <div class="eu-article">; it sits beside the text on wide screens and above it on narrow ones.
+//
+//   <div class="eu-article"><article class="eu-prose">…</article><Toc items={[{ id: 'simple', label: 'Keep it simple' }]} /></div>
+interface Props {
+  /** Each heading's id on the page and its words. */
+  items: { id: string; label: string }[];
+  /** The list's own heading. */
+  heading?: string;
+}
+const { items, heading = 'On this page' } = Astro.props;
+---
+
+<nav class="eu-toc" aria-label={heading}>
+  <p class="eu-kicker">{heading}</p>
+  <ol>
+    {items.map((item) => <li><a href={`#${item.id}`}>{item.label}</a></li>)}
+  </ol>
+</nav>
