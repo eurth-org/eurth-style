@@ -1386,6 +1386,7 @@
       "verdictLabel"
     ],
     "Footer.astro": [
+      "inspired",
       "site"
     ],
     "Header.astro": [
@@ -1464,6 +1465,9 @@
       "text",
       "title",
       "url"
+    ],
+    "ThanksItem.astro": [
+      "icon"
     ],
     "Toast.svelte": [
       "message"
@@ -1570,6 +1574,9 @@
     "eu-term-art",
     "eu-terms",
     "eu-textarea",
+    "eu-thanks",
+    "eu-thanks-icon",
+    "eu-thanks-title",
     "eu-tile",
     "eu-tile-art",
     "eu-tile-go",

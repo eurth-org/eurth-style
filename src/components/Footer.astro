@@ -1,74 +1,83 @@
 ---
-// The footer, in the page's column: the other tools, who made this, the promises, the credits
-// and this visit's switches. Under it the rest of Eurth in a blue bar like the one at the top:
-// Forums, Map, News, Status and Join Eurth. No donation links.
+// The footer, in the page's column, as Governmint first had it: "With thanks", a list of short
+// lines, each with its icon: who made this, the tool's own thanks, the licence and the icons'
+// makers, the promises, and the other tools. Then this visit's switches. Under it the rest of
+// Eurth in a blue bar like the one at the top: Forums, Map, News, Status and Join Eurth. No
+// donation links.
+//
+// Tools are named only once their launch date has passed at build time; the GitHub link appears
+// from 25 December 2026, and no page links to GitHub before then.
+//
+// A tool adds lines of its own through Page's "thanks" slot (ThanksItem.astro, one per line),
+// or a sentence through the older "inspirations" slot, which becomes one line.
 //
 // The bar's icons are the same on every tool, as Governmint first had them: speech bubbles for
 // Forums, a globe for Map, a newspaper for News, a heart with a pulse through it for Status.
 // Pointed at, each draws its own outline and fills in.
-//
-// Tools are listed only once their launch date has passed at build time; the GitHub link appears
-// from 25 December 2026, and no page links to GitHub before then.
-//
-// A tool adds its own inspirations through Page.astro's "inspirations" slot.
-import { faComments, faGlobe, faHeartPulse, faNewspaper, faUserPlus } from '@fortawesome/free-solid-svg-icons';
+import { faCodeBranch, faComments, faCopyright, faGlobe, faHeartPulse, faNewspaper, faScaleBalanced, faScrewdriverWrench, faUserPlus, faUserShield } from '@fortawesome/free-solid-svg-icons';
+import yurt from '../assets/eurth-yurt-circle.svg?raw';
 import { EURTH, buildTime, githubLinksAllowed, launchedTools, ref, type Site } from '../build.js';
 import { lineHeartFilled } from '../line.js';
 import Fa from './Fa.astro';
 import Line from './Line.astro';
+import ThanksItem from './ThanksItem.astro';
 import VisitSwitches from './VisitSwitches.svelte';
 
 interface Props {
   site: Site & { host: string };
+  /** The "inspirations" slot is filled: it becomes a line of its own. */
+  inspired?: boolean;
 }
-const { site } = Astro.props;
+const { site, inspired = false } = Astro.props;
 const launched = launchedTools();
 const tools = launched.filter((tool) => tool.kind === 'tool');
 const hub = launched.find((tool) => tool.kind === 'hub');
 const github = githubLinksAllowed();
 const out = (href: string) => ref(href, site.host);
 const year = buildTime().getFullYear();
+const others = [...tools.filter((tool) => tool.id !== site.id).map((tool) => ({ name: tool.name, href: out(tool.url) })), ...(hub && hub.id !== site.id ? [{ name: 'all the tools', href: out(hub.url) }] : [])];
 ---
 
 <footer class="eu-footer">
   <div class="eu-column eu-footer-text">
-    {
-      (tools.length > 0 || hub) && (
-        <nav class="eu-footer-nav" aria-label="Eurth's tools">
-          {tools.map((tool) => (
-            <a href={tool.id === site.id ? '/' : out(tool.url)} data-same-tab>
-              {tool.name}
-            </a>
-          ))}
-          {hub && (
-            <a href={hub.id === site.id ? '/' : out(hub.url)} data-same-tab>
-              All tools
-            </a>
-          )}
-        </nav>
-      )
-    }
-    <p>
-      <span class="eu-heart"><Line icon={lineHeartFilled} /></span>
-      Made by <a href={out(EURTH.orioni)}>Orioni</a> for <a href={out(EURTH.home)}>Eurth</a>, a worldbuilding and roleplay community since
-      2004. <slot name="inspirations" />
-    </p>
-    <p>
-      <span class="eu-heart"><Line icon={lineHeartFilled} /></span>
-      Free forever: no ads, no analytics, trackers, cookies or accounts. Made for fiction and fun.
-    </p>
-    <p>
-      Icons: <a href={out('https://fontawesome.com')}>Font Awesome</a> (CC BY 4.0) and {
-        github ? <a href={out('https://github.com/cyberalien/line-md')}>line-md</a> : 'line-md'
-      } (MIT). © {year > 2026 ? `2026–${year}` : '2026'} Eurth{' · '}<a href="https://www.apache.org/licenses/LICENSE-2.0">Apache 2.0</a>{
-        github && (
-          <>
-            {' · '}
-            <a href={out(site.repo)}>GitHub</a>
-          </>
+    <h2 class="eu-thanks-title">With thanks</h2>
+    <ul class="eu-thanks">
+      <li>
+        <span class="eu-thanks-icon" set:html={yurt} />
+        <p>
+          Made with love <span class="eu-heart"><Line icon={lineHeartFilled} /></span> by <a href={out(EURTH.orioni)}>Orioni</a> for <a href={out(EURTH.home)}>Eurth</a>,
+          a worldbuilding and roleplay community, and the people who live in it. Going strong since 2004.
+        </p>
+      </li>
+      <slot name="thanks" />
+      {
+        inspired && (
+          <ThanksItem icon={faCodeBranch}>
+            <slot name="inspirations" />
+          </ThanksItem>
         )
       }
-    </p>
+      <ThanksItem icon={faCopyright}>
+        © {year > 2026 ? `2026–${year}` : '2026'} Eurth. {site.name} is open source under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache 2.0</a> licence{
+          github && (
+            <>
+              , on <a href={out(site.repo)}>GitHub</a>
+            </>
+          )
+        }. Icons by <a href={out('https://fontawesome.com')}>Font Awesome</a> (CC BY 4.0) and {
+          github ? <a href={out('https://github.com/cyberalien/line-md')}>line-md</a> : 'line-md'
+        } (MIT).
+      </ThanksItem>
+      <ThanksItem icon={faUserShield}>Free forever: no ads, no analytics, trackers, cookies or accounts. What you make is yours, and lives in its link.</ThanksItem>
+      <ThanksItem icon={faScaleBalanced}>{site.name} is one of Eurth's worldbuilding tools, made for fiction and fun.</ThanksItem>
+      {
+        others.length > 0 && (
+          <ThanksItem icon={faScrewdriverWrench}>
+            More from Eurth's workshop: {others.map((other, i) => <>{i > 0 && (i === others.length - 1 ? ' and ' : ', ')}<a href={other.href} data-same-tab>{other.name}</a></>)}.
+          </ThanksItem>
+        )
+      }
+    </ul>
     <!-- These need script to do anything, so they arrive with it. -->
     <div class="eu-visit"><VisitSwitches client:only="svelte" name={site.name} sound={site.sound ?? false} /></div>
   </div>

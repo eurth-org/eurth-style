@@ -5,7 +5,8 @@
 //
 //   <Page site={site} title="Guide" description="…" crumbs={[{ name: 'Guide', path: '/guide/' }]}>
 //     …the page…
-//     <Fragment slot="inspirations">Inspired by …</Fragment>
+//     <ThanksItem slot="thanks" icon={faCodeBranch}>Inspired by …</ThanksItem>     a line of the footer's "With thanks"
+//     <Fragment slot="inspirations">Inspired by …</Fragment>                        the older way: one line, as a sentence
 //     <Fragment slot="mark" set:html={coin} />      only for a tool with a mark of its own
 //     <a slot="bar" class="eu-barlink" href="#about">About</a>      one more pill in the blue bar
 //   </Page>
@@ -87,7 +88,8 @@ const data: object[] = [organization(), webSite(site), ...(crumbs?.length ? [bre
     <main id="main" class="eu-main">
       <slot />
     </main>
-    <Footer site={site}>
+    <Footer site={site} inspired={Astro.slots.has('inspirations')}>
+      <slot name="thanks" slot="thanks" />
       <slot name="inspirations" slot="inspirations" />
     </Footer>
     <OfflineNote client:idle name={site.name} />

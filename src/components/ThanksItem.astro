@@ -1,0 +1,21 @@
+---
+// One line of the footer's "With thanks" list: an icon and a sentence or two. A tool adds its
+// own through Page's "thanks" slot: who inspired it, whose work it stands on.
+//
+//   <ThanksItem slot="thanks" icon={faCodeBranch}>Inspired by <a href={…}>Scrontch's Flag Designer</a>.</ThanksItem>
+import type { IconDefinition } from '@fortawesome/free-solid-svg-icons';
+import type { LineIcon } from '../line.js';
+import Fa from './Fa.astro';
+import Line from './Line.astro';
+
+interface Props {
+  /** A Font Awesome icon, or a line-md one. */
+  icon: IconDefinition | LineIcon;
+}
+const { icon } = Astro.props;
+---
+
+<li>
+  <span class="eu-thanks-icon">{'body' in icon ? <Line icon={icon} /> : <Fa icon={icon} />}</span>
+  <p><slot /></p>
+</li>

@@ -2,7 +2,9 @@
 // The maker, and under it what search engines and newcomers both want: what it is, how to use
 // it, and answers to the usual questions (also given to search engines as structured data).
 import { faqPage, webApplication } from '@eurth/style/build';
+import { faCodeBranch } from '@fortawesome/free-solid-svg-icons';
 import Page from '@eurth/style/components/Page.astro';
+import ThanksItem from '@eurth/style/components/ThanksItem.astro';
 import { site } from '../../eurth.config.mjs';
 import mark from '../assets/mark.svg?raw';
 import Maker from '../tool/Maker.svelte';
@@ -50,7 +52,8 @@ const faq = [
     </section>
   </div>
 
-  <Fragment slot="inspirations">Starter is the template every Eurth tool begins from; it takes after Flagwright and Governmint.</Fragment>
+  <!-- The tool's own line of the footer's "With thanks": who inspired it, whose work it stands on. -->
+  <ThanksItem slot="thanks" icon={faCodeBranch}>Starter is the template every Eurth tool begins from; it takes after Flagwright and Governmint.</ThanksItem>
 </Page>
 
 <style>

@@ -35,5 +35,6 @@ Every numbered point from the reviews, and the release that did it. The releases
 | 31 | Governmint's two sections, "Save & share" and "Export", for all tools where it makes sense | 1.8.0 (`ExportPanel.svelte`, children on `ShareButtons`, a handbook rule, the starter; each tool has its own to do) |
 | 32 | The share window with "More" is the gold standard | 1.8.0 (More is always there; the handbook names the suite's window as the only one) |
 | 33 | Governmint and Flagwright have marks of their own that reuse the yurt; every tool should have a similar nod and wink | 1.8.0 (a handbook rule, `assets/eurth-yurt.svg`, `sharingImage({ mark })`, the starter's own mark; each tool has its own to draw) |
+| 34 | The footer should open with "With thanks", as the original Governmint did, not with a row of links to the tools | 1.9.0 |
 | 4 | style.eurth.org deployed through CI, showing only tools that have launched | 1.0.0 |
 | 5 | Node 26 for building and in every CI workflow | 1.0.0 |

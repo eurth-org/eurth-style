@@ -1,4 +1,4 @@
-/*! @eurth/style 1.8.0 — built from tokens.json by build/build.mjs. Don't edit: change tokens.json or src/css. */
+/*! @eurth/style 1.9.0 — built from tokens.json by build/build.mjs. Don't edit: change tokens.json or src/css. */
 
 /* Tokens. Light is the default; the head script sets data-theme before the first paint, and
    without script the page follows the device. data-theme also works on any element. */
@@ -1181,6 +1181,40 @@ a.eu-card:hover {
 
 .eu-footer p {
   max-width: var(--size-measure);
+}
+
+/* "With thanks": the footer's list of short lines, each with its icon in a column of its own. */
+.eu-thanks-title {
+  color: var(--ink);
+  font: var(--type-heading);
+}
+
+.eu-thanks {
+  display: grid;
+  gap: var(--space-3);
+  max-width: var(--size-measure);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.eu-thanks li {
+  display: grid;
+  grid-template-columns: var(--space-5) minmax(0, 1fr);
+  align-items: start;
+  gap: var(--space-3);
+}
+
+.eu-thanks-icon {
+  display: inline-flex;
+  justify-content: center;
+  padding-top: 2px;
+  font-size: var(--space-4);
+}
+
+.eu-thanks-icon > svg:not(.eu-icon) {
+  width: var(--space-5);
+  height: var(--space-5);
 }
 
 .eu-heart {
