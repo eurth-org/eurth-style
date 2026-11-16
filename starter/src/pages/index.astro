@@ -4,6 +4,7 @@
 import { faqPage, webApplication } from '@eurth/style/build';
 import Page from '@eurth/style/components/Page.astro';
 import { site } from '../../eurth.config.mjs';
+import mark from '../assets/mark.svg?raw';
 import Maker from '../tool/Maker.svelte';
 
 const faq = [
@@ -14,6 +15,8 @@ const faq = [
 ---
 
 <Page site={site} jsonld={[webApplication(site, { featureList: ['Motto plates', 'Link that holds the design', 'SVG and PNG downloads', 'Nation profile file'] }), faqPage(faq)]}>
+  <!-- The tool's own mark in front of its name: an original drawing that carries the Eurth yurt. -->
+  <Fragment slot="mark" set:html={mark} />
   <div class="eu-stack">
     <header class="eu-stack intro">
       <p class="eu-kicker">Starter, by Eurth</p>

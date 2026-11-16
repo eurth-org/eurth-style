@@ -60,6 +60,13 @@
     if (!open && dialog.open) dialog.close();
   });
 
+  // More: the device's own share sheet, with every app the visitor has. Where a browser has
+  // none, the words and the link are copied instead, to paste wherever they like.
+  async function more() {
+    if (sheet) await shareSheet({ url, title, text });
+    else toast((await copyText(`${text}\n\n${url}`)) ? 'Copied with its link: paste it anywhere.' : 'Select the link and copy it.');
+  }
+
   async function copy(button: HTMLElement) {
     if (await copyText(url)) {
       toast('Link copied.');
@@ -97,11 +104,9 @@
         </a>
       </li>
     {/each}
-    {#if sheet}
-      <li>
-        <button type="button" class="eu-btn" onclick={() => shareSheet({ url, title, text })}><Icon icon={faEllipsis} /> More</button>
-      </li>
-    {/if}
+    <li>
+      <button type="button" class="eu-btn" onclick={more}><Icon icon={faEllipsis} /> More</button>
+    </li>
   </ul>
   <p class="eu-help">Plain links: each opens that site's own share page with the link filled in. Nothing is posted until you post it.</p>
 </dialog>

@@ -13,6 +13,7 @@ import PageHead from '@eurth/style/components/PageHead.astro';
 import Toc from '@eurth/style/components/Toc.astro';
 import { lineEdit } from '@eurth/style/line';
 import { site } from '../../eurth.config.mjs';
+import mark from '../assets/mark.svg?raw';
 import { compact, describe, plateSvg, type Plate } from '../tool/model';
 
 const updated = '2026-11-16';
@@ -40,6 +41,8 @@ const sections = [
   crumbs={[{ name: 'Guide', path: '/guide/' }]}
   jsonld={[article(site, { headline: 'How to write a national motto', path: '/guide/', description, updated })]}
 >
+  <!-- The tool's own mark in front of its name: an original drawing that carries the Eurth yurt. -->
+  <Fragment slot="mark" set:html={mark} />
   <PageHead site={site} kicker="Guide" title="How to write a national motto" updated={updated} lead="A motto is the shortest thing a country says about itself. The good ones are three or four words that have outlived the governments that chose them.">
     <img slot="art" src={picture(heavy)} alt={describe(heavy)} width="1200" height="630" />
   </PageHead>

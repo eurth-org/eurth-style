@@ -7,6 +7,7 @@ import Page from '@eurth/style/components/Page.astro';
 import PageHead from '@eurth/style/components/PageHead.astro';
 import { lineArrowRight } from '@eurth/style/line';
 import { site } from '../../eurth.config.mjs';
+import mark from '../assets/mark.svg?raw';
 import { compact, describe, plateSvg, templates } from '../tool/model';
 ---
 
@@ -16,6 +17,8 @@ import { compact, describe, plateSvg, templates } from '../tool/model';
   description="Three ready-made motto plates to start from: a calm republic, an old mountain kingdom and a federation that hasn't decided. Open one and make it yours."
   crumbs={[{ name: 'Templates', path: '/templates/' }]}
 >
+  <!-- The tool's own mark in front of its name: an original drawing that carries the Eurth yurt. -->
+  <Fragment slot="mark" set:html={mark} />
   <PageHead site={site} kicker="Templates" title="Motto plate templates">
     <Fragment slot="lead">Somewhere to start. Open one in the <a href="/">maker</a> and change what you like; the <a href="/guide/">guide</a> says what makes a motto last.</Fragment>
   </PageHead>

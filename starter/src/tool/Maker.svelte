@@ -5,7 +5,8 @@
    *   - the state lives in the link (?d=…), read safely on arrival and kept in step after;
    *   - nothing is stored: "save" is a link, a picture or the nation's profile file;
    *   - every result has a written description;
-   *   - every result with words in it can be taken away as Markdown too;
+   *   - the result leaves in two cards, as in Governmint: "Save & share" (the share row and the
+   *     profile file) and "Export" (the result as text, Markdown first);
    *   - the share row, Random, toasts, "Nice." and click answers come from @eurth/style;
    *   - settings that belong together share a card, under a heading with an icon; where they
    *     are steps to take in order, a number comes first;
@@ -13,17 +14,18 @@
    * The tool's own actions (Random, Start again) sit in its own toolbar, not in the header.
    */
   import { faMarkdown } from '@fortawesome/free-brands-svg-icons';
-  import { faCheck, faCopy, faFeatherPointed, faFloppyDisk, faRotateLeft, faScaleBalanced } from '@fortawesome/free-solid-svg-icons';
+  import { faCheck, faFeatherPointed, faFileCode, faFileExport, faRotateLeft, faScaleBalanced, faShareNodes } from '@fortawesome/free-solid-svg-icons';
   import { createProfile, getSection, setNation, type EurthProfile } from '@eurth/profile';
   import ProfileButtons from '@eurth/profile/ProfileButtons.svelte';
   import { download, fileSlug, niceWatcher, playTones, stateFromLocation, stateLink, stateToLocation, svgToPicture, toast } from '@eurth/style';
+  import ExportPanel, { type ExportFormat } from '@eurth/style/components/ExportPanel.svelte';
   import Icon from '@eurth/style/components/Icon.svelte';
   import Line from '@eurth/style/components/Line.svelte';
   import RandomButton from '@eurth/style/components/RandomButton.svelte';
   import ShareButtons from '@eurth/style/components/ShareButtons.svelte';
   import { lineDownloadOutline } from '@eurth/style/line';
   import { onMount } from 'svelte';
-  import { STYLES, clean, compact, defaults, describe, markdown, plateSvg, random, type Plate } from './model';
+  import { STYLES, clean, compact, defaults, describe, json, markdown, plateSvg, random, type Plate } from './model';
 
   // Passed in by the page: browser code never imports eurth.config.mjs (see the note there).
   let { siteName, siteUrl }: { siteName: string; siteUrl: string } = $props();
@@ -38,6 +40,12 @@
   const description = $derived(describe(plate));
   // Before the page has loaded there is no address to read: the site's own, then.
   const link = $derived(stateLink(compact(plate), { base: ready ? location.href : `${siteUrl}/` }));
+  // The result as text, for the Export panel: Markdown first (the forum takes it), then JSON.
+  const formats: ExportFormat[] = [
+    { id: 'markdown', label: 'Markdown', icon: faMarkdown, extension: 'md', type: 'text/markdown', help: 'For a post on the Eurth forum or a wiki: the motto, and its weight as a table.', make: () => markdown(plate, link) },
+    { id: 'json', label: 'JSON', icon: faFileCode, extension: 'json', type: 'application/json', help: 'For other tools and spreadsheets: the plate as data, with its link.', make: () => json(plate, link) },
+  ];
+
   // Random only asks before it rolls when there is something to lose.
   const changed = $derived(Object.keys(compact(plate)).length > 0);
   const title = $derived(plate.nation ? `${plate.nation}: “${plate.motto}”` : `“${plate.motto}”`);
@@ -138,9 +146,21 @@
     <img class="plate" src={picture} alt={description} width="1200" height="630" />
     <p class="eu-muted" aria-hidden="true">{description}</p>
 
-    <!-- Copying and saving are two things, so they are two groups, each under its own heading. -->
-    <section class="eu-card" aria-labelledby="copy-title">
-      <h3 class="eu-card-title" id="copy-title"><Icon icon={faCopy} /> Copy and share</h3>
+    <!-- The picture itself, to keep: beside the picture, as Governmint's charts have it. -->
+    <div class="eu-row">
+      <span class="eu-help">Download as</span>
+      <button type="button" class="eu-btn" data-click="bounce" onclick={() => download(svg, `${fileSlug(plate.nation, 'plate')}-motto.svg`, 'image/svg+xml')}>
+        <Line icon={lineDownloadOutline} /> SVG
+      </button>
+      <button type="button" class="eu-btn" data-click="bounce" onclick={async () => download(await svgToPicture(svg, { width: 1200, height: 630 }), `${fileSlug(plate.nation, 'plate')}-motto.png`)}>
+        <Line icon={lineDownloadOutline} /> PNG
+      </button>
+    </div>
+
+    <!-- Two cards, as in Governmint: "Save & share" keeps the result or passes it on; "Export"
+         hands it over as text, in the formats other places take. -->
+    <section class="eu-card" aria-labelledby="share-title">
+      <h3 class="eu-card-title" id="share-title"><Icon icon={faShareNodes} /> Save &amp; share</h3>
       <ShareButtons
         url={link}
         {title}
@@ -151,28 +171,17 @@
         heading={plate.nation ? `Share ${plate.nation}` : 'Share your plate'}
         said={{ link: 'Link copied: the plate is in it.' }}
         oncopy={chime}
-      />
-      <p class="eu-help">The link holds the whole plate: copying it is saving it.</p>
+      >
+        <ProfileButtons profile={saved} onload={loaded} onerror={(errors) => toast(errors[0]?.message ?? "That file isn't a nation profile.")} />
+      </ShareButtons>
+      <p class="eu-help">
+        The link holds the whole plate, so it brings this plate back exactly. The profile file carries your nation from one Eurth tool to the next. Nothing is kept in this browser.
+      </p>
     </section>
 
-    <section class="eu-card" aria-labelledby="save-title">
-      <h3 class="eu-card-title" id="save-title"><Icon icon={faFloppyDisk} /> Save as a file</h3>
-      <div class="eu-row">
-        <button type="button" class="eu-btn" data-click="bounce" onclick={() => download(svg, `${fileSlug(plate.nation, 'plate')}-motto.svg`, 'image/svg+xml')}>
-          <Line icon={lineDownloadOutline} /> SVG
-        </button>
-        <button type="button" class="eu-btn" data-click="bounce" onclick={async () => download(await svgToPicture(svg, { width: 1200, height: 630 }), `${fileSlug(plate.nation, 'plate')}-motto.png`)}>
-          <Line icon={lineDownloadOutline} /> PNG
-        </button>
-        <button type="button" class="eu-btn" data-click="bounce" onclick={() => download(markdown(plate, link), `${fileSlug(plate.nation, 'plate')}-motto.md`, 'text/markdown')}>
-          <Icon icon={faMarkdown} /> Markdown
-        </button>
-      </div>
-      <h4 class="eu-label">Your nation's profile</h4>
-      <div class="eu-row">
-        <ProfileButtons profile={saved} onload={loaded} onerror={(errors) => toast(errors[0]?.message ?? "That file isn't a nation profile.")} />
-      </div>
-      <p class="eu-help">The profile file carries your nation from one Eurth tool to the next. Nothing is kept in this browser.</p>
+    <section class="eu-card" aria-labelledby="export-title">
+      <h3 class="eu-card-title" id="export-title"><Icon icon={faFileExport} /> Export</h3>
+      <ExportPanel name={`${fileSlug(plate.nation, 'plate')}-motto`} {formats} oncopy={chime} />
     </section>
   </section>
 </div>

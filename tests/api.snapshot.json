@@ -1366,6 +1366,13 @@
   },
   "components": {
     "Deluminator.svelte": [],
+    "ExportPanel.svelte": [
+      "formats",
+      "name",
+      "oncopy",
+      "ondownload",
+      "rows"
+    ],
     "Fa.astro": [
       "class",
       "draw",
@@ -1436,6 +1443,7 @@
       "what"
     ],
     "ShareButtons.svelte": [
+      "children",
       "description",
       "forumBody",
       "heading",

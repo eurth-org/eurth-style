@@ -79,6 +79,11 @@ export function markdown(plate: Plate, link: string): string {
   ].join('\n');
 }
 
+/** The result as JSON, for other tools and spreadsheets: the Export panel's second format. */
+export function json(plate: Plate, link: string): string {
+  return `${JSON.stringify({ nation: plate.nation, motto: plate.motto, gravitas: plate.gravitas, style: plate.style, link }, null, 2)}\n`;
+}
+
 const xml = (s: string): string => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
 /**

@@ -24,10 +24,11 @@ const yurt = readFileSync(new URL('./assets/eurth-yurt-circle.svg', import.meta.
  * The suite's sharing image, as a page to photograph: Night ground, the yurt and the tool's
  * name, its tagline, its address in white on the eurth-blue pill, and the tool's own picture
  * on the right.
- * @param {{ site: import('./build.js').Site & { host: string }, art?: string, title?: string, line?: string }} options
- *   art: HTML or SVG for the right half; title and line: for a page's own image (defaults: the site's name and tagline)
+ * @param {{ site: import('./build.js').Site & { host: string }, art?: string, title?: string, line?: string, mark?: string }} options
+ *   art: HTML or SVG for the right half; title and line: for a page's own image (defaults: the site's name and tagline);
+ *   mark: the tool's own mark as SVG text, beside "by Eurth" (default: the yurt)
  */
-export function sharingImage({ site, art = '', title = site.name, line = site.tagline }) {
+export function sharingImage({ site, art = '', title = site.name, line = site.tagline, mark = yurt }) {
   const esc = (/** @type {string} */ s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;');
   return `<!doctype html><meta charset="utf-8"><style>
     body{margin:0;width:1200px;height:630px;overflow:hidden;background:${night.surface};color:${night.ink};font-family:${tokens.type.families.sans};display:flex}
@@ -40,7 +41,7 @@ export function sharingImage({ site, art = '', title = site.name, line = site.ta
     .art{flex:none;width:480px;display:flex;align-items:center;justify-content:center;padding:48px 64px 48px 0;box-sizing:border-box}
     .art>*{max-width:100%;max-height:100%}
   </style><body>
-    <div class="words"><div class="brand">${yurt}<span>by Eurth</span></div><h1>${esc(title)}</h1><p>${esc(line)}</p><div class="pill">${esc(site.host)}</div></div>
+    <div class="words"><div class="brand">${mark}<span>by Eurth</span></div><h1>${esc(title)}</h1><p>${esc(line)}</p><div class="pill">${esc(site.host)}</div></div>
     ${art ? `<div class="art">${art}</div>` : ''}
   </body>`;
 }

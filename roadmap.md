@@ -13,8 +13,17 @@ Three parts: what comes next, what each release added (newest first), and what's
 - **What older versions left in the browser:** Flagwright and Governmint used to keep the theme and saved designs in localStorage. Those entries stay on returning visitors' devices, unread; removing them means touching localStorage once more, which is Stijn's call.
 - **Flagwright and Passport onto `pictureFilename()`:** Flagwright's WebP button still saves a PNG called `.webp` in Safari (`savePicture` in its maker); Passport carries its own copy of the fix (`src/passport/files.ts`), to be replaced by the shared helper. Any other tool with a WebP button does the same.
 - **After 25 December:** check that every site's footer has gained its GitHub link on the nightly run.
+- **Every tool onto the 1.8.0 parts:** each tool still has to draw its own mark around the yurt, and lay its result out as "Save & share" and "Export". The starter shows both.
 - **Every tool onto the 1.4.0 parts:** the blue bars, white labels and the centred footer arrive by themselves on the nightly run. Each tool still has to switch its own Random button to `RandomButton`, add Markdown to its share row and downloads, use line-md icons in its toolbar and results, and build its guide, glossary and templates pages from `PageHead`, `Figure` and the `eu-terms` and `eu-gallery` classes, with pictures. The starter shows each.
 - **Two line-md icons without a still drawing:** `lineMoonRisingFilledAltLoop` and `lineMoonRisingTwotoneAltLoop` show nothing with reduced motion (their finished state can't be read from their animations). No part of the shell uses them; use `lineMoonRisingFilledLoop` instead until they are fixed.
+
+## 16 November 2026: 1.8.0
+
+Stijn's next round (feedback log, 31 to 33).
+
+- **"Save & share" and "Export", as in Governmint:** `ExportPanel.svelte` is new: a row of formats (Markdown first), a line saying what the chosen one is for, the text itself, Copy text and Download. `ShareButtons` puts Share second and takes the profile's Load and Save as children, so one row makes the "Save & share" card. The handbook asks for the two cards wherever a result has words, with a picture's own downloads beside the picture. This replaces the "Copy and share" and "Save as a file" pair of 1.6.0.
+- **More, always:** the share window's More button is there in every browser. Where there is no share sheet it copies the words with the link. The handbook names the suite's share window as the one every tool uses.
+- **Every tool has a mark of its own, with the yurt in it:** the handbook now asks for one of each tool, after Governmint's coin and Flagwright's flag: in front of the name in the header (the `mark` slot of 1.7.0), as favicon and home-screen icon, and on the sharing image (`sharingImage({ mark })`). `assets/eurth-yurt.svg` is the yurt alone, to place in a mark. The starter has one: a motto plate carrying the yurt.
 
 ## 16 November 2026: 1.7.0
 

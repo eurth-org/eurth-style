@@ -5,6 +5,7 @@ import { definedTermSet } from '@eurth/style/build';
 import Page from '@eurth/style/components/Page.astro';
 import PageHead from '@eurth/style/components/PageHead.astro';
 import { site } from '../../eurth.config.mjs';
+import mark from '../assets/mark.svg?raw';
 import { describe, plateSvg, type Plate } from '../tool/model';
 
 const picture = (plate: Plate) => `data:image/svg+xml;charset=utf-8,${encodeURIComponent(plateSvg(plate))}`;
@@ -28,6 +29,8 @@ const terms: { id: string; term: string; definition: string; art?: Plate }[] = [
   crumbs={[{ name: 'Glossary', path: '/glossary/' }]}
   jsonld={[definedTermSet(site, { name: 'Glossary of motto terms', path: '/glossary/', terms })]}
 >
+  <!-- The tool's own mark in front of its name: an original drawing that carries the Eurth yurt. -->
+  <Fragment slot="mark" set:html={mark} />
   <PageHead site={site} kicker="Glossary" title="Glossary of motto terms">
     <Fragment slot="lead">The words this tool uses, in a sentence each. See the <a href="/guide/">guide</a> for how they fit together, or go straight to the <a href="/">maker</a>.</Fragment>
   </PageHead>

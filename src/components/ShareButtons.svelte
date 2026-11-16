@@ -1,7 +1,9 @@
 <script lang="ts">
   /*
-   * The share row under every result: Copy link (a paper plane flies off), Copy picture, Copy
-   * description and Copy Markdown where the tool gives them, and Share, which opens the dialog.
+   * The share row under every result, as Governmint has it: Copy link (a paper plane flies
+   * off), Share, which opens the dialog, then Copy picture, Copy description and Copy Markdown
+   * where the tool gives them, and after those whatever the tool adds as children: the
+   * profile's Load and Save. It goes in a card headed "Save & share".
    *
    *   <ShareButtons url={link} title={name} text={summary} description={() => describe(design)}
    *     markdown={() => asMarkdown(design)} picture={() => pngBlob()} />
@@ -11,6 +13,7 @@
    * `markdown` too: the forum and most wikis take it. Toasts can be reworded in the tool's own
    * voice.
    */
+  import type { Snippet } from 'svelte';
   import { faMarkdown } from '@fortawesome/free-brands-svg-icons';
   import { faShareNodes } from '@fortawesome/free-solid-svg-icons';
   import { paperPlane, toast } from '../fun.js';
@@ -34,6 +37,7 @@
     said = {},
     oncopy,
     onshare,
+    children,
   }: {
     /** The link that brings the result back, whole. */
     url: string;
@@ -57,6 +61,8 @@
     oncopy?: (what: What) => void;
     /** Called when the Share dialog is opened. */
     onshare?: () => void;
+    /** More buttons for the same row: the profile's Load and Save (ProfileButtons) go here. */
+    children?: Snippet;
   } = $props();
 
   let sharing = $state(false);
@@ -104,6 +110,7 @@
     <Line icon={copied === 'link' ? lineConfirm : lineLink} />
     {copied === 'link' ? 'Copied' : 'Copy link'}
   </button>
+  <button type="button" class="eu-btn" data-click="swing-right" onclick={() => ((sharing = true), onshare?.())}><Icon icon={faShareNodes} /> Share</button>
   {#if picture}
     <button type="button" class="eu-btn" onclick={copyThePicture}>
       <Line icon={copied === 'picture' ? lineConfirm : lineImage} />
@@ -122,6 +129,6 @@
       {copied === 'markdown' ? 'Copied' : 'Copy Markdown'}
     </button>
   {/if}
-  <button type="button" class="eu-btn" data-click="swing-right" onclick={() => ((sharing = true), onshare?.())}><Icon icon={faShareNodes} /> Share</button>
+  {@render children?.()}
 </div>
 <ShareDialog bind:open={sharing} {url} {title} {text} {forumBody} {heading} oncopy={() => oncopy?.('link')} />
