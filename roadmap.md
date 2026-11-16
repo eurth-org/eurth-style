@@ -11,7 +11,14 @@ Three parts: what comes next, what each release added (newest first), and what's
 - **The nightly and launch workflows, run for real:** `tool-ci.yml` runs from the tools' own repositories; `tool-nightly.yml` and `tool-launch.yml` have not had their first run yet.
 - **After 24 December:** check that style.eurth.org/schemas/eurth-profile-1.json has appeared on the nightly run.
 - **What older versions left in the browser:** Flagwright and Governmint used to keep the theme and saved designs in localStorage. Those entries stay on returning visitors' devices, unread; removing them means touching localStorage once more, which is Stijn's call.
+- **Flagwright and Passport onto `pictureFilename()`:** Flagwright's WebP button still saves a PNG called `.webp` in Safari (`savePicture` in its maker); Passport carries its own copy of the fix (`src/passport/files.ts`), to be replaced by the shared helper. Any other tool with a WebP button does the same.
 - **After 25 December:** check that every site's footer has gained its GitHub link on the nightly run.
+
+## 16 November 2026: 1.3.0
+
+Found while checking Passport in Safari.
+
+- **A picture named for what the browser made:** `pictureFilename(name, picture, asked)` takes a file's ending from the picture itself, and gives a sentence for a toast when that isn't what was asked for. Safari 27 can't make WebP from a canvas: asked for `image/webp`, it hands back a PNG without saying so, so a WebP button saved a PNG called `.webp`. Firefox 159 and Chrome make real WebP. `svgToPicture()` and `download()` are as they were; a tool gets the fix by naming its pictures with the new helper (see Next).
 
 ## 15 November 2026: 1.2.1
 

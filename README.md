@@ -23,7 +23,7 @@ Nothing is built on install (the built files are committed) and nothing is loade
 | --- | --- |
 | `@eurth/style/components/Page.astro` | The layout of every page: head, header, footer, offline note. |
 | `@eurth/style/components/*.svelte` | `ShareButtons`, `ShareDialog`, `Deluminator`, `InstallButton`, `OfflineNote`, `Toast`, `VisitSwitches`, `Icon`. `Fa.astro` for icons in Astro files. |
-| `@eurth/style` | For browser code: `toast`, `niceWatcher`, `playTones`, the link state (`encodeState`, `stateLink`…), this visit's choices (`getPrefs`, `setPrefs`), `svgToPicture`, `download`, `contrast`, `resolveColors`. |
+| `@eurth/style` | For browser code: `toast`, `niceWatcher`, `playTones`, the link state (`encodeState`, `stateLink`…), this visit's choices (`getPrefs`, `setPrefs`), `svgToPicture`, `pictureFilename`, `download`, `contrast`, `resolveColors`. |
 | `@eurth/style/build` | Build time only: `defineSite`, `launchedTools`, `ref`, and the structured-data builders. |
 | `@eurth/style/astro` | `eurth(site)`: the Astro integration. |
 | `@eurth/style/testing` | `standardSuites({ site })`: the checks every tool runs. |
@@ -32,6 +32,15 @@ Nothing is built on install (the built files are committed) and nothing is loade
 | `@eurth/style/tokens.json`, `tools.json` | The tokens; every tool with its launch date. |
 | `npx eurth-axe` | Accessibility checks on every built page, in both themes. |
 | `npx eurth-smoke` | The built site in real Chrome under its real headers: theme, nothing stored, offline. |
+
+A picture is drawn with `svgToPicture()`, named with `pictureFilename()` and saved with `download()`. The name comes from the picture itself, because a browser that can't make WebP (Safari) gives a PNG instead without saying so:
+
+```js
+const picture = await svgToPicture(svg, { width: 1200, height: 630, type: 'image/webp' });
+const file = pictureFilename('orioni-flag', picture, 'image/webp'); // { filename, type, note }
+download(picture, file.filename); // "orioni-flag.webp", or "orioni-flag.png" in Safari
+if (file.note) toast(file.note); // "This browser can’t make WebP pictures, so this one is a PNG."
+```
 
 ## What's where
 

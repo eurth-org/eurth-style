@@ -38,9 +38,45 @@ export function fileSlug(text, fallback = 'untitled') {
   return slug || fallback;
 }
 
+/** The kinds of picture a canvas is asked for, with the file ending and the name of each. */
+const PICTURES = /** @type {const} */ ({
+  'image/png': { ending: 'png', name: 'PNG' },
+  'image/webp': { ending: 'webp', name: 'WebP' },
+});
+
+/**
+ * Names a picture for what the browser really made. A browser asked for a kind of picture it
+ * can't make hands back a PNG without saying so (Safari does, for WebP), and a PNG saved as
+ * ".webp" opens in some programs and not in others. So take the file's ending from the picture
+ * itself, and tell the visitor when it isn't what they asked for:
+ *
+ *   const picture = await svgToPicture(svg, { width, height, type: 'image/webp' });
+ *   const file = pictureFilename('orioni-flag', picture, 'image/webp');
+ *   download(picture, file.filename);
+ *   if (file.note) toast(file.note);
+ *
+ * @param {string} name the file's name without its ending: "orioni-flag"
+ * @param {{ type: string }} picture the blob svgToPicture() gave
+ * @param {'image/png' | 'image/webp'} [asked] the type svgToPicture() was asked for
+ * @returns {{ filename: string, type: 'image/png' | 'image/webp', note: string | null }}
+ *   filename: the name with the right ending; type: what the picture really is (what was asked
+ *   for, if the picture doesn't say); note: a sentence for a toast when that differs from what
+ *   was asked for, otherwise null
+ */
+export function pictureFilename(name, picture, asked = 'image/png') {
+  const made = picture.type.split(';')[0].trim().toLowerCase();
+  const type = /** @type {'image/png' | 'image/webp'} */ (Object.hasOwn(PICTURES, made) ? made : asked);
+  return {
+    filename: `${name}.${PICTURES[type].ending}`,
+    type,
+    note: type === asked ? null : `This browser can’t make ${PICTURES[asked].name} pictures, so this one is a ${PICTURES[type].name}.`,
+  };
+}
+
 /**
  * Draws an SVG into a PNG or WebP picture of a given size, in the browser. The SVG must carry
  * everything it shows (no outside pictures or fonts), which the suite's rules ask for anyway.
+ * A browser that can't make WebP gives a PNG instead: name the file with pictureFilename().
  * @param {string} svg the SVG's text, with a viewBox
  * @param {{ width: number, height: number, type?: 'image/png' | 'image/webp', quality?: number, background?: string, fit?: 'contain' | 'cover' }} options
  *   background: a colour behind the picture (default: see-through); fit: how the SVG sits in the
