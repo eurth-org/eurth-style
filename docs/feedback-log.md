@@ -36,5 +36,6 @@ Every numbered point from the reviews, and the release that did it. The releases
 | 32 | The share window with "More" is the gold standard | 1.8.0 (More is always there; the handbook names the suite's window as the only one) |
 | 33 | Governmint and Flagwright have marks of their own that reuse the yurt; every tool should have a similar nod and wink | 1.8.0 (a handbook rule, `assets/eurth-yurt.svg`, `sharingImage({ mark })`, the starter's own mark; each tool has its own to draw) |
 | 34 | The footer should open with "With thanks", as the original Governmint did, not with a row of links to the tools | 1.9.0 |
+| 35 | "You've effectively ruined the Governmint header": the logo on one line and the buttons on the next is wasted space; they belong on the same line | 1.10.0 (`Page`'s `actions` slot, `--eu-gutter`); the rest is in Governmint |
 | 4 | style.eurth.org deployed through CI, showing only tools that have launched | 1.0.0 |
 | 5 | Node 26 for building and in every CI workflow | 1.0.0 |

@@ -9,6 +9,7 @@
 //     <Fragment slot="inspirations">Inspired by …</Fragment>                        the older way: one line, as a sentence
 //     <Fragment slot="mark" set:html={coin} />      only for a tool with a mark of its own
 //     <a slot="bar" class="eu-barlink" href="#about">About</a>      one more pill in the blue bar
+//     <Actions slot="actions" client:load />                        the tool's buttons, on the name's line
 //   </Page>
 import '../../dist/eurth.css';
 import { HEAD_SCRIPT, THEME_COLOR } from '../generated.js';
@@ -81,9 +82,10 @@ const data: object[] = [organization(), webSite(site), ...(crumbs?.length ? [bre
     <a class="eu-skip" href="#main">Skip to the content</a>
     <!-- How far down the page you are: a thin line along the top of the screen. -->
     {site.scrollLine !== false && <div class="eu-progress" aria-hidden="true" />}
-    <Header site={site} path={path} ownMark={Astro.slots.has('mark')} moreBar={Astro.slots.has('bar')}>
+    <Header site={site} path={path} ownMark={Astro.slots.has('mark')} moreBar={Astro.slots.has('bar')} toolActions={Astro.slots.has('actions')}>
       <slot name="mark" slot="mark" />
       <slot name="bar" slot="bar" />
+      <slot name="actions" slot="actions" />
     </Header>
     <main id="main" class="eu-main">
       <slot />

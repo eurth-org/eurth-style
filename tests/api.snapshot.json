@@ -1393,7 +1393,8 @@
       "moreBar",
       "ownMark",
       "path",
-      "site"
+      "site",
+      "toolActions"
     ],
     "Icon.svelte": [
       "draw",
@@ -1540,6 +1541,7 @@
     "eu-main",
     "eu-mark",
     "eu-masthead",
+    "eu-masthead-actions",
     "eu-menu",
     "eu-menu-list",
     "eu-muted",

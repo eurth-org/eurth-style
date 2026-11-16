@@ -1,4 +1,4 @@
-/*! @eurth/style 1.9.0 — built from tokens.json by build/build.mjs. Don't edit: change tokens.json or src/css. */
+/*! @eurth/style 1.10.0 — built from tokens.json by build/build.mjs. Don't edit: change tokens.json or src/css. */
 
 /* Tokens. Light is the default; the head script sets data-theme before the first paint, and
    without script the page follows the device. data-theme also works on any element. */
@@ -883,13 +883,15 @@ a.eu-card:hover {
   background: var(--surface);
 }
 
-/* The page's column, centred: the bars of the header and footer line up with the content. */
+/* The page's column, centred: the bars of the header and footer line up with the content. A
+   tool that keeps a design of its own with a narrower gutter (Governmint, Flagwright: 16px)
+   sets --eu-gutter on :root, and the shell's edges line up with the tool's. */
 .eu-column,
 .eu-bar {
   width: 100%;
   max-width: var(--size-page);
   margin: 0 auto;
-  padding: 0 var(--space-8);
+  padding: 0 var(--eu-gutter, var(--space-8));
 }
 
 .eu-bar {
@@ -1023,6 +1025,15 @@ a.eu-card:hover {
 
 .eu-brand-name {
   font: var(--type-brand);
+}
+
+/* A tool's own buttons on the name's line, at its right end. */
+.eu-masthead-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  margin-left: auto;
 }
 
 .eu-brand-by,
@@ -1242,8 +1253,8 @@ a.eu-card:hover {
 @media (max-width: 720px) {
   .eu-column,
   .eu-bar {
-    padding-left: var(--space-4);
-    padding-right: var(--space-4);
+    padding-left: var(--eu-gutter, var(--space-4));
+    padding-right: var(--eu-gutter, var(--space-4));
   }
 
   .eu-topbar .eu-bar {

@@ -7,7 +7,9 @@
 // A tool with a mark of its own (Governmint's coin, Flagwright's flag) shows it in place of
 // the yurt, through the "mark" slot; the seasonal yurts then leave it alone. The "bar" slot
 // adds a pill to the blue bar after the tool's pages (Governmint's About): give it the class
-// eu-barlink. Both come through Page.
+// eu-barlink. The "actions" slot puts the tool's own buttons on the right of the name's line,
+// for a tool whose toolbar has always shared a line with its name (Governmint: Examples, Undo,
+// Redo, Save). All three come through Page.
 //
 // The Tools menu lists only tools whose launch date has passed when the site is built.
 import type { IconDefinition } from '@fortawesome/free-solid-svg-icons';
@@ -26,8 +28,10 @@ interface Props {
   ownMark?: boolean;
   /** The "bar" slot is filled: more pills for the blue bar, after the tool's pages. */
   moreBar?: boolean;
+  /** The "actions" slot is filled: the tool's own buttons, on the right of the name's line. */
+  toolActions?: boolean;
 }
-const { site, path, ownMark = false, moreBar = false } = Astro.props;
+const { site, path, ownMark = false, moreBar = false, toolActions = false } = Astro.props;
 const launched = launchedTools();
 const tools = launched.filter((tool) => tool.kind === 'tool');
 const hub = launched.find((tool) => tool.kind === 'hub');
@@ -103,6 +107,13 @@ const everyIcon = pages.every((page) => page.icon);
         <span class="eu-brand-by">by Eurth</span>
       </a>
       <span class="eu-tagline">{site.tagline}</span>
+      {
+        toolActions && (
+          <div class="eu-masthead-actions">
+            <slot name="actions" />
+          </div>
+        )
+      }
     </div>
   </div>
 </header>

@@ -17,6 +17,11 @@ Three parts: what comes next, what each release added (newest first), and what's
 - **Every tool onto the 1.4.0 parts:** the blue bars, white labels and the centred footer arrive by themselves on the nightly run. Each tool still has to switch its own Random button to `RandomButton`, add Markdown to its share row and downloads, use line-md icons in its toolbar and results, and build its guide, glossary and templates pages from `PageHead`, `Figure` and the `eu-terms` and `eu-gallery` classes, with pictures. The starter shows each.
 - **Two line-md icons without a still drawing:** `lineMoonRisingFilledAltLoop` and `lineMoonRisingTwotoneAltLoop` show nothing with reduced motion (their finished state can't be read from their animations). No part of the shell uses them; use `lineMoonRisingFilledLoop` instead until they are fixed.
 
+## 16 November 2026: 1.10.0
+
+- **A tool's buttons on the name's line** (feedback log, 35): `Page` takes an `actions` slot, at the right end of the line that carries the mark and the name, for Governmint, whose toolbar has always shared that line. One line where there were two.
+- **`--eu-gutter`:** a tool that keeps its own design with a narrower gutter sets it on `:root`, and the edges of the header and footer line up with the tool's.
+
 ## 16 November 2026: 1.9.0
 
 - **"With thanks"** (feedback log, 34): the footer opens with that heading and a list of short lines, each with its icon, as Governmint first had it, in place of the row of links to the other tools. The other tools are named in the list's last line. A tool adds lines of its own with `ThanksItem.astro` in `Page`'s `thanks` slot; the `inspirations` slot still works and becomes one line.
