@@ -63,7 +63,11 @@ jobs:
         run: echo "EURTH_BUILD_TIME=$(TZ=Europe/Brussels date -d 'tomorrow 00:00' +%Y-%m-%dT%H:%M:%S%:z)" >> "$GITHUB_ENV"
       - run: npm run check
       - run: npm run build
+      # The checks of what a tool has adopted (@eurth/style/testing, adoptionSuite) keep every push
+      # and pull request red until the work is done; they don't hold up the nightly update.
       - run: npm test
+        env:
+          EURTH_SKIP_ADOPTION: '1'
       - name: Has the door opened, and has anything changed?
         id: state
         run: |

@@ -13,9 +13,15 @@ Three parts: what comes next, what each release added (newest first), and what's
 - **What older versions left in the browser:** Flagwright and Governmint used to keep the theme and saved designs in localStorage. Those entries stay on returning visitors' devices, unread; removing them means touching localStorage once more, which is Stijn's call.
 - **Flagwright and Passport onto `pictureFilename()`:** Flagwright's WebP button still saves a PNG called `.webp` in Safari (`savePicture` in its maker); Passport carries its own copy of the fix (`src/passport/files.ts`), to be replaced by the shared helper. Any other tool with a WebP button does the same.
 - **After 25 December:** check that every site's footer has gained its GitHub link on the nightly run.
-- **Every tool onto the 1.8.0 parts:** each tool still has to draw its own mark around the yurt, and lay its result out as "Save & share" and "Export". The starter shows both.
+- **Every tool onto the 1.8.0 parts:** each tool still has to draw its own mark around the yurt, and lay its result out as "Save & share" and "Export". The starter shows both. Since 1.11.0 a tool's tests say so, and each tool's repository has an issue listing what is left.
 - **Every tool onto the 1.4.0 parts:** the blue bars, white labels and the centred footer arrive by themselves on the nightly run. Each tool still has to switch its own Random button to `RandomButton`, add Markdown to its share row and downloads, use line-md icons in its toolbar and results, and build its guide, glossary and templates pages from `PageHead`, `Figure` and the `eu-terms` and `eu-gallery` classes, with pictures. The starter shows each.
 - **Two line-md icons without a still drawing:** `lineMoonRisingFilledAltLoop` and `lineMoonRisingTwotoneAltLoop` show nothing with reduced motion (their finished state can't be read from their animations). No part of the shell uses them; use `lineMoonRisingFilledLoop` instead until they are fixed.
+
+## 22 November 2026: 1.11.0
+
+- **Checks for what only a tool can do** (feedback log, 36): `standardSuites` now includes `adoptionSuite`. A tool's tests fail until it shows a mark of its own on every page, groups its settings into sections, uses `RandomButton`, has a card headed "Save & share" with the share row, and opens each written page with `PageHead` and at least one picture. The messages say what is missing and where to look. The hub and the docs aren't tools and aren't asked; Governmint and Flagwright, which keep their own design, are held to their mark alone.
+- **Doors and nightly updates are not held up:** `tool-launch.yml` and `tool-nightly.yml` set `EURTH_SKIP_ADOPTION`, so these checks redden pushes and pull requests only. A tool that is behind still launches on its day and still takes the package's updates.
+- This is the one kind of 1.x release that can turn a tool's CI red without the tool changing: on purpose, and on Stijn's word.
 
 ## 16 November 2026: 1.10.0
 

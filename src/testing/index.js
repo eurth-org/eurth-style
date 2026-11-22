@@ -241,7 +241,84 @@ export function launchSuite({ site, root = '.' }) {
  * All of the above.
  * @param {{ site: Site, dist?: string, root?: string, pairs?: [string, string, number][] }} options
  */
-export function standardSuites({ site, dist = 'dist', root = '.', pairs = [] }) {
+/**
+ * Whether the tool keeps a design of its own from before the suite (Governmint, Flagwright):
+ * an exception Stijn gives, marked in the tool's package.json as
+ * "eurth": { "ownDesign": true }, or by the WCAG AA setting that goes with it.
+ * @param {string} root
+ */
+function ownDesign(root) {
+  try {
+    const mine = JSON.parse(readFileSync(join(root, 'package.json'), 'utf8')).eurth ?? {};
+    return mine.ownDesign === true || String(mine.axe?.level ?? '').toLowerCase() === 'aa';
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Adopted: the parts of the suite a tool has to build itself, which no update of the package
+ * can do for it. They are checked in the built pages of every tool, launched or not, in
+ * tools.json or not yet. The hub and the other sites in tools.json are not tools and are left
+ * alone, and so is a site that says so itself (the docs: `tool: false`). A tool that keeps a
+ * design of its own is held to its mark alone.
+ *
+ * A scheduled launch and the nightly update set EURTH_SKIP_ADOPTION, so a tool that hasn't
+ * caught up still opens its door and still takes the package's updates; every push and pull
+ * request stays red until it has.
+ * @param {{ site: Site, dist?: string, root?: string, tool?: boolean }} options
+ *   tool: false for a site that is not a tool and not in tools.json (the docs)
+ */
+export function adoptionSuite({ site, dist = 'dist', root = '.', tool: isTool = true }) {
+  const listed = findTool(site.id);
+  const aTool = isTool && (!listed || listed.kind === 'tool');
+  const skipped = !!process.env.EURTH_SKIP_ADOPTION;
+  if (skipped) console.warn("@eurth/style/testing: EURTH_SKIP_ADOPTION is set, so the suite's parts are not checked on this run.");
+  const own = ownDesign(root);
+  const how = 'See HANDBOOK.md and the starter in eurth-org/eurth-style.';
+  describe.skipIf(!built(dist) || !aTool || skipped)("the suite's parts, adopted by this tool", () => {
+    const start = () => text(dist, 'index.html');
+    const written = () => site.pages.map((page) => page.href).filter((href) => href !== '/' && href.startsWith('/'));
+
+    it('shows a mark of its own in front of its name, on every page (HANDBOOK, Look: "Every tool has a mark of its own")', () => {
+      for (const page of pagesOf(dist)) {
+        expect(/class="eu-yurt eu-mark"/.test(text(dist, page)), `${page}: the header still shows the plain yurt. Draw the tool's own mark around the yurt and give it to Page's "mark" slot. ${how}`).toBe(true);
+      }
+    });
+
+    it.skipIf(own)('groups its settings into sections, each under a heading with an icon (HANDBOOK, Shell: "Sections of a tool")', () => {
+      const sections = start().match(/class="[^"]*\beu-card-title\b/g)?.length ?? 0;
+      expect(sections, `The start page has ${sections} headings with the class eu-card-title; a maker has at least two sections. ${how}`).toBeGreaterThanOrEqual(2);
+    });
+
+    it.skipIf(own)('has Random, and Random asks before it replaces work (HANDBOOK, Delight: "Random, in every tool\'s toolbar")', () => {
+      expect(/id="eu-random-title-\d+"/.test(start()), `The start page has no RandomButton from @eurth/style. ${how}`).toBe(true);
+    });
+
+    it.skipIf(own)('lets a result leave through a card headed "Save & share" (HANDBOOK, Sharing)', () => {
+      const html = start();
+      expect(/Save (&amp;|&#38;|&) share/.test(html), `The start page has no card headed "Save & share". ${how}`).toBe(true);
+      expect(html.includes('Copy link'), `The start page has no share row (ShareButtons from @eurth/style). ${how}`).toBe(true);
+    });
+
+    it.skipIf(own)('opens each written page with its head and shows what it explains (HANDBOOK, SEO: "Written pages")', () => {
+      for (const href of written()) {
+        const file = `${href.replace(/^\//, '')}index.html`;
+        if (!existsSync(join(dist, file))) continue;
+        const html = text(dist, file);
+        expect(html.includes('eu-pagehead'), `${href} doesn't open with PageHead from @eurth/style. ${how}`).toBe(true);
+        expect(/eu-(figure|term|tile|pagehead)-art/.test(html), `${href} has no pictures: no Figure, no picture in a glossary card, no tile. A page of bare text is not done. ${how}`).toBe(true);
+      }
+    });
+  });
+}
+
+/**
+ * Every suite at once: what a tool's tests/shell.test.js calls.
+ * @param {{ site: Site, dist?: string, root?: string, pairs?: [string, string, number][], tool?: boolean }} options
+ *   tool: false for a site that is not a tool (the docs), which then isn't asked for a tool's parts
+ */
+export function standardSuites({ site, dist = 'dist', root = '.', pairs = [], tool = true }) {
   if (!built(dist)) console.warn(`@eurth/style/testing: no build in ${dist}/, so the checks of the built site are skipped. Run "npm run build" first.`);
   contrastSuite(pairs);
   headersSuite({ dist });
@@ -249,4 +326,5 @@ export function standardSuites({ site, dist = 'dist', root = '.', pairs = [] }) 
   spoilerSuite({ site, dist });
   pagesSuite({ site, dist });
   launchSuite({ site, root });
+  adoptionSuite({ site, dist, root, tool });
 }

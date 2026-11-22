@@ -49,14 +49,35 @@ export function launchSuite({ site, root }: {
     root?: string;
 }): void;
 /**
- * All of the above.
- * @param {{ site: Site, dist?: string, root?: string, pairs?: [string, string, number][] }} options
+ * Adopted: the parts of the suite a tool has to build itself, which no update of the package
+ * can do for it. They are checked in the built pages of every tool, launched or not, in
+ * tools.json or not yet. The hub and the other sites in tools.json are not tools and are left
+ * alone, and so is a site that says so itself (the docs: `tool: false`). A tool that keeps a
+ * design of its own is held to its mark alone.
+ *
+ * A scheduled launch and the nightly update set EURTH_SKIP_ADOPTION, so a tool that hasn't
+ * caught up still opens its door and still takes the package's updates; every push and pull
+ * request stays red until it has.
+ * @param {{ site: Site, dist?: string, root?: string, tool?: boolean }} options
+ *   tool: false for a site that is not a tool and not in tools.json (the docs)
  */
-export function standardSuites({ site, dist, root, pairs }: {
+export function adoptionSuite({ site, dist, root, tool: isTool }: {
+    site: Site;
+    dist?: string;
+    root?: string;
+    tool?: boolean;
+}): void;
+/**
+ * Every suite at once: what a tool's tests/shell.test.js calls.
+ * @param {{ site: Site, dist?: string, root?: string, pairs?: [string, string, number][], tool?: boolean }} options
+ *   tool: false for a site that is not a tool (the docs), which then isn't asked for a tool's parts
+ */
+export function standardSuites({ site, dist, root, pairs, tool }: {
     site: Site;
     dist?: string;
     root?: string;
     pairs?: [string, string, number][];
+    tool?: boolean;
 }): void;
 export type Site = import("../build.js").Site & {
     host: string;

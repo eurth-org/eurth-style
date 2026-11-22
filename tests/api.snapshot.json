@@ -114,6 +114,7 @@
       "securityHeaders"
     ],
     "testing/index": [
+      "adoptionSuite",
       "contrastSuite",
       "headersSuite",
       "launchSuite",

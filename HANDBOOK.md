@@ -191,6 +191,9 @@ Tools launch through Eurth's advent calendar: 10 to 24 December 2026, one door a
 | No spoilers | The address of a tool that hasn't launched, anywhere in the built files; a link to GitHub before 25 December 2026. |
 | Pages | A page without exactly one `h1`, its own title and description, a canonical link, a 1200 x 630 sharing image with alt text, or structured data; a word that runs into a link with no space between; a missing icon, manifest, sitemap, `robots.txt`, `llms.txt` or service worker. |
 | Launch | `LAUNCH_AT` missing, malformed, or different from `tools.json`. |
+| Adopted | A tool that hasn't built the parts only it can build: a mark of its own in the header on every page; its settings in sections under `eu-card-title` headings; `RandomButton`; a card headed "Save & share" with the share row; and, on each written page, `PageHead` and at least one picture. The hub and the docs are not tools and aren't asked. A tool that keeps a design of its own (Governmint, Flagwright) is held to its mark alone. |
+
+The Adopted checks keep every push and pull request red until the work is done. They are skipped on a scheduled launch and on the nightly update (`EURTH_SKIP_ADOPTION`), so a tool that hasn't caught up still opens its door on its day and still takes the package's updates; they are not a way out of the work.
 
 Besides these: `npm run check` (types: `astro check` for pages and `svelte-check` for components), your own tests of the tool's logic (links read back safely, the description, the picture), `npm run axe`, `npm run smoke`, and Lighthouse in CI.
 
